@@ -9,75 +9,17 @@ needing to re-run the full merge from raw FAO tables.
 Once the real raw file is available again, run pipeline.py directly instead
 of this script.
 """
-import re
 import pandas as pd
 from pathlib import Path
 
-base_dir = Path("/home/aitor1717/Downloads/Data Analytics/fao_tab_leau")
+from fao_filters import (
+    livestock_pattern,
+    AGGREGATE_ITEMS,
+    AGGREGATE_AREAS,
+    WB_TO_FAO_COUNTRY,
+)
 
-LIVESTOCK_KEYWORDS = [
-    "meat", "milk", "egg", "wool", "hide", "skin", "honey", "beeswax", "cocoon",
-    "silk", "cattle", "buffalo", "goat", "sheep", "pig", "swine", "poultry",
-    "chicken", "duck", "turkey", "goose", "geese", "horse", "ass", "mule",
-    "camel", "rabbit", "offal", "fat", "butter", "cheese", "lard", "tallow",
-    "cream", "yoghurt", "casein",
-]
-livestock_pattern = re.compile("|".join(LIVESTOCK_KEYWORDS), re.IGNORECASE)
-
-WB_TO_FAO_COUNTRY = {
-    "Bahamas, The": "Bahamas",
-    "Bolivia": "Bolivia (Plurinational State of)",
-    "China": "China; mainland",
-    "Congo, Dem. Rep.": "Democratic Republic of the Congo",
-    "Congo, Rep.": "Congo",
-    "Cote d'Ivoire": "Côte d'Ivoire",
-    "Egypt, Arab Rep.": "Egypt",
-    "Gambia, The": "Gambia",
-    "Iran, Islamic Rep.": "Iran (Islamic Republic of)",
-    "Korea, Dem. People's Rep.": "Democratic People's Republic of Korea",
-    "Korea, Rep.": "Republic of Korea",
-    "Kyrgyz Republic": "Kyrgyzstan",
-    "Laos": "Lao People's Democratic Republic",
-    "Lao PDR": "Lao People's Democratic Republic",
-    "Micronesia, Fed. Sts.": "Micronesia (Federated States of)",
-    "Moldova": "Republic of Moldova",
-    "Netherlands": "Netherlands (Kingdom of the)",
-    "Slovak Republic": "Slovakia",
-    "St. Kitts and Nevis": "Saint Kitts and Nevis",
-    "St. Lucia": "Saint Lucia",
-    "St. Vincent and the Grenadines": "Saint Vincent and the Grenadines",
-    "Tanzania": "United Republic of Tanzania",
-    "Turkiye": "Türkiye",
-    "United Kingdom": "United Kingdom of Great Britain and Northern Ireland",
-    "United States": "United States of America",
-    "Venezuela, RB": "Venezuela (Bolivarian Republic of)",
-    "Yemen, Rep.": "Yemen",
-    "Somalia, Fed. Rep.": "Somalia",
-    "West Bank and Gaza": "Palestine",
-}
-
-AGGREGATE_AREAS = {
-    "Africa", "Americas", "Asia", "Australia and New Zealand", "Caribbean",
-    "Central America", "Central Asia", "China", "Eastern Africa", "Eastern Asia",
-    "Eastern Europe", "Europe", "European Union (27)", "Land Locked Developing Countries",
-    "Least Developed Countries", "Low Income Food Deficit Countries", "Melanesia",
-    "Micronesia", "Middle Africa", "Net Food Importing Developing Countries",
-    "Northern Africa", "Northern America", "Northern Europe", "Oceania",
-    "Polynesia", "Small Island Developing States", "South America",
-    "South-eastern Asia", "Southern Africa", "Southern Asia", "Southern Europe",
-    "Western Africa", "Western Asia", "Western Europe", "World",
-}
-
-# FAO's Item field has the same problem one level down: rollup categories that
-# double-count their own constituent crops (e.g. "Cereals; primary" = Maize +
-# Wheat + Rice + ...). "Natural rubber in primary forms" is a real commodity,
-# not a rollup, and stays.
-AGGREGATE_ITEMS = {
-    "Cereals; primary", "Citrus Fruit; Total", "Fibre Crops; Fibre Equivalent",
-    "Fruit Primary", "Oilcrops; Cake Equivalent", "Oilcrops; Oil Equivalent",
-    "Pulses; Total", "Roots and Tubers; Total", "Sugar Crops Primary",
-    "Treenuts; Total", "Vegetables Primary",
-}
+base_dir = Path(__file__).resolve().parent
 
 print("Loading existing FAO_Crop_Yield_TableauReady.csv ...")
 df = pd.read_csv(base_dir / "FAO_Crop_Yield_TableauReady.csv")

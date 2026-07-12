@@ -63,6 +63,11 @@ TOP_YIELD_COUNTRIES = [
 ]
 
 
+# @st.cache_data here is load-bearing, not an optimization: search_fuzzy() is
+# an O(n) fuzzy match against ~250 country names, and to_iso3 is applied to
+# 189K+ crop rows. The decorator memoizes per distinct country name so the
+# fuzzy match only actually runs ~250 times; without it this call hangs for
+# well over 10 minutes at 100% CPU. Don't remove it "for simplicity".
 @st.cache_data
 def to_iso3(name: str):
     if name in ISO3_OVERRIDES:
@@ -165,6 +170,10 @@ fig.update_layout(
 fig.update_xaxes(gridcolor=GRID, showgrid=False)
 fig.update_yaxes(gridcolor=GRID)
 st.plotly_chart(fig, width='stretch')
+st.caption(
+    "Simple average across every crop a country reports — countries with a narrow, "
+    "high-yield crop mix (e.g. greenhouse-heavy) can look like outliers."
+)
 
 st.divider()
 
@@ -276,7 +285,12 @@ with col4:
     fig.update_xaxes(gridcolor=GRID)
     fig.update_yaxes(gridcolor=GRID)
     st.plotly_chart(fig, width='stretch')
-    st.caption("What each country produces relative to the arable land it has — missing from the original.")
+    st.caption(
+        "What each country produces relative to the arable land it has — missing from the original. "
+        "Note: World Bank arable land excludes land under permanent crops (palm oil, bananas, coffee, "
+        "cocoa), while production includes them — this structurally favors tree-crop economies over "
+        "genuinely land-productive farming."
+    )
 
 st.divider()
 
