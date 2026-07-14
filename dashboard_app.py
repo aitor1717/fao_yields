@@ -12,20 +12,26 @@ Run with: streamlit run dashboard_app.py
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import pycountry
 import streamlit as st
 
 st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="🌾")
 
-# --- Palette: matches the original workbook's dark chrome + yellow-green->teal ramp ---
-BG = "#0d0d0d"
+# --- Palette: colors sampled directly (pixel-picked) from archive/tableau/Global
+# Crop Yields.png so this matches the original workbook, not an approximation of
+# it. SURFACE (#333333) is the original's actual panel/chart background, sampled
+# from its "Top Yields" panel. The original uses this same color for the page
+# background too (one flat tone, no separate "card" contrast), so BG matches it
+# rather than the near-black shade used before. SEQ_RAMP is the original's
+# choropleth legend gradient, sampled stop-by-stop. LINE_COLORS is the bold
+# 4-color green->teal set the original reuses for the Top Yields lines and bars.
+BG = "#333333"
 SURFACE = "#333333"
 TEXT = "#f5f5f5"
 MUTED = "#b7b7b2"
 GRID = "#4a4a4a"
-SEQ_RAMP = ["#eef6c8", "#c9e6a1", "#93d0a0", "#57b8a6", "#238b8b", "#0d5c6b"]
-LINE_COLORS = ["#e6d34a", "#57b8a6", "#3d7ea6", "#8a8f98"]
+SEQ_RAMP = ["#feffd9", "#f7fcc9", "#eff9b8", "#e0f4b3", "#ceeeb2", "#b5e4b3", "#95d7b7", "#77cbbc", "#5cc1c0", "#41b7c4"]
+LINE_COLORS = ["#c7f296", "#94e7a8", "#51d2bb", "#27aab0"]
 
 ISO3_OVERRIDES = {
     "Bolivia (Plurinational State of)": "BOL",
@@ -95,11 +101,9 @@ st.markdown(
     f"""
     <style>
     .stApp {{ background-color: {BG}; }}
-    section[data-testid="stSidebar"] {{ background-color: {SURFACE}; }}
     h1, h2, h3, .stMarkdown, .stCaption, p {{ color: {TEXT} !important; }}
     .panel-title {{
-        font-size: 13px; font-weight: 600; letter-spacing: 0.03em;
-        text-transform: uppercase; color: {MUTED}; margin: 6px 0 2px 0;
+        font-size: 14px; font-weight: 600; color: {MUTED}; margin: 6px 0 2px 0;
     }}
     .callout-box {{
         background-color: {SURFACE}; border-radius: 4px; padding: 18px 20px;
@@ -108,7 +112,6 @@ st.markdown(
     .callout-box b {{ color: #ffffff; }}
     .callout-box .insight {{ color: {MUTED}; font-size: 12.5px; margin-top: 14px; display:block; }}
     div[data-testid="stMetric"] {{ background-color: transparent; padding: 0; }}
-    hr {{ border-color: #262626; margin: 18px 0; }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -124,16 +127,20 @@ st.caption(
 )
 
 # ---------------------------------------------------------------------------
-# Sidebar controls
+# Controls — inline instead of in a sidebar, to match the original's single-
+# page layout (no left rail in the Tableau workbook).
 # ---------------------------------------------------------------------------
-st.sidebar.header("Controls")
-year = st.sidebar.slider("Year", int(crops["Year"].min()), int(crops["Year"].max()), 2022)
-top_n = st.sidebar.slider("Top N (bar charts)", 5, 30, 10)
+ctrl1, ctrl2, ctrl3 = st.columns([1, 1, 1.4])
+with ctrl1:
+    year = st.slider("Year", int(crops["Year"].min()), int(crops["Year"].max()), 2022)
+with ctrl2:
+    top_n = st.slider("Top N (bar charts)", 5, 30, 10)
 all_countries = sorted(crops["DisplayCountry"].dropna().unique())
 default_country = "Netherlands" if "Netherlands" in all_countries else all_countries[0]
-focus_country = st.sidebar.selectbox(
-    "Country (bottom chart)", all_countries, index=all_countries.index(default_country)
-)
+with ctrl3:
+    focus_country = st.selectbox(
+        "Country (bottom chart)", all_countries, index=all_countries.index(default_country)
+    )
 
 year_crops = crops[crops["Year"] == year]
 
@@ -164,7 +171,7 @@ for i, c in enumerate(top_countries_now):
     )
 fig.update_layout(
     plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-    margin=dict(l=10, r=110, t=10, b=10), height=260,
+    margin=dict(l=10, r=110, t=10, b=10), height=300,
     yaxis_title="Avg. Yield (t/ha)",
 )
 fig.update_xaxes(gridcolor=GRID, showgrid=False)
@@ -175,7 +182,6 @@ st.caption(
     "high-yield crop mix (e.g. greenhouse-heavy) can look like outliers."
 )
 
-st.divider()
 
 # ---------------------------------------------------------------------------
 # Panel 2 — Global Yield choropleth (full width)
@@ -202,7 +208,6 @@ st.caption(
     "high-yield crop mix (e.g. greenhouse-heavy) can look like outliers."
 )
 
-st.divider()
 
 # ---------------------------------------------------------------------------
 # Panel 3 — Top Crops bar (full width, rank-graded color to match the original)
@@ -213,7 +218,7 @@ top_crops = (
     .sort_values("Production_tons", ascending=False).head(top_n)
 )
 top_crops = top_crops.sort_values("Production_tons")
-rank_colors = px.colors.sample_colorscale(SEQ_RAMP, [i / (len(top_crops) - 1) for i in range(len(top_crops))]) if len(top_crops) > 1 else SEQ_RAMP[:1]
+rank_colors = px.colors.sample_colorscale(LINE_COLORS, [i / (len(top_crops) - 1) for i in range(len(top_crops))]) if len(top_crops) > 1 else LINE_COLORS[:1]
 
 fig = go.Figure(go.Bar(
     x=top_crops["Production_tons"], y=top_crops["Crop"], orientation="h",
@@ -229,7 +234,6 @@ fig.update_yaxes(gridcolor=GRID)
 st.plotly_chart(fig, width='stretch')
 st.caption("No livestock items, no FAO rollup categories double-counting their own constituents.")
 
-st.divider()
 
 # ---------------------------------------------------------------------------
 # Panel 4 — two-up row: Crop bubble scatter | Production per Arable Hectare
@@ -247,19 +251,28 @@ with col3:
     )
     bubble = bubble.sort_values("Production_tons", ascending=False).head(25)
     label_set = set(bubble.sort_values("Production_tons", ascending=False).head(4)["Crop"])
-    fig = px.scatter(
-        bubble, x="AreaHarvested_ha", y="Production_tons", size="Countries",
-        color="Production_tons", color_continuous_scale=SEQ_RAMP,
-        size_max=38, hover_name="Crop",
-        labels={"AreaHarvested_ha": "Cultivated Area (ha)", "Production_tons": "Production (t)",
-                "Countries": "Countries growing it"},
-    )
+    # Hollow/outlined bubbles (transparent fill, colored stroke) to match the
+    # original's circle-outline style, rather than px.scatter's solid fill.
+    size_max = 38
+    sizeref = 2. * bubble["Countries"].max() / (size_max ** 2)
+    fig = go.Figure(go.Scatter(
+        x=bubble["AreaHarvested_ha"], y=bubble["Production_tons"],
+        mode="markers", text=bubble["Crop"],
+        marker=dict(
+            size=bubble["Countries"], sizemode="area", sizeref=sizeref, sizemin=4,
+            color="rgba(0,0,0,0)",
+            line=dict(color=bubble["Production_tons"], colorscale=LINE_COLORS, width=2),
+        ),
+        hovertemplate="<b>%{text}</b><br>Cultivated Area: %{x:,.0f} ha<br>"
+                      "Production: %{y:,.0f} t<extra></extra>",
+    ))
     for _, row in bubble[bubble["Crop"].isin(label_set)].iterrows():
         fig.add_annotation(x=row["AreaHarvested_ha"], y=row["Production_tons"], text=row["Crop"],
                             showarrow=False, yshift=14, font=dict(color=TEXT, size=11))
     fig.update_layout(
         plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-        margin=dict(l=10, r=10, t=10, b=10), height=380, coloraxis_showscale=False,
+        margin=dict(l=10, r=10, t=10, b=10), height=380,
+        xaxis_title="Cultivated Area (ha)", yaxis_title="Production (t)",
     )
     fig.update_xaxes(gridcolor=GRID)
     fig.update_yaxes(gridcolor=GRID)
@@ -275,7 +288,7 @@ with col4:
     )
     fig = go.Figure(go.Bar(
         x=prod_year["ProductionPerArableHa_tons"], y=prod_year["DisplayCountry"], orientation="h",
-        marker=dict(color=SEQ_RAMP[3]),
+        marker=dict(color=LINE_COLORS[2]),
     ))
     fig.update_layout(
         plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
@@ -292,7 +305,6 @@ with col4:
         "genuinely land-productive farming."
     )
 
-st.divider()
 
 # ---------------------------------------------------------------------------
 # Panel 5 — bottom row: text callout (left) | Yield/Area by Country (right)
@@ -336,20 +348,21 @@ with col6:
         .groupby("Year", as_index=False)
         .agg(AreaHarvested_ha=("AreaHarvested_ha", "sum"), Yield_tonha=("Yield_tonha", "mean"))
     )
-    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.06,
-                         row_heights=[0.45, 0.55])
+    # One combined dual-axis panel (Area bars + Yield line sharing the same plot
+    # area, like the original) instead of two stacked subplots.
+    fig = go.Figure()
     fig.add_trace(go.Bar(x=country_series["Year"], y=country_series["AreaHarvested_ha"],
-                          marker_color=SEQ_RAMP[1], name="Area (ha)"), row=1, col=1)
+                          marker_color=LINE_COLORS[0], name="Area (ha)", yaxis="y1"))
     fig.add_trace(go.Scatter(x=country_series["Year"], y=country_series["Yield_tonha"],
                               mode="lines+markers", marker=dict(symbol="x", size=7),
-                              line=dict(color=SEQ_RAMP[4], width=2), name="Average Yield"),
-                  row=2, col=1)
+                              line=dict(color=SEQ_RAMP[-1], width=2), name="Average Yield",
+                              yaxis="y2"))
     fig.update_layout(
         plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
         margin=dict(l=10, r=10, t=10, b=10), height=380,
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
+        xaxis=dict(gridcolor=GRID),
+        yaxis=dict(title="Area (ha)", gridcolor=GRID),
+        yaxis2=dict(title="Avg. Yield (t/ha)", overlaying="y", side="right", showgrid=False),
     )
-    fig.update_yaxes(title_text="Area (ha)", row=1, col=1, gridcolor=GRID)
-    fig.update_yaxes(title_text="Avg. Yield (t/ha)", row=2, col=1, gridcolor=GRID)
-    fig.update_xaxes(gridcolor=GRID, row=2, col=1)
     st.plotly_chart(fig, width='stretch')
