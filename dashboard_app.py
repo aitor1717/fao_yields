@@ -188,6 +188,12 @@ st.markdown(
         border-radius: 4px;
     }}
     div[data-testid="stSelectbox"] input {{ background-color: transparent !important; }}
+    /* Fixed-height bordered containers (the aligned two-up rows) shouldn't
+       show a scrollbar even on marginal overflow - this is a presentational
+       dashboard, not a scrolling one, and Linux Firefox renders a visible
+       scrollbar track by default (unlike overlay-scrollbar platforms). */
+    div[data-testid="stVerticalBlock"] {{ scrollbar-width: none; }}
+    div[data-testid="stVerticalBlock"]::-webkit-scrollbar {{ display: none; }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -252,12 +258,36 @@ fig.update_layout(
     ),
     paper_bgcolor="white", font_color="#333333", autosize=True,
     margin=dict(l=0, r=0, t=0, b=0), height=630,
-    coloraxis_colorbar=dict(
-        orientation="h", y=-0.05, len=0.35, x=0.02, xanchor="left", thickness=12,
-        title="Median yield (t/ha)", tickvals=[np.log10(v) for v in tick_vals], ticktext=[str(v) for v in tick_vals],
-    ),
+    # No drag/zoom interaction: this map is presentational, and Plotly's geo
+    # zoom/autoscale doesn't respect the manual lataxis/lonaxis crop above -
+    # interacting with it re-fits to a wider default that clips Alaska.
+    dragmode=False,
+    coloraxis_showscale=False,  # legend is drawn below as a plain HTML footnote instead -
+)  # Plotly's own colorbar sat on top of the map itself, illegible against whatever landmass was under it
+st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
+
+# Footnote-style legend: same gradient, same tick values, same bar size as
+# the Plotly colorbar it replaces, but rendered as plain HTML below the map
+# (dark theme, muted text) instead of overlaid on the white canvas.
+cmin, cmax = map_df["ColorValue"].min(), map_df["ColorValue"].max()
+ticks_html = "".join(
+    f"<span style='position:absolute; left:{(np.log10(v) - cmin) / (cmax - cmin) * 100:.1f}%; "
+    f"transform:translateX(-50%);'>{v}</span>"
+    for v in tick_vals if cmin <= np.log10(v) <= cmax
 )
-st.plotly_chart(fig, width='stretch')
+st.markdown(
+    f"""
+    <div style='margin-top:8px; font-size:12px; color:{MUTED};'>
+        Median yield (t/ha)
+        <div style='width:320px; height:12px; margin-top:4px; border-radius:2px;
+                     background:linear-gradient(to right, {", ".join(SEQ_RAMP)});'></div>
+        <div style='position:relative; width:320px; height:14px; margin-top:2px; font-size:11px;'>
+            {ticks_html}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 st.caption("Log color scale (yield is right-skewed) - see hover for exact values.")
 
 
@@ -315,9 +345,9 @@ with st.container(border=True):
         margin=dict(l=10, r=110, t=10, b=10), height=250,
         yaxis_title="Median Yield (t / harvested ha)",
     )
-    fig.update_xaxes(gridcolor=GRID, showgrid=False)
-    fig.update_yaxes(showgrid=False)
-    st.plotly_chart(fig, width='stretch')
+    fig.update_xaxes(gridcolor=GRID, showgrid=False, fixedrange=True)
+    fig.update_yaxes(showgrid=False, fixedrange=True)
+    st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
     st.caption(
         f"Every current leader ({', '.join(top_countries_now)}) is driven by intensive "
         "greenhouse/irrigated vegetables (tomatoes, cucumbers, peppers), not staple grains - "
@@ -346,9 +376,9 @@ with st.container(border=True):
         margin=dict(l=10, r=10, t=10, b=10), height=340,
         xaxis_title="Production (t)",
     )
-    fig.update_xaxes(gridcolor=GRID)
-    fig.update_yaxes(gridcolor=GRID)
-    st.plotly_chart(fig, width='stretch')
+    fig.update_xaxes(gridcolor=GRID, fixedrange=True)
+    fig.update_yaxes(gridcolor=GRID, fixedrange=True)
+    st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
     st.caption(f"Top {TOP_N_BARS} by production.")
 
 
@@ -357,7 +387,7 @@ with st.container(border=True):
 # (this replaces the original's "Countries Sampled" text-wall slot)
 # ---------------------------------------------------------------------------
 col3, col4 = st.columns([1, 1])
-ROW_HEIGHT = 530
+ROW_HEIGHT = 555
 
 with col3:
     with st.container(border=True, height=ROW_HEIGHT):
@@ -397,9 +427,9 @@ with col3:
             margin=dict(l=10, r=10, t=10, b=10), height=380,
             xaxis_title="Cultivated Area (ha)", yaxis_title="Production (t)",
         )
-        fig.update_xaxes(gridcolor=GRID)
-        fig.update_yaxes(gridcolor=GRID)
-        st.plotly_chart(fig, width='stretch')
+        fig.update_xaxes(gridcolor=GRID, fixedrange=True)
+        fig.update_yaxes(gridcolor=GRID, fixedrange=True)
+        st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.caption("Bubble size: number of countries growing that crop.")
 
 with col4:
@@ -423,9 +453,9 @@ with col4:
             margin=dict(l=10, r=10, t=10, b=10), height=380,
             xaxis_title="Production / arable ha (t)",
         )
-        fig.update_xaxes(gridcolor=GRID)
-        fig.update_yaxes(gridcolor=GRID)
-        st.plotly_chart(fig, width='stretch')
+        fig.update_xaxes(gridcolor=GRID, fixedrange=True)
+        fig.update_yaxes(gridcolor=GRID, fixedrange=True)
+        st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.caption(
             f"Top {TOP_N_BARS}. Arable land excludes permanent-crop land (palm oil, bananas, "
             "coffee) - favors tree-crop economies. Not in the original."
@@ -436,7 +466,7 @@ with col4:
 # Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right)
 # ---------------------------------------------------------------------------
 col6, col5 = st.columns([2.2, 1])
-BOTTOM_HEIGHT = 520
+BOTTOM_HEIGHT = 555
 
 with col6:
     with st.container(border=True, height=BOTTOM_HEIGHT):
@@ -475,11 +505,11 @@ with col6:
             plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
             margin=dict(l=10, r=10, t=10, b=10), height=380,
             legend=dict(orientation="h", yanchor="bottom", y=1.02),
-            xaxis=dict(gridcolor=GRID),
-            yaxis=dict(title="Area (ha)", gridcolor=GRID),
-            yaxis2=dict(title="Median Yield (t/ha)", overlaying="y", side="right", showgrid=False),
+            xaxis=dict(gridcolor=GRID, fixedrange=True),
+            yaxis=dict(title="Area (ha)", gridcolor=GRID, fixedrange=True),
+            yaxis2=dict(title="Median Yield (t/ha)", overlaying="y", side="right", showgrid=False, fixedrange=True),
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
 
 with col5:
     with st.container(border=True, height=BOTTOM_HEIGHT):
