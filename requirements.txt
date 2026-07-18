@@ -1,4 +1,5 @@
+numpy
 pandas
 plotly
 pycountry
-streamlit
+streamlit>=1.59

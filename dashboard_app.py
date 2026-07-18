@@ -4,16 +4,22 @@ to mimic the original Tableau layout: title top-left, Top Yields line (full
 width, direct labels, no legend), Global Yield choropleth (full width), Top
 Crops bar (full width, rank-graded color), a two-up row (crop bubble scatter +
 the new Production-per-Arable-Hectare chart, in the old "Countries Sampled"
-slot), and a bottom row pairing a text callout with the Yield/Area chart.
+slot), and a bottom row pairing the Yield/Area chart with a notes/conclusion
+callout.
 
 Reads the corrected pipeline outputs directly - no Tableau, no extract.
 Run with: streamlit run dashboard_app.py
 """
+import re
+
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import pycountry
 import streamlit as st
+
+from fao_filters import WB_TO_FAO_COUNTRY
 
 st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="🌾")
 
@@ -33,6 +39,21 @@ GRID = "#4a4a4a"
 SEQ_RAMP = ["#feffd9", "#f7fcc9", "#eff9b8", "#e0f4b3", "#ceeeb2", "#b5e4b3", "#95d7b7", "#77cbbc", "#5cc1c0", "#41b7c4"]
 LINE_COLORS = ["#c7f296", "#94e7a8", "#51d2bb", "#27aab0"]
 
+# Countries/territories under this land area are excluded throughout: a
+# handful of crop entries concentrated on very little land (e.g. greenhouse
+# produce in a microstate) can otherwise dominate simple per-country averages
+# and per-area ratios. area_data.csv is World Bank total land area in km2
+# (see the project docs - it's mislabeled as "arable land" but is genuinely this).
+MIN_LAND_AREA_KM2 = 1000
+
+# Country-years reporting fewer distinct crops than this are excluded
+# throughout. Combined with using the median (not the mean) below, this
+# guards against one or two concentrated entries (e.g. greenhouse produce)
+# dominating a country's figure.
+MIN_REPORTED_CROPS = 5
+
+TOP_N_BARS = 10
+
 ISO3_OVERRIDES = {
     "Bolivia (Plurinational State of)": "BOL",
     "China; Hong Kong SAR": "HKG", "China; Macao SAR": "MAC",
@@ -42,6 +63,12 @@ ISO3_OVERRIDES = {
     "Micronesia (Federated States of)": "FSM",
     "Netherlands (Kingdom of the)": "NLD",
     "Venezuela (Bolivarian Republic of)": "VEN",
+    # pycountry.search_fuzzy("Republic of Korea") incorrectly matches North
+    # Korea's official record ("Korea, Democratic People's Republic of") as
+    # its top hit, so both Koreas resolved to PRK - South Korea's shape got
+    # no data on the map while PRK showed whichever row happened to win.
+    "Republic of Korea": "KOR",
+    "Democratic People's Republic of Korea": "PRK",
 }
 
 DISPLAY_NAME_OVERRIDES = {
@@ -59,9 +86,16 @@ DISPLAY_NAME_OVERRIDES = {
     "Syrian Arab Republic": "Syria",
     "Micronesia (Federated States of)": "Micronesia",
     "China; mainland": "China",
+    # Kept distinct from mainland "China" (a different FAOSTAT reporting area,
+    # not a subset of it) - "China; Hong Kong SAR" shortened for readability
+    # without conflating the two.
+    "China; Hong Kong SAR": "Hong Kong",
 }
 
-# Same "top yield countries" cohort as the original workbook's calculated field
+# Fixed historical cohort from the original workbook's calculated field - not
+# the same as the dynamic top-yield countries plotted in the Top Yields panel
+# above. Kept as its own benchmark so the Conclusion figures are reproducible
+# across years, independent of who currently tops the ranking.
 TOP_YIELD_COUNTRIES = [
     "Netherlands (Kingdom of the)", "Austria",
     "United Kingdom of Great Britain and Northern Ireland",
@@ -84,285 +118,390 @@ def to_iso3(name: str):
         return None
 
 
+def simplify_crop_name(name: str) -> str:
+    """Drop FAOSTAT classification jargon ('n.e.c.', processing-method
+    parentheticals) that adds no information on a chart label."""
+    name = re.sub(r"\s*;?\s*n\.e\.c\.?", "", name, flags=re.IGNORECASE)
+    name = re.sub(r"\s*\(centrifugal only\)", "", name, flags=re.IGNORECASE)
+    return name.replace(";", ",").strip().rstrip(",").strip()
+
+
 @st.cache_data
 def load_data():
     crops = pd.read_csv("FAO_Crop_Yield_TableauReady.csv")
+    productivity = pd.read_csv("FAO_Arable_Land_Productivity.csv")
+
+    land_area = pd.read_csv("area_data.csv").rename(columns={"country": "Country", "area": "LandArea_km2"})
+    land_area["Country"] = land_area["Country"].replace(WB_TO_FAO_COUNTRY)
+    small_countries = set(land_area.loc[land_area["LandArea_km2"] < MIN_LAND_AREA_KM2, "Country"])
+    crops = crops[~crops["Country"].isin(small_countries)]
+    productivity = productivity[~productivity["Country"].isin(small_countries)]
+
+    # Per (Country, Year), require at least MIN_REPORTED_CROPS distinct crops
+    # with actual yield data. Applied to every panel that reads Yield_tonha.
+    reported = (
+        crops.dropna(subset=["Yield_tonha"])
+        .groupby(["Country", "Year"])["Crop"].nunique()
+        .rename("ReportedCrops").reset_index()
+    )
+    crops = crops.merge(reported, on=["Country", "Year"], how="left")
+    crops = crops[crops["ReportedCrops"].fillna(0) >= MIN_REPORTED_CROPS].drop(columns="ReportedCrops")
+
     crops["DisplayCountry"] = crops["Country"].replace(DISPLAY_NAME_OVERRIDES)
+    crops["DisplayCrop"] = crops["Crop"].apply(simplify_crop_name)
     crops["ISO3"] = crops["Country"].apply(to_iso3)
 
-    productivity = pd.read_csv("FAO_Arable_Land_Productivity.csv")
     productivity["DisplayCountry"] = productivity["Country"].replace(DISPLAY_NAME_OVERRIDES)
     return crops, productivity
 
 
 crops, productivity = load_data()
 
+# Conclusion figures - computed early so both the top-of-page teaser and the
+# bottom callout box can use them without duplicating the calculation. Median,
+# not mean: a country's per-crop yields are right-skewed (a couple of very
+# high-yield crops, e.g. greenhouse produce, otherwise dominate the figure -
+# confirmed directly: Iceland's mean yield was 144 t/ha vs a median of 16).
+top_2012 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2012)]["Yield_tonha"].median()
+top_2022 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2022)]["Yield_tonha"].median()
+glob_2012 = crops[crops["Year"] == 2012]["Yield_tonha"].median()
+glob_2022 = crops[crops["Year"] == 2022]["Yield_tonha"].median()
+top_pct = (top_2022 / top_2012 - 1) * 100
+glob_pct = (glob_2022 / glob_2012 - 1) * 100
+
 st.markdown(
     f"""
     <style>
     .stApp {{ background-color: {BG}; }}
+    .block-container {{ padding-top: 3rem; }}
+    header[data-testid="stHeader"] {{ display: none; }}
     h1, h2, h3, .stMarkdown, .stCaption, p {{ color: {TEXT} !important; }}
     .panel-title {{
-        font-size: 14px; font-weight: 600; color: {MUTED}; margin: 6px 0 2px 0;
-    }}
-    .callout-box {{
-        background-color: {SURFACE}; border-radius: 4px; padding: 18px 20px;
-        height: 100%; font-size: 13.5px; line-height: 1.7; color: {TEXT};
+        font-size: 13px; font-weight: 600; color: {MUTED}; margin: 4px 0 8px 0;
     }}
     .callout-box b {{ color: #ffffff; }}
-    .callout-box .insight {{ color: {MUTED}; font-size: 12.5px; margin-top: 14px; display:block; }}
+    .callout-box .insight {{ color: {MUTED}; font-size: 12.5px; margin-top: 10px; display:block; }}
+    .callout-box .notes {{ color: {MUTED}; font-size: 12px; line-height: 1.6; margin-top: 4px; display:block; }}
     div[data-testid="stMetric"] {{ background-color: transparent; padding: 0; }}
+    div[data-testid="stSelectbox"] div[role="group"] {{
+        background-color: transparent !important; border: 1px solid {GRID} !important;
+        border-radius: 4px;
+    }}
+    div[data-testid="stSelectbox"] input {{ background-color: transparent !important; }}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 st.markdown(
-    f"<div style='font-size:32px; font-weight:700; color:{TEXT}; margin-bottom:2px;'>Global Crop Yields</div>",
+    f"<div style='font-size:28px; font-weight:700; color:{TEXT}; margin-bottom:0;'>Global Crop Yields</div>",
     unsafe_allow_html=True,
 )
 st.caption(
-    "Streamlit rebuild, same corrected FAO/World Bank data as the Tableau workbook — "
-    "no export step, no extract, reads the CSVs directly."
+    "What does each country produce with the land it has? FAO/World Bank data, "
+    f"{int(crops['Year'].min())}–{int(crops['Year'].max())}. Top-yield countries have pulled "
+    f"further ahead of the global median since 2012 ({top_pct:+.1f}% vs {glob_pct:+.1f}%)."
 )
 
 # ---------------------------------------------------------------------------
-# Controls — inline instead of in a sidebar, to match the original's single-
-# page layout (no left rail in the Tableau workbook).
+# Year control - a selectbox (like Country below) right under the title,
+# since it's the one control that's genuinely global (every panel reads it).
 # ---------------------------------------------------------------------------
-ctrl1, ctrl2, ctrl3 = st.columns([1, 1, 1.4])
-with ctrl1:
-    year = st.slider("Year", int(crops["Year"].min()), int(crops["Year"].max()), 2022)
-with ctrl2:
-    top_n = st.slider("Top N (bar charts)", 5, 30, 10)
-all_countries = sorted(crops["DisplayCountry"].dropna().unique())
-default_country = "Netherlands" if "Netherlands" in all_countries else all_countries[0]
-with ctrl3:
-    focus_country = st.selectbox(
-        "Country (bottom chart)", all_countries, index=all_countries.index(default_country)
-    )
-
+years = sorted(crops["Year"].unique().tolist())
+year = st.selectbox("Year", years, index=years.index(2022) if 2022 in years else len(years) - 1)
 year_crops = crops[crops["Year"] == year]
 
 # ---------------------------------------------------------------------------
-# Panel 1 — Top Yields (full width, direct end-of-line labels, no legend)
-# ---------------------------------------------------------------------------
-st.markdown("<div class='panel-title'>Top Yields</div>", unsafe_allow_html=True)
-top_countries_now = (
-    crops[crops["Year"] == crops["Year"].max()]
-    .groupby("DisplayCountry")["Yield_tonha"].mean()
-    .sort_values(ascending=False).head(4).index.tolist()
-)
-trend = crops[
-    (crops["DisplayCountry"].isin(top_countries_now)) & (crops["Year"] >= 2012)
-].groupby(["DisplayCountry", "Year"], as_index=False)["Yield_tonha"].mean()
-
-fig = go.Figure()
-for i, c in enumerate(top_countries_now):
-    sub = trend[trend["DisplayCountry"] == c].sort_values("Year")
-    color = LINE_COLORS[i % len(LINE_COLORS)]
-    fig.add_trace(go.Scatter(
-        x=sub["Year"], y=sub["Yield_tonha"], mode="lines", name=c,
-        line=dict(color=color, width=2, dash="dot"), showlegend=False,
-    ))
-    fig.add_annotation(
-        x=sub["Year"].iloc[-1], y=sub["Yield_tonha"].iloc[-1], text=f"  {c}",
-        showarrow=False, xanchor="left", font=dict(color=color, size=12),
-    )
-fig.update_layout(
-    plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-    margin=dict(l=10, r=110, t=10, b=10), height=300,
-    yaxis_title="Avg. Yield (t/ha)",
-)
-fig.update_xaxes(gridcolor=GRID, showgrid=False)
-fig.update_yaxes(gridcolor=GRID)
-st.plotly_chart(fig, width='stretch')
-st.caption(
-    "Simple average across every crop a country reports — countries with a narrow, "
-    "high-yield crop mix (e.g. greenhouse-heavy) can look like outliers."
-)
-
-
-# ---------------------------------------------------------------------------
-# Panel 2 — Global Yield choropleth (full width)
+# Global Yield choropleth (full width)
 # ---------------------------------------------------------------------------
 st.markdown(f"<div class='panel-title'>Global Yield {year}</div>", unsafe_allow_html=True)
 map_df = (
     year_crops.dropna(subset=["ISO3", "Yield_tonha"])
-    .groupby(["ISO3", "DisplayCountry"], as_index=False)["Yield_tonha"].mean()
+    .groupby(["ISO3", "DisplayCountry"], as_index=False)["Yield_tonha"].median()
 )
+# Color on a log scale rather than the raw value: yield is heavily
+# right-skewed, so a linear scale spends nearly all its range on gaps
+# between the top few countries and leaves the rest of the map visually
+# flat. Only the color *mapping* changes here - the underlying values
+# (and the hover tooltip) are the real medians.
+map_df["ColorValue"] = np.log10(map_df["Yield_tonha"])
+tick_vals = [2, 5, 10, 20, 40, 80]
 fig = px.choropleth(
-    map_df, locations="ISO3", color="Yield_tonha", hover_name="DisplayCountry",
-    color_continuous_scale=SEQ_RAMP, labels={"Yield_tonha": "Avg yield (t/ha)"},
+    map_df, locations="ISO3", color="ColorValue", hover_name="DisplayCountry",
+    color_continuous_scale=SEQ_RAMP, custom_data=["Yield_tonha"],
 )
+fig.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br>Median yield: %{customdata[0]:.1f} t/ha<extra></extra>",
+    marker_line_width=0,  # the choropleth trace draws its own polygon borders,
+)  # separate from geo.showcountries - both needed off to fully remove lines
 fig.update_layout(
-    geo=dict(bgcolor=SURFACE, lakecolor=SURFACE, landcolor="#454545", showframe=False,
-              showcountries=True, countrycolor="#262626"),
-    paper_bgcolor=SURFACE, font_color=TEXT,
-    margin=dict(l=0, r=0, t=10, b=0), height=380,
-    coloraxis_colorbar=dict(orientation="h", y=-0.05, len=0.35, x=0.02, xanchor="left", thickness=12),
+    # White basemap (matching the original) rather than dark-on-dark. No
+    # country borders or coastline outlines - countries are told apart by
+    # color contrast alone. Light gray (not white) for countries with no
+    # yield data, distinct from the white ocean and the colored countries;
+    # showland must be explicit or the land layer doesn't render at all.
+    # lataxis/lonaxis crop tightly to the populated landmass extent - this is
+    # deliberately manual rather than fitbounds="locations", which pulled in
+    # a disconnected, badly-distorted sliver of Antarctica at the edge. The
+    # lonaxis seam is at -170/180, not the antimeridian (-180/180) - that
+    # exact split runs through Alaska's mainland/Aleutian chain and clips it.
+    geo=dict(
+        bgcolor="white", lakecolor="white", landcolor="#dcdcdc", showframe=False,
+        showland=True, showcountries=False, showcoastlines=False,
+        lataxis=dict(range=[-56, 78]), lonaxis=dict(range=[-170, 180]),
+    ),
+    paper_bgcolor="white", font_color="#333333", autosize=True,
+    margin=dict(l=0, r=0, t=0, b=0), height=630,
+    coloraxis_colorbar=dict(
+        orientation="h", y=-0.05, len=0.35, x=0.02, xanchor="left", thickness=12,
+        title="Median yield (t/ha)", tickvals=[np.log10(v) for v in tick_vals], ticktext=[str(v) for v in tick_vals],
+    ),
 )
 st.plotly_chart(fig, width='stretch')
-st.caption(
-    "Simple average across every crop a country reports — countries with a narrow, "
-    "high-yield crop mix (e.g. greenhouse-heavy) can look like outliers."
-)
+st.caption("Log color scale (yield is right-skewed) - see hover for exact values.")
 
 
 # ---------------------------------------------------------------------------
-# Panel 3 — Top Crops bar (full width, rank-graded color to match the original)
+# Top Yields (full width, direct end-of-line labels, no legend)
 # ---------------------------------------------------------------------------
-st.markdown(f"<div class='panel-title'>Top Crops {year}</div>", unsafe_allow_html=True)
-top_crops = (
-    year_crops.groupby("Crop", as_index=False)["Production_tons"].sum()
-    .sort_values("Production_tons", ascending=False).head(top_n)
-)
-top_crops = top_crops.sort_values("Production_tons")
-rank_colors = px.colors.sample_colorscale(LINE_COLORS, [i / (len(top_crops) - 1) for i in range(len(top_crops))]) if len(top_crops) > 1 else LINE_COLORS[:1]
+with st.container(border=True):
+    st.markdown("<div class='panel-title'>Top Yields</div>", unsafe_allow_html=True)
+    latest_year = crops["Year"].max()
+    n_top = 6
+    top_countries_now = (
+        crops[crops["Year"] == latest_year]
+        .groupby("DisplayCountry")["Yield_tonha"].median()
+        .sort_values(ascending=False).head(n_top).index.tolist()
+    )
+    trend = crops[
+        (crops["DisplayCountry"].isin(top_countries_now)) & (crops["Year"] >= 2012)
+    ].groupby(["DisplayCountry", "Year"], as_index=False)["Yield_tonha"].median()
 
-fig = go.Figure(go.Bar(
-    x=top_crops["Production_tons"], y=top_crops["Crop"], orientation="h",
-    marker=dict(color=rank_colors),
-))
-fig.update_layout(
-    plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-    margin=dict(l=10, r=10, t=10, b=10), height=340,
-    xaxis_title="Production (t)",
-)
-fig.update_xaxes(gridcolor=GRID)
-fig.update_yaxes(gridcolor=GRID)
-st.plotly_chart(fig, width='stretch')
-st.caption("No livestock items, no FAO rollup categories double-counting their own constituents.")
+    # Color by rank along the same pale-yellow -> teal ramp the choropleth
+    # uses, so "more teal" consistently means "higher value" across the
+    # whole dashboard, rather than an arbitrary rotation through a palette.
+    n = len(top_countries_now)
+    rank_colors = px.colors.sample_colorscale(SEQ_RAMP, [i / (n - 1) for i in range(n)]) if n > 1 else SEQ_RAMP[-1:]
+
+    value_range = trend["Yield_tonha"].max() - trend["Yield_tonha"].min()
+    min_label_gap = value_range * 0.09
+    label_y = sorted(
+        (trend[trend["DisplayCountry"] == c].sort_values("Year")["Yield_tonha"].iloc[-1], c)
+        for c in top_countries_now
+    )
+    for j in range(1, len(label_y)):
+        y, c = label_y[j]
+        prev_y = label_y[j - 1][0]
+        if y - prev_y < min_label_gap:
+            label_y[j] = (prev_y + min_label_gap, c)
+    label_y = dict((c, y) for y, c in label_y)
+
+    fig = go.Figure()
+    for i, c in enumerate(top_countries_now):
+        sub = trend[trend["DisplayCountry"] == c].sort_values("Year")
+        color = rank_colors[n - 1 - i]  # rank 0 = highest yield -> darkest/teal-est
+        fig.add_trace(go.Scatter(
+            x=sub["Year"], y=sub["Yield_tonha"], mode="lines", name=c,
+            line=dict(color=color, width=2, shape="spline"), showlegend=False,
+        ))
+        # Label placed at a decluttered y (label_y), not necessarily the
+        # exact last data point, so labels stay readable when values cluster.
+        fig.add_annotation(
+            x=sub["Year"].iloc[-1], y=label_y[c], text=f"  {c}",
+            showarrow=False, xanchor="left", font=dict(color=color, size=12),
+        )
+    fig.update_layout(
+        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
+        margin=dict(l=10, r=110, t=10, b=10), height=250,
+        yaxis_title="Median Yield (t / harvested ha)",
+    )
+    fig.update_xaxes(gridcolor=GRID, showgrid=False)
+    fig.update_yaxes(showgrid=False)
+    st.plotly_chart(fig, width='stretch')
+    st.caption(
+        f"Every current leader ({', '.join(top_countries_now)}) is driven by intensive "
+        "greenhouse/irrigated vegetables (tomatoes, cucumbers, peppers), not staple grains - "
+        "this measures horticultural intensity, not overall farm productivity."
+    )
 
 
 # ---------------------------------------------------------------------------
-# Panel 4 — two-up row: Crop bubble scatter | Production per Arable Hectare
+# Top Crops bar (full width, rank-graded color to match the original)
+# ---------------------------------------------------------------------------
+with st.container(border=True):
+    st.markdown(f"<div class='panel-title'>Top Crops by Production, {year}</div>", unsafe_allow_html=True)
+    top_crops = (
+        year_crops.groupby("DisplayCrop", as_index=False)["Production_tons"].sum()
+        .sort_values("Production_tons", ascending=False).head(TOP_N_BARS)
+    )
+    top_crops = top_crops.sort_values("Production_tons")
+    rank_colors = px.colors.sample_colorscale(LINE_COLORS, [i / (len(top_crops) - 1) for i in range(len(top_crops))]) if len(top_crops) > 1 else LINE_COLORS[:1]
+
+    fig = go.Figure(go.Bar(
+        x=top_crops["Production_tons"], y=top_crops["DisplayCrop"], orientation="h",
+        marker=dict(color=rank_colors),
+    ))
+    fig.update_layout(
+        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
+        margin=dict(l=10, r=10, t=10, b=10), height=340,
+        xaxis_title="Production (t)",
+    )
+    fig.update_xaxes(gridcolor=GRID)
+    fig.update_yaxes(gridcolor=GRID)
+    st.plotly_chart(fig, width='stretch')
+    st.caption(f"Top {TOP_N_BARS} by production.")
+
+
+# ---------------------------------------------------------------------------
+# Two-up row: Crop bubble scatter | Production per Arable Hectare
 # (this replaces the original's "Countries Sampled" text-wall slot)
 # ---------------------------------------------------------------------------
 col3, col4 = st.columns([1, 1])
+ROW_HEIGHT = 530
 
 with col3:
-    st.markdown(f"<div class='panel-title'>Top Crops / Area {year}</div>", unsafe_allow_html=True)
-    bubble = (
-        year_crops.groupby("Crop", as_index=False)
-        .agg(Production_tons=("Production_tons", "sum"),
-             AreaHarvested_ha=("AreaHarvested_ha", "sum"),
-             Countries=("Country", "nunique"))
-    )
-    bubble = bubble.sort_values("Production_tons", ascending=False).head(25)
-    label_set = set(bubble.sort_values("Production_tons", ascending=False).head(4)["Crop"])
-    # Hollow/outlined bubbles (transparent fill, colored stroke) to match the
-    # original's circle-outline style, rather than px.scatter's solid fill.
-    size_max = 38
-    sizeref = 2. * bubble["Countries"].max() / (size_max ** 2)
-    fig = go.Figure(go.Scatter(
-        x=bubble["AreaHarvested_ha"], y=bubble["Production_tons"],
-        mode="markers", text=bubble["Crop"],
-        marker=dict(
-            size=bubble["Countries"], sizemode="area", sizeref=sizeref, sizemin=4,
-            color="rgba(0,0,0,0)",
-            line=dict(color=bubble["Production_tons"], colorscale=LINE_COLORS, width=2),
-        ),
-        hovertemplate="<b>%{text}</b><br>Cultivated Area: %{x:,.0f} ha<br>"
-                      "Production: %{y:,.0f} t<extra></extra>",
-    ))
-    for _, row in bubble[bubble["Crop"].isin(label_set)].iterrows():
-        fig.add_annotation(x=row["AreaHarvested_ha"], y=row["Production_tons"], text=row["Crop"],
-                            showarrow=False, yshift=14, font=dict(color=TEXT, size=11))
-    fig.update_layout(
-        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-        margin=dict(l=10, r=10, t=10, b=10), height=380,
-        xaxis_title="Cultivated Area (ha)", yaxis_title="Production (t)",
-    )
-    fig.update_xaxes(gridcolor=GRID)
-    fig.update_yaxes(gridcolor=GRID)
-    st.plotly_chart(fig, width='stretch')
-    st.caption("Bubble size = number of countries growing that crop.")
+    with st.container(border=True, height=ROW_HEIGHT):
+        st.markdown(f"<div class='panel-title'>Top Crops / Area {year}</div>", unsafe_allow_html=True)
+        bubble = (
+            year_crops.groupby("DisplayCrop", as_index=False)
+            .agg(Production_tons=("Production_tons", "sum"),
+                 AreaHarvested_ha=("AreaHarvested_ha", "sum"),
+                 Countries=("Country", "nunique"))
+        )
+        bubble = bubble.sort_values("Production_tons", ascending=False).head(15)
+        label_set = set(bubble.sort_values("Production_tons", ascending=False).head(4)["DisplayCrop"])
+        # Hollow/outlined bubbles (transparent fill, colored stroke) to match
+        # the original's circle-outline style, rather than px.scatter's fill.
+        size_max = 42
+        sizeref = 2. * bubble["Countries"].max() / (size_max ** 2)
+        fig = go.Figure(go.Scatter(
+            x=bubble["AreaHarvested_ha"], y=bubble["Production_tons"],
+            mode="markers", text=bubble["DisplayCrop"],
+            marker=dict(
+                size=bubble["Countries"], sizemode="area", sizeref=sizeref, sizemin=5,
+                color="rgba(0,0,0,0)",
+                line=dict(color=bubble["Production_tons"], colorscale=LINE_COLORS, width=4),
+            ),
+            hovertemplate="<b>%{text}</b><br>Cultivated Area: %{x:,.0f} ha<br>"
+                          "Production: %{y:,.0f} t<extra></extra>",
+        ))
+        max_countries = bubble["Countries"].max()
+        for _, row in bubble[bubble["DisplayCrop"].isin(label_set)].iterrows():
+            # Push the label clear of the bubble's own edge - bigger bubbles
+            # need a bigger offset, or the text cuts across the circle.
+            offset = 14 + 14 * (row["Countries"] / max_countries) ** 0.5
+            fig.add_annotation(x=row["AreaHarvested_ha"], y=row["Production_tons"], text=row["DisplayCrop"],
+                                showarrow=False, yshift=offset, font=dict(color=TEXT, size=11))
+        fig.update_layout(
+            plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
+            margin=dict(l=10, r=10, t=10, b=10), height=380,
+            xaxis_title="Cultivated Area (ha)", yaxis_title="Production (t)",
+        )
+        fig.update_xaxes(gridcolor=GRID)
+        fig.update_yaxes(gridcolor=GRID)
+        st.plotly_chart(fig, width='stretch')
+        st.caption("Bubble size: number of countries growing that crop.")
 
 with col4:
-    st.markdown(f"<div class='panel-title'>Production per Arable Hectare {year}</div>", unsafe_allow_html=True)
-    prod_year = (
-        productivity[productivity["Year"] == year]
-        .sort_values("ProductionPerArableHa_tons", ascending=False).head(top_n)
-        .sort_values("ProductionPerArableHa_tons")
-    )
-    fig = go.Figure(go.Bar(
-        x=prod_year["ProductionPerArableHa_tons"], y=prod_year["DisplayCountry"], orientation="h",
-        marker=dict(color=LINE_COLORS[2]),
-    ))
-    fig.update_layout(
-        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-        margin=dict(l=10, r=10, t=10, b=10), height=380,
-        xaxis_title="Production / arable ha (t)",
-    )
-    fig.update_xaxes(gridcolor=GRID)
-    fig.update_yaxes(gridcolor=GRID)
-    st.plotly_chart(fig, width='stretch')
-    st.caption(
-        "What each country produces relative to the arable land it has — missing from the original. "
-        "Note: World Bank arable land excludes land under permanent crops (palm oil, bananas, coffee, "
-        "cocoa), while production includes them — this structurally favors tree-crop economies over "
-        "genuinely land-productive farming."
-    )
+    with st.container(border=True, height=ROW_HEIGHT):
+        st.markdown(f"<div class='panel-title'>Production per Arable Hectare {year}</div>", unsafe_allow_html=True)
+        prod_year = (
+            productivity[productivity["Year"] == year]
+            .sort_values("ProductionPerArableHa_tons", ascending=False).head(TOP_N_BARS)
+            .sort_values("ProductionPerArableHa_tons")
+        )
+        prod_colors = (
+            px.colors.sample_colorscale(LINE_COLORS, [i / (len(prod_year) - 1) for i in range(len(prod_year))])
+            if len(prod_year) > 1 else LINE_COLORS[:1]
+        )
+        fig = go.Figure(go.Bar(
+            x=prod_year["ProductionPerArableHa_tons"], y=prod_year["DisplayCountry"], orientation="h",
+            marker=dict(color=prod_colors),
+        ))
+        fig.update_layout(
+            plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
+            margin=dict(l=10, r=10, t=10, b=10), height=380,
+            xaxis_title="Production / arable ha (t)",
+        )
+        fig.update_xaxes(gridcolor=GRID)
+        fig.update_yaxes(gridcolor=GRID)
+        st.plotly_chart(fig, width='stretch')
+        st.caption(
+            f"Top {TOP_N_BARS}. Arable land excludes permanent-crop land (palm oil, bananas, "
+            "coffee) - favors tree-crop economies. Not in the original."
+        )
 
 
 # ---------------------------------------------------------------------------
-# Panel 5 — bottom row: text callout (left) | Yield/Area by Country (right)
+# Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right)
 # ---------------------------------------------------------------------------
-col5, col6 = st.columns([1, 2.2])
-
-top_2012 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2012)]["Yield_tonha"].mean()
-top_2022 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2022)]["Yield_tonha"].mean()
-glob_2012 = crops[crops["Year"] == 2012]["Yield_tonha"].mean()
-glob_2022 = crops[crops["Year"] == 2022]["Yield_tonha"].mean()
-top_pct = (top_2022 / top_2012 - 1) * 100
-glob_pct = (glob_2022 / glob_2012 - 1) * 100
-
-with col5:
-    st.markdown(f"<div class='panel-title'>Country: {focus_country}</div>", unsafe_allow_html=True)
-    st.markdown(
-        f"""
-        <div class="callout-box">
-        <b>Top Yield Countries:</b><br>
-        2012 Avg. Yield: {top_2012:.1f} t/ha<br>
-        2022 Avg. Yield: {top_2022:.1f} t/ha<br>
-        Increase: {top_pct:+.1f}%<br>
-        <br>
-        <b>Global Avg.:</b><br>
-        2012 Avg. Yield: {glob_2012:.1f} t/ha<br>
-        2022 Avg. Yield: {glob_2022:.1f} t/ha<br>
-        Increase: {glob_pct:+.1f}%
-        <span class="insight">Top producers have improved yield faster than the global average, widening the
-        efficiency gap. The area considered is cultivated area, not total country area.<br><br>
-        Source: FAOSTAT, World Bank.</span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+col6, col5 = st.columns([2.2, 1])
+BOTTOM_HEIGHT = 520
 
 with col6:
-    st.markdown("<div class='panel-title'>Yield / Area by Country</div>", unsafe_allow_html=True)
-    focus_row_country = crops.loc[crops["DisplayCountry"] == focus_country, "Country"].iloc[0]
-    country_series = (
-        crops[crops["Country"] == focus_row_country]
-        .groupby("Year", as_index=False)
-        .agg(AreaHarvested_ha=("AreaHarvested_ha", "sum"), Yield_tonha=("Yield_tonha", "mean"))
-    )
-    # One combined dual-axis panel (Area bars + Yield line sharing the same plot
-    # area, like the original) instead of two stacked subplots.
-    fig = go.Figure()
-    fig.add_trace(go.Bar(x=country_series["Year"], y=country_series["AreaHarvested_ha"],
-                          marker_color=LINE_COLORS[0], name="Area (ha)", yaxis="y1"))
-    fig.add_trace(go.Scatter(x=country_series["Year"], y=country_series["Yield_tonha"],
-                              mode="lines+markers", marker=dict(symbol="x", size=7),
-                              line=dict(color=SEQ_RAMP[-1], width=2), name="Average Yield",
-                              yaxis="y2"))
-    fig.update_layout(
-        plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-        margin=dict(l=10, r=10, t=10, b=10), height=380,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02),
-        xaxis=dict(gridcolor=GRID),
-        yaxis=dict(title="Area (ha)", gridcolor=GRID),
-        yaxis2=dict(title="Avg. Yield (t/ha)", overlaying="y", side="right", showgrid=False),
-    )
-    st.plotly_chart(fig, width='stretch')
+    with st.container(border=True, height=BOTTOM_HEIGHT):
+        # Title reserved here, filled in after the selector below it in the
+        # script determines the country - so the title still renders first.
+        title_slot = st.empty()
+        all_countries = sorted(crops["DisplayCountry"].dropna().unique())
+        default_country = "Netherlands" if "Netherlands" in all_countries else all_countries[0]
+        focus_country = st.selectbox(
+            "Country", all_countries, index=all_countries.index(default_country)
+        )
+        title_slot.markdown(f"<div class='panel-title'>Yield / Area — {focus_country}</div>", unsafe_allow_html=True)
+        focus_row_country = crops.loc[crops["DisplayCountry"] == focus_country, "Country"].iloc[0]
+        country_series = (
+            crops[crops["Country"] == focus_row_country]
+            .groupby("Year", as_index=False)
+            .agg(AreaHarvested_ha=("AreaHarvested_ha", "sum"), Yield_tonha=("Yield_tonha", "median"))
+        )
+        # One combined dual-axis panel (Area + Yield sharing the same plot
+        # area, like the original) instead of two stacked subplots. Three
+        # distinct palette tones: Area is a lime-green line (LINE_COLORS[0]),
+        # Yield's X-markers are flat solid teal (LINE_COLORS[2], no marker
+        # outline), and the thin connecting line is a third, more cerulean
+        # tone (SEQ_RAMP's blue end) so the two lines read as visually
+        # distinct even though the markers and area line are both greenish.
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=country_series["Year"], y=country_series["AreaHarvested_ha"],
+                                  mode="lines", line=dict(color=LINE_COLORS[0], width=5, shape="spline"),
+                                  name="Area (ha)", yaxis="y1"))
+        fig.add_trace(go.Scatter(x=country_series["Year"], y=country_series["Yield_tonha"],
+                                  mode="lines+markers",
+                                  marker=dict(symbol="x", size=24, color=LINE_COLORS[2]),
+                                  line=dict(color="rgba(65,183,196,0.45)", width=2, shape="spline"),
+                                  name="Median Yield", yaxis="y2"))
+        fig.update_layout(
+            plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
+            margin=dict(l=10, r=10, t=10, b=10), height=380,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02),
+            xaxis=dict(gridcolor=GRID),
+            yaxis=dict(title="Area (ha)", gridcolor=GRID),
+            yaxis2=dict(title="Median Yield (t/ha)", overlaying="y", side="right", showgrid=False),
+        )
+        st.plotly_chart(fig, width='stretch')
+
+with col5:
+    with st.container(border=True, height=BOTTOM_HEIGHT):
+        st.markdown("<div class='panel-title'>Conclusion &amp; Notes</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="callout-box">
+            <b>Top Yield Countries</b> <span style="color:{MUTED}; font-size:11.5px;">(fixed cohort)</span><br>
+            2012: {top_2012:.1f} t/ha &rarr; 2022: {top_2022:.1f} t/ha ({top_pct:+.1f}%)<br>
+            <br>
+            <b>Global Median</b><br>
+            2012: {glob_2012:.1f} t/ha &rarr; 2022: {glob_2022:.1f} t/ha ({glob_pct:+.1f}%)
+            <span class="insight">Top producers are pulling further ahead of the global median.
+            This is a fixed historical benchmark, independent of who currently tops the Top
+            Yields chart.</span>
+            <span class="notes">
+            Crops only (no livestock/rollups). Yield = production &divide; harvested area.
+            Cross-crop figures use the median, robust to outlier crops like greenhouse produce.
+            Excludes territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years reporting
+            fewer than {MIN_REPORTED_CROPS} crops. Source: FAOSTAT, World Bank.
+            </span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )

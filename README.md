@@ -69,6 +69,20 @@ in `the project docs`:
 - **World Bank and FAO name countries differently** — reconciled via a
   mapping table before joining arable-land data onto production data.
 
+The dashboard itself (`dashboard_app.py`, not the CSVs) applies two further
+exclusions and one statistic choice, all documented inline in the app's
+"Conclusion & Notes" panel:
+
+- **Territories under 1,000 km²** and **country-years reporting fewer than 5
+  distinct crops** are excluded — both guard against a handful of
+  concentrated entries (e.g. greenhouse produce in a microstate) dominating
+  an otherwise-thin sample.
+- **Cross-crop yield figures use the median, not the mean** — a country's
+  per-crop yields are right-skewed enough that one or two extreme entries can
+  dominate a mean (confirmed directly: Iceland's 2022 mean yield was 144
+  t/ha, driven almost entirely by two greenhouse crops, vs. a median of 16
+  t/ha across all its reported crops).
+
 ## Known limitation
 
 The "Production per Arable Hectare" metric structurally favors economies
