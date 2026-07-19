@@ -68,6 +68,13 @@ in `the project docs`:
   "Arable land (hectares)" indicator) is what's actually used.
 - **World Bank and FAO name countries differently** — reconciled via a
   mapping table before joining arable-land data onto production data.
+- **Processed/derived products are excluded from the arable-land-productivity
+  total.** FAOSTAT mixes primary harvested crops (e.g. "Oil palm fruit") with
+  products extracted from them ("Palm oil", "Raw cane or beet sugar", "Cotton
+  lint") that never have their own harvested area — left in, they double-count
+  the same physical harvest. Confirmed directly: Malaysia's Production per
+  Arable Hectare dropped from 162 to 130 t/ha (2022) once its palm-oil
+  derivatives were excluded.
 
 The dashboard itself (`dashboard_app.py`, not the CSVs) applies two further
 exclusions and one statistic choice, all documented inline in the app's
@@ -83,13 +90,23 @@ exclusions and one statistic choice, all documented inline in the app's
   t/ha, driven almost entirely by two greenhouse crops, vs. a median of 16
   t/ha across all its reported crops).
 
-## Known limitation
+## Known limitations
 
-The "Production per Arable Hectare" metric structurally favors economies
-whose crop output leans on permanent/tree crops (palm oil, bananas, coffee,
-cocoa) — the World Bank's arable-land denominator excludes land under those
-crops, while the production numerator includes it. The dashboard panel notes
-this; it's a scope mismatch between the two source datasets, not a bug.
+- **"Production per Arable Hectare" structurally favors economies whose crop
+  output leans on permanent/tree crops** (palm oil, bananas, coffee, cocoa) —
+  the World Bank's arable-land denominator excludes land under those crops,
+  while the production numerator includes it. The dashboard panel notes
+  this; it's a scope mismatch between the two source datasets, not a bug.
+- **Data-quality flags are discarded.** FAOSTAT tags each figure as official,
+  estimated, imputed, or missing (`Production_Crops_Livestock_E_Flags.csv`);
+  that distinction is loaded and schema-checked but never carried through
+  into the working data or surfaced in the dashboard. A country's numbers
+  may be mostly estimates and this currently reads the same as a country
+  reporting entirely official figures.
+- **"Production per Arable Hectare" mismatches production year against a
+  single, recent arable-land snapshot**, not a year-matched one. Arable land
+  changes slowly, so this is a minor effect, but it means e.g. 2005
+  production is divided by present-day arable land, not 2005's.
 
 ## Project history
 

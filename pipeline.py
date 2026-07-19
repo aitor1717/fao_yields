@@ -202,8 +202,19 @@ df_arable = df_arable[["Country", "ArableLand_ha"]].copy()
 df_arable["Country"] = df_arable["Country"].replace(WB_TO_FAO_COUNTRY)
 
 # Total crop production per Country/Year, from the crop-only pivot above.
+# Restricted to rows with a reported harvested area: FAOSTAT's Item field
+# mixes primary/harvested crops (Oil palm fruit, Sugar cane, Cotton seed...)
+# with processed derivatives extracted from them (Palm oil, Raw cane sugar,
+# Cotton lint...) that never have their own AreaHarvested - left in, those
+# derivatives double-count the same physical harvest under a second item
+# name. Confirmed directly: Malaysia's 2022 total dropped ~20% (127M -> 102M
+# tons) once Palm oil/Palm kernels/Oil of palm kernel were excluded, since
+# they're the same oil palm fruit already counted once. "Production per
+# arable hectare" should reflect what was grown on that land, not how many
+# times it was reprocessed afterward.
 production_by_country_year = (
-    df_pivot.groupby(["Country", "Year"], as_index=False)["Production_tons"].sum()
+    df_pivot.dropna(subset=["AreaHarvested_ha"])
+    .groupby(["Country", "Year"], as_index=False)["Production_tons"].sum()
 )
 
 # Arable land is a single recent snapshot per country (it changes slowly), so it's

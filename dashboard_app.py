@@ -26,12 +26,12 @@ st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="�
 # --- Palette: colors sampled directly (pixel-picked) from archive/tableau/Global
 # Crop Yields.png so this matches the original workbook, not an approximation of
 # it. SURFACE (#333333) is the original's actual panel/chart background, sampled
-# from its "Top Yields" panel. The original uses this same color for the page
-# background too (one flat tone, no separate "card" contrast), so BG matches it
-# rather than the near-black shade used before. SEQ_RAMP is the original's
+# from its "Top Yields" panel, and is also the page background (one flat tone,
+# no separate "card" contrast) - see .streamlit/config.toml, which sets the
+# same value as the app's theme backgroundColor/secondaryBackgroundColor and
+# must be kept in sync with this if it ever changes. SEQ_RAMP is the original's
 # choropleth legend gradient, sampled stop-by-stop. LINE_COLORS is the bold
 # 4-color green->teal set the original reuses for the Top Yields lines and bars.
-BG = "#333333"
 SURFACE = "#333333"
 TEXT = "#f5f5f5"
 MUTED = "#b7b7b2"
@@ -172,10 +172,8 @@ glob_pct = (glob_2022 / glob_2012 - 1) * 100
 st.markdown(
     f"""
     <style>
-    .stApp {{ background-color: {BG}; }}
     .block-container {{ padding-top: 3rem; }}
     header[data-testid="stHeader"] {{ display: none; }}
-    h1, h2, h3, .stMarkdown, .stCaption, p {{ color: {TEXT} !important; }}
     .panel-title {{
         font-size: 13px; font-weight: 600; color: {MUTED}; margin: 4px 0 8px 0;
     }}
@@ -205,8 +203,9 @@ st.markdown(
 )
 st.caption(
     "What does each country produce with the land it has? FAO/World Bank data, "
-    f"{int(crops['Year'].min())}–{int(crops['Year'].max())}. Top-yield countries have pulled "
-    f"further ahead of the global median since 2012 ({top_pct:+.1f}% vs {glob_pct:+.1f}%)."
+    f"{int(crops['Year'].min())}–{int(crops['Year'].max())}. A fixed cohort of historically "
+    f"top-yielding countries has pulled further ahead of the global median since 2012 "
+    f"({top_pct:+.1f}% vs {glob_pct:+.1f}%)."
 )
 
 # ---------------------------------------------------------------------------
@@ -278,7 +277,7 @@ ticks_html = "".join(
 st.markdown(
     f"""
     <div style='margin-top:8px; font-size:12px; color:{MUTED};'>
-        Median yield (t/ha)
+        Median Yield (t/ha)
         <div style='width:320px; height:12px; margin-top:4px; border-radius:2px;
                      background:linear-gradient(to right, {", ".join(SEQ_RAMP)});'></div>
         <div style='position:relative; width:320px; height:14px; margin-top:2px; font-size:11px;'>
@@ -288,7 +287,15 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.caption("Log color scale (yield is right-skewed) - see hover for exact values.")
+st.caption("Log color scale (yield is right-skewed) — see hover for exact values.")
+st.caption(
+    "This is the median across each country's own crop mix, not a like-for-like "
+    "efficiency score — tons of tomatoes and tons of wheat aren't comparable. "
+    "Countries growing almost nothing but produce (Guyana, Oman, Kuwait) outrank "
+    "diversified producers like the Netherlands, whose individual greenhouse yields "
+    "are the highest in this data but whose median is pulled down by its own grain "
+    "crops. See Top Yields below."
+)
 
 
 # ---------------------------------------------------------------------------
@@ -350,7 +357,7 @@ with st.container(border=True):
     st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
     st.caption(
         f"Every current leader ({', '.join(top_countries_now)}) is driven by intensive "
-        "greenhouse/irrigated vegetables (tomatoes, cucumbers, peppers), not staple grains - "
+        "greenhouse/irrigated vegetables (tomatoes, cucumbers, peppers), not staple grains — "
         "this measures horticultural intensity, not overall farm productivity."
     )
 
@@ -387,11 +394,11 @@ with st.container(border=True):
 # (this replaces the original's "Countries Sampled" text-wall slot)
 # ---------------------------------------------------------------------------
 col3, col4 = st.columns([1, 1])
-ROW_HEIGHT = 555
+ROW_HEIGHT = 505
 
 with col3:
     with st.container(border=True, height=ROW_HEIGHT):
-        st.markdown(f"<div class='panel-title'>Top Crops / Area {year}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='panel-title'>Crop Production vs. Cultivated Area, {year}</div>", unsafe_allow_html=True)
         bubble = (
             year_crops.groupby("DisplayCrop", as_index=False)
             .agg(Production_tons=("Production_tons", "sum"),
@@ -457,8 +464,8 @@ with col4:
         fig.update_yaxes(gridcolor=GRID, fixedrange=True)
         st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.caption(
-            f"Top {TOP_N_BARS}. Arable land excludes permanent-crop land (palm oil, bananas, "
-            "coffee) - favors tree-crop economies. Not in the original."
+            f"Top {TOP_N_BARS} by production per arable hectare. Arable land excludes "
+            "permanent-crop land (palm oil, bananas, coffee) — favors tree-crop economies."
         )
 
 
@@ -466,7 +473,7 @@ with col4:
 # Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right)
 # ---------------------------------------------------------------------------
 col6, col5 = st.columns([2.2, 1])
-BOTTOM_HEIGHT = 555
+BOTTOM_HEIGHT = 535
 
 with col6:
     with st.container(border=True, height=BOTTOM_HEIGHT):
@@ -478,7 +485,7 @@ with col6:
         focus_country = st.selectbox(
             "Country", all_countries, index=all_countries.index(default_country)
         )
-        title_slot.markdown(f"<div class='panel-title'>Yield / Area — {focus_country}</div>", unsafe_allow_html=True)
+        title_slot.markdown(f"<div class='panel-title'>Yield &amp; Area — {focus_country}</div>", unsafe_allow_html=True)
         focus_row_country = crops.loc[crops["DisplayCountry"] == focus_country, "Country"].iloc[0]
         country_series = (
             crops[crops["Country"] == focus_row_country]
@@ -529,7 +536,15 @@ with col5:
             Crops only (no livestock/rollups). Yield = production &divide; harvested area.
             Cross-crop figures use the median, robust to outlier crops like greenhouse produce.
             Excludes territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years reporting
-            fewer than {MIN_REPORTED_CROPS} crops. Source: FAOSTAT, World Bank.
+            fewer than {MIN_REPORTED_CROPS} crops.<br><br>
+            Data quality varies by country: FAOSTAT flags each figure as official, estimated, or
+            imputed, but that distinction isn't carried through here. Production per Arable
+            Hectare compares each year's production against a single, recent arable-land snapshot
+            rather than that year's actual figure &mdash; e.g., 2005 production is divided by
+            present-day land area, not 2005's. Arable land changes slowly, so the effect is
+            minor.<br><br>
+            Source: FAOSTAT (QCL domain), World Bank (AG.LND.ARBL.HA) &mdash; both may revise
+            figures in later releases.
             </span>
             </div>
             """,

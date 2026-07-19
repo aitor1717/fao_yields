@@ -1,0 +1,17 @@
+# Theme colors mirror the constants at the top of dashboard_app.py (BG,
+# SURFACE, TEXT, LINE_COLORS) - keep the two in sync if either changes.
+# backgroundColor and secondaryBackgroundColor are intentionally the same
+# flat tone: the original Tableau workbook uses one background throughout,
+# with no separate "card" contrast.
+[theme]
+base = "dark"
+backgroundColor = "#333333"
+secondaryBackgroundColor = "#333333"
+textColor = "#f5f5f5"
+primaryColor = "#51d2bb"
+
+[client]
+# Supplements the header[data-testid="stHeader"] { display: none; } CSS rule
+# in dashboard_app.py - toolbarMode alone doesn't fully hide the header bar,
+# so both are kept.
+toolbarMode = "minimal"

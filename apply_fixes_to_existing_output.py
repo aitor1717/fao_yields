@@ -61,7 +61,14 @@ print("\nBuilding arable land productivity file (using real arable-land data) ..
 df_arable = pd.read_csv(base_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
 df_arable["Country"] = df_arable["Country"].replace(WB_TO_FAO_COUNTRY)
 
-production_by_country_year = df.groupby(["Country", "Year"], as_index=False)["Production_tons"].sum()
+# Restricted to rows with a reported harvested area - see pipeline.py for the
+# full rationale: processed derivatives (e.g. Palm oil) never have their own
+# AreaHarvested and would otherwise double-count the primary crop (Oil palm
+# fruit) they were extracted from.
+production_by_country_year = (
+    df.dropna(subset=["AreaHarvested_ha"])
+    .groupby(["Country", "Year"], as_index=False)["Production_tons"].sum()
+)
 df_productivity = production_by_country_year.merge(df_arable, on="Country", how="inner")
 df_productivity["ProductionPerArableHa_tons"] = df_productivity["Production_tons"] / df_productivity["ArableLand_ha"]
 

@@ -20,8 +20,8 @@ LIVESTOCK_KEYWORDS = [
     "meat", "milk", "egg", "wool", "hide", "skin", "honey", "beeswax", "cocoon",
     "silk", "cattle", "buffalo", "goat", "sheep", "pig", "swine", "poultry",
     "chicken", "duck", "turkey", "goose", "geese", "horse", "ass", "mule",
-    "camel", "rabbit", "offal", "fat", "butter", "cheese", "lard", "tallow",
-    "cream", "yoghurt", "casein",
+    "camel", "rabbit", "snail", "offal", "fat", "butter", "cheese", "lard",
+    "tallow", "cream", "yoghurt", "casein", "whey",
 ]
 livestock_pattern = re.compile("|".join(LIVESTOCK_KEYWORDS), re.IGNORECASE)
 
