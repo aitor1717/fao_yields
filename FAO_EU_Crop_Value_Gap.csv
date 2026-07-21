@@ -1,0 +1,1423 @@
+Country,Crop,Year,Value_kUSD
+Austria,Wheat,2018,277299.92848245776
+Belgium,Wheat,2018,344590.7164596752
+Bulgaria,Wheat,2018,1019482.5998085742
+Cyprus,Wheat,2018,4605.7225888232415
+Czechia,Wheat,2018,870576.0456483889
+Germany,Wheat,2018,3573308.5371306627
+Denmark,Wheat,2018,646112.0219413034
+Estonia,Wheat,2018,87437.8719170443
+Greece,Wheat,2018,325093.15750032355
+Spain,Wheat,2018,1718619.4792468427
+Finland,Wheat,2018,92315.21404315712
+France,Wheat,2018,7410690.312232291
+Croatia,Wheat,2018,146780.8360422668
+Hungary,Wheat,2018,966020.7891429259
+Ireland,Wheat,2018,114399.06337930958
+Italy,Wheat,2018,2105193.1285354067
+Lithuania,Wheat,2018,672789.7843211796
+Luxembourg,Wheat,2018,16722.315860958228
+Latvia,Wheat,2018,303115.59407006705
+Malta,Wheat,2018,0.0
+Netherlands (Kingdom of the),Wheat,2018,341343.0915572999
+Poland,Wheat,2018,1722126.914141408
+Portugal,Wheat,2018,48194.753551250375
+Romania,Wheat,2018,1761122.0320601112
+Sweden,Wheat,2018,342240.61698486545
+Slovenia,Wheat,2018,22438.135689138868
+Slovakia,Wheat,2018,329273.73646556307
+Austria,Rye,2018,34566.5385063734
+Belgium,Rye,2018,330.6672627873096
+Bulgaria,Rye,2018,2113.908572818872
+Cyprus,Rye,2018,0.0
+Czechia,Rye,2018,24233.186544269975
+Germany,Rye,2018,353542.3516451317
+Denmark,Rye,2018,97027.22253787628
+Estonia,Rye,2018,4700.198949619616
+Greece,Rye,2018,2857.9099140903186
+Spain,Rye,2018,96235.98301620664
+Finland,Rye,2018,9790.112887524274
+France,Rye,2018,29736.43456065877
+Croatia,Rye,2018,307.04817258821606
+Hungary,Rye,2018,12943.26142910326
+Italy,Rye,2018,1641.526768837001
+Lithuania,Rye,2018,10404.209232700705
+Luxembourg,Rye,2018,1169.1449648551302
+Latvia,Rye,2018,12884.213703605526
+Malta,Rye,2018,0.0
+Netherlands (Kingdom of the),Rye,2018,1440.7645021447063
+Poland,Rye,2018,314984.1868951115
+Portugal,Rye,2018,3200.386721977175
+Romania,Rye,2018,4853.723035913724
+Sweden,Rye,2018,18576.414441587072
+Slovenia,Rye,2018,755.8108863709933
+Slovakia,Rye,2018,6140.963451764321
+Austria,Barley,2018,119760.5968545038
+Belgium,Barley,2018,67857.64614199575
+Bulgaria,Barley,2018,74978.80183702246
+Cyprus,Barley,2018,1724.1935845338285
+Czechia,Barley,2018,334458.12676426413
+Germany,Barley,2018,1620706.5408265002
+Denmark,Barley,2018,734719.0388232028
+Estonia,Barley,2018,64976.11713770634
+Greece,Barley,2018,60960.871803860435
+Spain,Barley,2018,1816225.3694945967
+Finland,Barley,2018,245721.2048862697
+France,Barley,2018,2221422.671405146
+Croatia,Barley,2018,40424.0728757486
+Hungary,Barley,2018,186437.2884865449
+Ireland,Barley,2018,283346.4155734257
+Italy,Barley,2018,218204.9648043257
+Lithuania,Barley,2018,154716.85034916224
+Luxembourg,Barley,2018,6507.059349850271
+Latvia,Barley,2018,59236.678219326604
+Malta,Barley,2018,0.0
+Netherlands (Kingdom of the),Barley,2018,62720.4940236929
+Poland,Barley,2018,496733.08597713633
+Portugal,Barley,2018,13262.119146791025
+Romania,Barley,2018,392076.8973049528
+Sweden,Barley,2018,229022.50811551054
+Slovenia,Barley,2018,13722.69140567335
+Slovakia,Barley,2018,88299.96870931122
+Austria,Oats,2018,14124.215939057938
+Belgium,Oats,2018,2220.194478714793
+Bulgaria,Oats,2018,3708.1971612576863
+Cyprus,Oats,2018,153.52408629410803
+Czechia,Oats,2018,33267.48854542326
+Germany,Oats,2018,111919.05890840475
+Denmark,Oats,2018,65094.212588701805
+Estonia,Oats,2018,16356.219962872277
+Greece,Oats,2018,23642.709289292638
+Spain,Oats,2018,242296.43680740113
+Finland,Oats,2018,160361.81290674562
+France,Oats,2018,69912.50698931688
+Croatia,Oats,2018,11018.305577877138
+Hungary,Oats,2018,9305.921538442855
+Ireland,Oats,2018,29417.576842971008
+Italy,Oats,2018,51926.569802707156
+Lithuania,Oats,2018,44380.27048409676
+Luxembourg,Oats,2018,1299.0499609501449
+Latvia,Oats,2018,32747.8685610432
+Malta,Oats,2018,0.0
+Netherlands (Kingdom of the),Oats,2018,2728.0049179953044
+Poland,Oats,2018,463099.5015336271
+Portugal,Oats,2018,9672.017436528806
+Romania,Oats,2018,85005.10562653767
+Sweden,Oats,2018,77730.42584521684
+Slovenia,Oats,2018,614.0963451764321
+Slovakia,Oats,2018,5101.723483004205
+Austria,Maize (corn),2018,407157.686397074
+Belgium,Maize (corn),2018,76407.75679406761
+Bulgaria,Maize (corn),2018,572727.5086927199
+Cyprus,Maize (corn),2018,0.0
+Czechia,Maize (corn),2018,97842.081149745
+Germany,Maize (corn),2018,588505.0609457142
+Greece,Maize (corn),2018,248945.21069844594
+Spain,Maize (corn),2018,812378.6073978224
+France,Maize (corn),2018,2488885.2488196814
+Croatia,Maize (corn),2018,263140.28390810115
+Hungary,Maize (corn),2018,1394116.7990014963
+Italy,Maize (corn),2018,1387609.7396516462
+Lithuania,Maize (corn),2018,17667.07946892197
+Luxembourg,Maize (corn),2018,106.28590589592095
+Malta,Maize (corn),2018,0.0
+Netherlands (Kingdom of the),Maize (corn),2018,20678.5134693064
+Poland,Maize (corn),2018,620934.0717890697
+Portugal,Maize (corn),2018,159842.19292236556
+Romania,Maize (corn),2018,3453347.178009467
+Sweden,Maize (corn),2018,1440.7645021447063
+Slovenia,Maize (corn),2018,57949.43780347601
+Slovakia,Maize (corn),2018,244681.96491750955
+Austria,Rice,2018,0.0
+Belgium,Rice,2018,0.0
+Bulgaria,Rice,2018,18540.985806288434
+Cyprus,Rice,2018,0.0
+Greece,Rice,2018,89209.30368197632
+Spain,Rice,2018,301131.59049334313
+France,Rice,2018,24492.996536460003
+Hungary,Rice,2018,6979.441153832142
+Italy,Rice,2018,341980.8069926754
+Malta,Rice,2018,0.0
+Portugal,Rice,2018,45077.033644970026
+Romania,Rice,2018,11219.067844569434
+Sweden,Rice,2018,0.0
+Slovenia,Rice,2018,0.0
+Slovakia,Rice,2018,0.0
+Austria,Cereals n.e.c.,2018,64078.59171014078
+Belgium,Cereals n.e.c.,2018,1972.1940316243108
+Bulgaria,Cereals n.e.c.,2018,13415.643233085133
+Cyprus,Cereals n.e.c.,2018,413.334078484137
+Czechia,Cereals n.e.c.,2018,33161.202639527335
+Germany,Cereals n.e.c.,2018,314712.5673578219
+Denmark,Cereals n.e.c.,2018,7392.775232316279
+Estonia,Cereals n.e.c.,2018,2550.8617415021026
+Greece,Cereals n.e.c.,2018,0.0
+Spain,Cereals n.e.c.,2018,141501.9693827694
+Finland,Cereals n.e.c.,2018,1405.3358668460658
+France,Cereals n.e.c.,2018,304119.4054035285
+Croatia,Cereals n.e.c.,2018,9577.54107573243
+Hungary,Cereals n.e.c.,2018,67456.12160861117
+Italy,Cereals n.e.c.,2018,239544.8127992067
+Lithuania,Cereals n.e.c.,2018,60228.680007688534
+Luxembourg,Cereals n.e.c.,2018,5101.723483004205
+Latvia,Cereals n.e.c.,2018,9447.636079637417
+Malta,Cereals n.e.c.,2018,0.0
+Netherlands (Kingdom of the),Cereals n.e.c.,2018,23548.232928496265
+Poland,Cereals n.e.c.,2018,704899.9374468472
+Portugal,Cereals n.e.c.,2018,5231.6284790992195
+Romania,Cereals n.e.c.,2018,52410.76115178857
+Sweden,Cereals n.e.c.,2018,13580.976864478787
+Slovenia,Cereals n.e.c.,2018,5833.915279176104
+Slovakia,Cereals n.e.c.,2018,6294.487538058429
+Austria,Rape or colza seed,2018,44734.55683708317
+Belgium,Rape or colza seed,2018,18765.367163179817
+Bulgaria,Rape or colza seed,2018,187417.48072980726
+Cyprus,Rape or colza seed,2018,0.0
+Czechia,Rape or colza seed,2018,612549.2947683916
+Germany,Rape or colza seed,2018,1461714.6351513022
+Denmark,Rape or colza seed,2018,208875.42417568373
+Estonia,Rape or colza seed,2018,48489.99217873904
+Greece,Rape or colza seed,2018,0.0
+Spain,Rape or colza seed,2018,68507.17112247083
+Finland,Rape or colza seed,2018,34743.681682866605
+France,Rape or colza seed,2018,2020861.1669795432
+Croatia,Rape or colza seed,2018,76077.0895312803
+Hungary,Rape or colza seed,2018,403827.3946790019
+Ireland,Rape or colza seed,2018,11656.021013252664
+Italy,Rape or colza seed,2018,8691.825193266424
+Lithuania,Rape or colza seed,2018,216020.19896090953
+Luxembourg,Rape or colza seed,2018,4570.2939535246005
+Latvia,Rape or colza seed,2018,98196.36750273142
+Malta,Rape or colza seed,2018,0.0
+Netherlands (Kingdom of the),Rape or colza seed,2018,2361.9090199093544
+Poland,Rape or colza seed,2018,890132.6523332384
+Portugal,Rape or colza seed,2018,2716.195372895758
+Romania,Rape or colza seed,2018,588079.9173221305
+Sweden,Rape or colza seed,2018,88536.15961130215
+Slovenia,Rape or colza seed,2018,2763.4335532939444
+Slovakia,Rape or colza seed,2018,194656.73187582943
+Austria,Sunflower seed,2018,19332.225327958065
+Belgium,Sunflower seed,2018,0.0
+Bulgaria,Sunflower seed,2018,649843.8381927602
+Cyprus,Sunflower seed,2018,0.0
+Czechia,Sunflower seed,2018,16497.93450406684
+Germany,Sunflower seed,2018,11289.925115166714
+Greece,Sunflower seed,2018,73904.1332329637
+Spain,Sunflower seed,2018,371292.0979297505
+France,Sunflower seed,2018,523198.27654522064
+Croatia,Sunflower seed,2018,39337.5947265903
+Hungary,Sunflower seed,2018,685225.2353110024
+Italy,Sunflower seed,2018,64338.40170233081
+Malta,Sunflower seed,2018,0.0
+Netherlands (Kingdom of the),Sunflower seed,2018,0.0
+Portugal,Sunflower seed,2018,7475.442048013106
+Romania,Sunflower seed,2018,1032744.7189553651
+Sweden,Sunflower seed,2018,0.0
+Slovenia,Sunflower seed,2018,366.09589808594995
+Slovakia,Sunflower seed,2018,67456.12160861117
+Austria,Soya beans,2018,86493.10830908056
+Belgium,Soya beans,2018,118.09545099546771
+Bulgaria,Soya beans,2018,1676.9554041356416
+Cyprus,Soya beans,2018,0.0
+Czechia,Soya beans,2018,16179.076786379077
+Germany,Soya beans,2018,24906.33061494414
+Greece,Soya beans,2018,7747.061585302683
+Spain,Soya beans,2018,2314.6708395111673
+France,Soya beans,2018,158224.28524372762
+Croatia,Soya beans,2018,85690.05924231137
+Hungary,Soya beans,2018,87579.58645823886
+Italy,Soya beans,2018,376441.0595931529
+Malta,Soya beans,2018,0.0
+Portugal,Soya beans,2018,47.23818039818708
+Romania,Soya beans,2018,159783.14519686782
+Sweden,Soya beans,2018,0.0
+Slovenia,Soya beans,2018,1960.384486524764
+Slovakia,Soya beans,2018,41652.265566101465
+Austria,Unmanufactured tobacco,2018,0.0
+Belgium,Unmanufactured tobacco,2018,377.90544318549667
+Bulgaria,Unmanufactured tobacco,2018,22012.99206555518
+Cyprus,Unmanufactured tobacco,2018,0.0
+Germany,Unmanufactured tobacco,2018,18635.462167084806
+Greece,Unmanufactured tobacco,2018,129834.1388244172
+Spain,Unmanufactured tobacco,2018,70101.45971090964
+France,Unmanufactured tobacco,2018,22863.27931272255
+Croatia,Unmanufactured tobacco,2018,22969.56521861847
+Hungary,Unmanufactured tobacco,2018,11254.496479868072
+Italy,Unmanufactured tobacco,2018,196817.8786290465
+Malta,Unmanufactured tobacco,2018,0.0
+Poland,Unmanufactured tobacco,2018,85902.63105410321
+Portugal,Unmanufactured tobacco,2018,720.3822510723531
+Romania,Unmanufactured tobacco,2018,1440.7645021447063
+Sweden,Unmanufactured tobacco,2018,0.0
+Slovenia,Unmanufactured tobacco,2018,0.0
+Slovakia,Unmanufactured tobacco,2018,0.0
+Austria,Sugar beet,2018,63925.06762384667
+Belgium,Sugar beet,2018,143509.59204969235
+Cyprus,Sugar beet,2018,0.0
+Czechia,Sugar beet,2018,138903.86946086914
+Germany,Sugar beet,2018,830399.9732197308
+Denmark,Sugar beet,2018,70621.0796952897
+Greece,Sugar beet,2018,2220.194478714793
+Spain,Sugar beet,2018,134451.67095834
+Finland,Sugar beet,2018,17383.65038653285
+France,Sugar beet,2018,916137.2706424403
+Croatia,Sugar beet,2018,31673.19995698444
+Hungary,Sugar beet,2018,38735.3079265134
+Italy,Sugar beet,2018,93602.45445900771
+Lithuania,Sugar beet,2018,37518.924781260095
+Malta,Sugar beet,2018,0.0
+Netherlands (Kingdom of the),Sugar beet,2018,315220.37779710244
+Poland,Sugar beet,2018,513195.59184590454
+Portugal,Sugar beet,2018,224.38135689138866
+Romania,Sugar beet,2018,32051.105400169938
+Sweden,Sugar beet,2018,52942.19068126818
+Slovenia,Sugar beet,2018,401.52453338459026
+Slovakia,Sugar beet,2018,49316.66033570732
+Austria,Wheat,2019,284167.4095900659
+Belgium,Wheat,2019,332629.46112313383
+Bulgaria,Wheat,2019,961247.9826607548
+Cyprus,Wheat,2019,7298.973804472225
+Czechia,Wheat,2019,832284.5191216136
+Germany,Wheat,2019,4022316.6930093383
+Denmark,Wheat,2019,721165.4792700933
+Estonia,Wheat,2019,139117.09734382876
+Greece,Wheat,2019,291779.83625730686
+Spain,Wheat,2019,1209245.1708363274
+Finland,Wheat,2019,168212.2398558277
+France,Wheat,2019,7390065.445341843
+Croatia,Wheat,2019,144311.4590697108
+Hungary,Wheat,2019,946437.3348949315
+Ireland,Wheat,2019,107906.14800814078
+Italy,Wheat,2019,1949117.0691666552
+Lithuania,Wheat,2019,808775.5544139578
+Luxembourg,Wheat,2019,14463.610667757846
+Latvia,Wheat,2019,414810.08489403967
+Malta,Wheat,2019,0.0
+Netherlands (Kingdom of the),Wheat,2019,316083.6278669836
+Poland,Wheat,2019,1816705.624137058
+Portugal,Wheat,2019,45585.00204265476
+Romania,Wheat,2019,1761157.2989563965
+Sweden,Wheat,2019,514308.9793329187
+Slovenia,Wheat,2019,25009.060550906368
+Slovakia,Wheat,2019,318020.31876909046
+Austria,Rye,2019,32778.21364953172
+Belgium,Rye,2019,425.4003137575837
+Bulgaria,Rye,2019,1891.9119217113591
+Cyprus,Rye,2019,0.0
+Czechia,Rye,2019,28557.794747252527
+Germany,Rye,2019,421706.0478749521
+Denmark,Rye,2019,129388.86385289875
+Estonia,Rye,2019,14721.089805032174
+Greece,Rye,2019,2877.049490413132
+Spain,Rye,2019,56522.26800426421
+Finland,Rye,2019,35106.720630099546
+France,Rye,2019,30863.91223762259
+Croatia,Rye,2019,682.8794510319108
+Hungary,Rye,2019,14150.157804989101
+Italy,Rye,2019,1847.1329413158242
+Lithuania,Rye,2019,19893.06204071648
+Luxembourg,Rye,2019,951.5533334051214
+Latvia,Rye,2019,27762.96784523178
+Malta,Rye,2019,0.0
+Netherlands (Kingdom of the),Rye,2019,1343.369411866054
+Poland,Rye,2019,359384.9019094661
+Portugal,Rye,2019,2798.686274720945
+Romania,Rye,2019,4813.740392520026
+Sweden,Rye,2019,28423.457806065926
+Slovenia,Rye,2019,738.8531765263295
+Slovakia,Rye,2019,6985.520941703479
+Austria,Barley,2019,129579.17451957978
+Belgium,Barley,2019,61548.70855366304
+Bulgaria,Barley,2019,86714.49553595377
+Cyprus,Barley,2019,6526.5363926492455
+Czechia,Barley,2019,334543.76253504294
+Germany,Barley,2019,2079177.617725487
+Denmark,Barley,2019,635391.3423224457
+Estonia,Barley,2019,77008.65153522154
+Greece,Barley,2019,61212.86620069652
+Spain,Barley,2019,1398391.5840270678
+Finland,Barley,2019,279129.77429556823
+France,Barley,2019,2070188.2374110834
+Croatia,Barley,2019,44521.5012582608
+Hungary,Barley,2019,224062.8231541589
+Ireland,Barley,2019,271942.74794208485
+Italy,Barley,2019,206464.6838587136
+Lithuania,Barley,2019,117589.60251867525
+Luxembourg,Barley,2019,5530.204078848588
+Latvia,Barley,2019,49256.87843508864
+Malta,Barley,2019,0.0
+Netherlands (Kingdom of the),Barley,2019,47980.67749381589
+Poland,Barley,2019,520331.7521961182
+Portugal,Barley,2019,10847.708000818386
+Romania,Barley,2019,388804.6920293326
+Sweden,Barley,2019,210640.32378059725
+Slovenia,Barley,2019,14978.5689423065
+Slovakia,Barley,2019,104939.54055693658
+Austria,Oats,2019,13265.772942177282
+Belgium,Oats,2019,2115.806823689035
+Bulgaria,Oats,2019,5295.114431772029
+Cyprus,Oats,2019,67.1684705933027
+Czechia,Oats,2019,26777.83027653001
+Germany,Oats,2019,101032.57451742614
+Denmark,Oats,2019,39562.22917945529
+Estonia,Oats,2019,11855.235059717925
+Greece,Oats,2019,21572.273805549048
+Spain,Oats,2019,147009.39263854182
+Finland,Oats,2019,222674.67476189733
+France,Oats,2019,63362.25725968221
+Croatia,Oats,2019,10881.292236115036
+Hungary,Oats,2019,12594.088236244255
+Ireland,Oats,2019,35476.147218362705
+Italy,Oats,2019,48820.283376232175
+Lithuania,Oats,2019,36528.45325765779
+Luxembourg,Oats,2019,1220.2272157783323
+Latvia,Oats,2019,34065.60933590335
+Malta,Oats,2019,0.0
+Netherlands (Kingdom of the),Oats,2019,2552.4018825455023
+Poland,Oats,2019,521932.60074525856
+Portugal,Oats,2019,8563.980000646094
+Romania,Oats,2019,84072.53569261721
+Sweden,Oats,2019,89043.0025165216
+Slovenia,Oats,2019,638.1004706363756
+Slovakia,Oats,2019,5451.840863156402
+Austria,Maize (corn),2019,375818.78771462745
+Belgium,Maize (corn),2019,87867.5542811388
+Bulgaria,Maize (corn),2019,589291.3820052424
+Cyprus,Maize (corn),2019,0.0
+Czechia,Maize (corn),2019,109036.81726312805
+Germany,Maize (corn),2019,646350.9977742529
+Greece,Maize (corn),2019,233723.8881744956
+Spain,Maize (corn),2019,835900.4217885531
+France,Maize (corn),2019,2325932.189195083
+Croatia,Maize (corn),2019,229010.90048786553
+Hungary,Maize (corn),2019,1290854.8626071902
+Italy,Maize (corn),2019,1305419.2259808378
+Lithuania,Maize (corn),2019,16836.896628721206
+Luxembourg,Maize (corn),2019,100.75270588995404
+Malta,Maize (corn),2019,0.0
+Netherlands (Kingdom of the),Maize (corn),2019,28893.637100219043
+Poland,Maize (corn),2019,543482.4850606098
+Portugal,Maize (corn),2019,154532.26134499174
+Romania,Maize (corn),2019,3039541.21552343
+Sweden,Maize (corn),2019,2317.3122354689426
+Slovenia,Maize (corn),2019,47600.05616045384
+Slovakia,Maize (corn),2019,210718.68699628944
+Austria,Rice,2019,0.0
+Belgium,Rice,2019,0.0
+Bulgaria,Rice,2019,22602.190354646355
+Cyprus,Rice,2019,0.0
+Greece,Rice,2019,87486.93294777676
+Spain,Rice,2019,287111.6275510724
+France,Rice,2019,25367.29239407065
+Hungary,Rice,2019,5395.867137661983
+Italy,Rice,2019,382177.40293079347
+Malta,Rice,2019,0.0
+Portugal,Rice,2019,48999.399297814314
+Romania,Rice,2019,9996.907373303218
+Sweden,Rice,2019,0.0
+Slovenia,Rice,2019,0.0
+Slovakia,Rice,2019,0.0
+Austria,Cereals n.e.c.,2019,62186.809024299415
+Belgium,Cereals n.e.c.,2019,3403.2025100606697
+Bulgaria,Cereals n.e.c.,2019,11955.987765607879
+Cyprus,Cereals n.e.c.,2019,268.6738823732108
+Czechia,Cereals n.e.c.,2019,33740.96172803572
+Germany,Cereals n.e.c.,2019,365150.1956353912
+Denmark,Cereals n.e.c.,2019,15885.343295316086
+Estonia,Cereals n.e.c.,2019,5832.46219651845
+Greece,Cereals n.e.c.,2019,0.0
+Spain,Cereals n.e.c.,2019,119660.63036196874
+Finland,Cereals n.e.c.,2019,783.6321569218647
+France,Cereals n.e.c.,2019,340913.5724963078
+Croatia,Cereals n.e.c.,2019,10668.592079236245
+Hungary,Cereals n.e.c.,2019,82102.26055521367
+Italy,Cereals n.e.c.,2019,238929.44464547656
+Lithuania,Cereals n.e.c.,2019,82751.55577094892
+Luxembourg,Cereals n.e.c.,2019,4612.234980740118
+Latvia,Cereals n.e.c.,2019,10231.997020379777
+Malta,Cereals n.e.c.,2019,0.0
+Netherlands (Kingdom of the),Cereals n.e.c.,2019,24617.244472445436
+Poland,Cereals n.e.c.,2019,718467.5457012622
+Portugal,Cereals n.e.c.,2019,4276.3926277736045
+Romania,Cereals n.e.c.,2019,45562.61255245699
+Sweden,Cereals n.e.c.,2019,23889.586041017992
+Slovenia,Cereals n.e.c.,2019,5922.020157309521
+Slovakia,Cereals n.e.c.,2019,6582.510118143664
+Austria,Rape or colza seed,2019,39562.22917945529
+Belgium,Rape or colza seed,2019,14306.884236373473
+Bulgaria,Rape or colza seed,2019,164450.80550260274
+Cyprus,Rape or colza seed,2019,0.0
+Czechia,Rape or colza seed,2019,486893.0485857523
+Germany,Rape or colza seed,2019,1135751.6692621552
+Denmark,Rape or colza seed,2019,297780.2196303086
+Estonia,Rape or colza seed,2019,78564.72110396638
+Greece,Rape or colza seed,2019,0.0
+Spain,Rape or colza seed,2019,55413.98823947472
+Finland,Rape or colza seed,2019,20833.420629022716
+France,Rape or colza seed,2019,1414825.4698322292
+Croatia,Rape or colza seed,2019,39125.634120598814
+Hungary,Rape or colza seed,2019,365474.84324325883
+Ireland,Rape or colza seed,2019,11564.171687146947
+Italy,Rape or colza seed,2019,7903.49003981195
+Lithuania,Rape or colza seed,2019,307945.0481800951
+Luxembourg,Rape or colza seed,2019,3951.745019905975
+Latvia,Rape or colza seed,2019,163051.46236524227
+Malta,Rape or colza seed,2019,0.0
+Netherlands (Kingdom of the),Rape or colza seed,2019,2720.323059028759
+Poland,Rape or colza seed,2019,902576.323597505
+Portugal,Rape or colza seed,2019,1220.2272157783323
+Romania,Rape or colza seed,2019,283831.5672370994
+Sweden,Rape or colza seed,2019,146830.2767169597
+Slovenia,Rape or colza seed,2019,3347.2287845662513
+Slovakia,Rape or colza seed,2019,166029.26456154537
+Austria,Sunflower seed,2019,23956.754511611292
+Belgium,Sunflower seed,2019,0.0
+Bulgaria,Sunflower seed,2019,640003.5773031858
+Cyprus,Sunflower seed,2019,0.0
+Czechia,Sunflower seed,2019,9884.95992231438
+Germany,Sunflower seed,2019,17363.049648368746
+Greece,Sunflower seed,2019,77937.81537842889
+Spain,Sunflower seed,2019,305874.0203368016
+France,Sunflower seed,2019,536586.5220796975
+Croatia,Sunflower seed,2019,43872.20604252555
+Hungary,Sunflower seed,2019,619651.5307134151
+Italy,Sunflower seed,2019,72094.15843681157
+Malta,Sunflower seed,2019,0.0
+Netherlands (Kingdom of the),Sunflower seed,2019,0.0
+Portugal,Sunflower seed,2019,6448.173176957059
+Romania,Sunflower seed,2019,1102548.055298866
+Sweden,Sunflower seed,2019,0.0
+Slovenia,Sunflower seed,2019,246.2843921754432
+Slovakia,Sunflower seed,2019,43916.98502292108
+Austria,Soya beans,2019,95121.7491052155
+Belgium,Soya beans,2019,134.3369411866054
+Bulgaria,Soya beans,2019,2294.9227452711752
+Cyprus,Soya beans,2019,0.0
+Czechia,Soya beans,2019,16389.10682476586
+Germany,Soya beans,2019,30651.212080743797
+Greece,Soya beans,2019,6817.599765220223
+Spain,Soya beans,2019,2485.2334119521993
+France,Soya beans,2019,170943.75765995536
+Croatia,Soya beans,2019,79975.25898642575
+Hungary,Soya beans,2019,74713.72878995036
+Italy,Soya beans,2019,296448.04496354144
+Malta,Soya beans,2019,0.0
+Portugal,Soya beans,2019,22.389490197767564
+Romania,Soya beans,2019,127440.97820569298
+Sweden,Soya beans,2019,0.0
+Slovenia,Soya beans,2019,1399.3431373604726
+Slovakia,Soya beans,2019,40155.55066969613
+Austria,Unmanufactured tobacco,2019,0.0
+Belgium,Unmanufactured tobacco,2019,358.23184316428103
+Bulgaria,Unmanufactured tobacco,2019,18549.692628850426
+Cyprus,Unmanufactured tobacco,2019,0.0
+Germany,Unmanufactured tobacco,2019,20475.188785858438
+Greece,Unmanufactured tobacco,2019,98009.99334072751
+Spain,Unmanufactured tobacco,2019,70851.54173083545
+France,Unmanufactured tobacco,2019,14721.089805032174
+Croatia,Unmanufactured tobacco,2019,23520.159452754826
+Hungary,Unmanufactured tobacco,2019,10153.633804687592
+Italy,Unmanufactured tobacco,2019,223323.96997763257
+Malta,Unmanufactured tobacco,2019,0.0
+Poland,Unmanufactured tobacco,2019,62612.20933805699
+Portugal,Unmanufactured tobacco,2019,615.710980438608
+Romania,Unmanufactured tobacco,2019,1309.7851765694024
+Sweden,Unmanufactured tobacco,2019,0.0
+Slovenia,Unmanufactured tobacco,2019,0.0
+Slovakia,Unmanufactured tobacco,2019,0.0
+Austria,Sugar beet,2019,66317.66996578753
+Belgium,Sugar beet,2019,143091.2318539325
+Cyprus,Sugar beet,2019,0.0
+Czechia,Sugar beet,2019,111398.90847899253
+Germany,Sugar beet,2019,848561.6784953907
+Denmark,Sugar beet,2019,64481.73176957058
+Greece,Sugar beet,2019,4388.340078762443
+Spain,Sugar beet,2019,116123.09091072147
+Finland,Sugar beet,2019,20475.188785858438
+France,Sugar beet,2019,813634.0737868734
+Croatia,Sugar beet,2019,37412.8381204696
+Hungary,Sugar beet,2019,32688.655688740644
+Italy,Sugar beet,2019,76258.60361359632
+Lithuania,Sugar beet,2019,45405.88612107262
+Malta,Sugar beet,2019,0.0
+Netherlands (Kingdom of the),Sugar beet,2019,316453.0544552467
+Poland,Sugar beet,2019,491908.29439005227
+Portugal,Sugar beet,2019,44.77898039553513
+Romania,Sugar beet,2019,30102.66957089849
+Sweden,Sugar beet,2019,57563.37929846041
+Slovenia,Sugar beet,2019,391.8160784609324
+Slovakia,Sugar beet,2019,46872.3977290264
+Austria,Wheat,2020,308347.26156775304
+Belgium,Wheat,2020,382178.8180492301
+Bulgaria,Wheat,2020,866686.985497834
+Cyprus,Wheat,2020,8360.875517394992
+Czechia,Wheat,2020,907463.3865867688
+Germany,Wheat,2020,4750896.183343364
+Denmark,Wheat,2020,796853.1153976251
+Estonia,Wheat,2020,152848.68329751337
+Greece,Wheat,2020,329386.51389431255
+Spain,Wheat,2020,1710255.9217508493
+Finland,Wheat,2020,114756.44306457306
+France,Wheat,2020,6324179.947710879
+Croatia,Wheat,2020,134150.932994268
+Hungary,Wheat,2020,913128.6792870801
+Ireland,Wheat,2020,75761.86790557511
+Italy,Wheat,2020,2201617.2658530558
+Lithuania,Wheat,2020,1034407.0621336648
+Luxembourg,Wheat,2020,14197.497634046413
+Latvia,Wheat,2020,498876.99449899053
+Malta,Wheat,2020,0.0
+Netherlands (Kingdom of the),Wheat,2020,305685.9446339374
+Poland,Wheat,2020,2114718.9858853766
+Portugal,Wheat,2020,57692.32546224331
+Romania,Wheat,2020,1201773.0579757262
+Sweden,Wheat,2020,540761.3258135909
+Slovenia,Wheat,2020,26236.244622208054
+Slovakia,Wheat,2020,344189.3754660938
+Austria,Rye,2020,31456.080840035254
+Belgium,Rye,2020,434.034521394822
+Bulgaria,Rye,2020,1838.9357353833248
+Cyprus,Rye,2020,0.0
+Czechia,Rye,2020,28977.515283649034
+Germany,Rye,2020,497335.0297519299
+Denmark,Rye,2020,113637.090877818
+Estonia,Rye,2020,9777.198692472832
+Greece,Rye,2020,2798.3804668876683
+Spain,Rye,2020,82809.2178976963
+Finland,Rye,2020,12963.925836397972
+France,Rye,2020,27138.579548265712
+Croatia,Rye,2020,616.7858988242208
+Hungary,Rye,2020,12404.24974302044
+Ireland,Rye,2020,0.0
+Italy,Rye,2020,1690.4502412219383
+Lithuania,Rye,2020,19874.212295447112
+Luxembourg,Rye,2020,776.6933540749446
+Latvia,Rye,2020,23929.008482161895
+Malta,Rye,2020,0.0
+Netherlands (Kingdom of the),Rye,2020,1964.5773073660364
+Poland,Rye,2020,382430.1011931955
+Portugal,Rye,2020,2821.2243890663426
+Romania,Rye,2020,5573.917011596661
+Sweden,Rye,2020,25505.23911249046
+Slovenia,Rye,2020,582.5200155562085
+Slovakia,Rye,2020,6887.442536870465
+Austria,Barley,2020,131455.3501771844
+Belgium,Barley,2020,59976.7176801108
+Bulgaria,Barley,2020,88760.0596252411
+Cyprus,Barley,2020,5196.992295648526
+Czechia,Barley,2020,329706.32880481397
+Germany,Barley,2020,1883412.8518652045
+Denmark,Barley,2020,755951.0727367077
+Estonia,Barley,2020,93614.3930882095
+Greece,Barley,2020,63334.774240376
+Spain,Barley,2020,1985125.4153657544
+Finland,Barley,2020,204087.60074428102
+France,Barley,2020,1866097.158853769
+Croatia,Barley,2020,59828.232185949404
+Hungary,Barley,2020,221391.87179462722
+Ireland,Barley,2020,270095.11387956195
+Italy,Barley,2020,195189.8930556872
+Lithuania,Barley,2020,136252.5738347061
+Luxembourg,Barley,2020,5436.853478524612
+Latvia,Barley,2020,51193.22960241032
+Malta,Barley,2020,0.0
+Netherlands (Kingdom of the),Barley,2020,55739.17011596661
+Poland,Barley,2020,482440.79249143397
+Portugal,Barley,2020,12883.97210877261
+Romania,Barley,2020,236857.2071095901
+Sweden,Barley,2020,247125.55012890443
+Slovenia,Barley,2020,16778.86084023667
+Slovakia,Barley,2020,113522.87126692462
+Austria,Oats,2020,14814.283532870633
+Belgium,Oats,2020,1816.0918132046497
+Bulgaria,Oats,2020,5048.5068014871395
+Cyprus,Oats,2020,125.64157198271162
+Czechia,Oats,2020,36287.57038082498
+Germany,Oats,2020,128634.12578811804
+Denmark,Oats,2020,79256.98799891236
+Estonia,Oats,2020,17212.895361631494
+Greece,Oats,2020,21199.159781810253
+Spain,Oats,2020,240363.74916401666
+Finland,Oats,2020,206440.52472868454
+France,Oats,2020,66829.89433371325
+Croatia,Oats,2020,8863.441805325838
+Hungary,Oats,2020,13135.255252738034
+Ireland,Oats,2020,34699.91778940708
+Italy,Oats,2020,45436.56121338426
+Lithuania,Oats,2020,49616.99897208176
+Luxembourg,Oats,2020,1450.5890583458524
+Latvia,Oats,2020,43871.752544145034
+Malta,Oats,2020,0.0
+Netherlands (Kingdom of the),Oats,2020,2375.7679065821835
+Poland,Oats,2020,451841.35873309907
+Portugal,Oats,2020,8954.817494040537
+Romania,Oats,2020,49514.20132227772
+Sweden,Oats,2020,111786.73318134533
+Slovenia,Oats,2020,456.87844357349684
+Slovakia,Oats,2020,5596.7609337753365
+Austria,Maize (corn),2020,399380.29144977225
+Belgium,Maize (corn),2020,111672.51357045196
+Bulgaria,Maize (corn),2020,521915.0900161841
+Cyprus,Maize (corn),2020,0.0
+Czechia,Maize (corn),2020,150587.13500182456
+Germany,Maize (corn),2020,749303.4913827134
+Denmark,Maize (corn),2020,7926.84099600017
+Greece,Maize (corn),2020,236000.5600278898
+Spain,Maize (corn),2020,979810.0881266319
+France,Maize (corn),2020,2963256.4752122536
+Croatia,Maize (corn),2020,298661.4385639949
+Hungary,Maize (corn),2020,1434586.8908596907
+Ireland,Maize (corn),2020,0.0
+Italy,Maize (corn),2020,1470177.721614066
+Lithuania,Maize (corn),2020,28669.122334236923
+Luxembourg,Maize (corn),2020,137.06353307204904
+Malta,Maize (corn),2020,0.0
+Netherlands (Kingdom of the),Maize (corn),2020,39314.3900694994
+Poland,Maize (corn),2020,950923.9485316976
+Portugal,Maize (corn),2020,146749.35607580715
+Romania,Maize (corn),2020,1986279.0334357775
+Sweden,Maize (corn),2020,2547.0973229222445
+Slovenia,Maize (corn),2020,59451.30747000127
+Slovakia,Maize (corn),2020,239724.1193430138
+Austria,Rice,2020,833.8031595216316
+Belgium,Rice,2020,0.0
+Bulgaria,Rice,2020,26967.25013192565
+Cyprus,Rice,2020,0.0
+Greece,Rice,2020,95407.64097923547
+Spain,Rice,2020,298410.1554200295
+France,Rice,2020,24408.730847914067
+Hungary,Rice,2020,6556.205665279679
+Ireland,Rice,2020,0.0
+Italy,Rice,2020,387467.1860335933
+Malta,Rice,2020,0.0
+Portugal,Rice,2020,48132.14403046789
+Romania,Rice,2020,7184.413525193238
+Sweden,Rice,2020,0.0
+Slovenia,Rice,2020,0.0
+Slovakia,Rice,2020,0.0
+Austria,Cereals n.e.c.,2020,67400.99238818012
+Belgium,Cereals n.e.c.,2020,3734.981276213336
+Bulgaria,Cereals n.e.c.,2020,12152.966599055015
+Cyprus,Cereals n.e.c.,2020,354.08079376946006
+Czechia,Cereals n.e.c.,2020,37007.15392945324
+Germany,Cereals n.e.c.,2020,352161.9043064513
+Denmark,Cereals n.e.c.,2020,12335.717976484415
+Estonia,Cereals n.e.c.,2020,5414.009556345937
+Greece,Cereals n.e.c.,2020,0.0
+Spain,Cereals n.e.c.,2020,163151.29220009572
+Finland,Cereals n.e.c.,2020,593.9419766455459
+France,Cereals n.e.c.,2020,296045.8094745366
+Croatia,Cereals n.e.c.,2020,7926.84099600017
+Hungary,Cereals n.e.c.,2020,70119.41912744242
+Ireland,Cereals n.e.c.,2020,0.0
+Italy,Cereals n.e.c.,2020,269512.59386400576
+Lithuania,Cereals n.e.c.,2020,113077.41478444045
+Luxembourg,Cereals n.e.c.,2020,4146.171875429483
+Latvia,Cereals n.e.c.,2020,14117.543906421053
+Malta,Cereals n.e.c.,2020,0.0
+Netherlands (Kingdom of the),Cereals n.e.c.,2020,20011.275828519163
+Poland,Cereals n.e.c.,2020,938439.7450610518
+Portugal,Cereals n.e.c.,2020,4545.940513556293
+Romania,Cereals n.e.c.,2020,36698.76098004114
+Sweden,Cereals n.e.c.,2020,24945.563019112928
+Slovenia,Cereals n.e.c.,2020,6647.581353994379
+Slovakia,Cereals n.e.c.,2020,7378.586863711974
+Austria,Rape or colza seed,2020,38069.39631076162
+Belgium,Rape or colza seed,2020,14597.266272173223
+Bulgaria,Rape or colza seed,2020,113008.88301790443
+Cyprus,Rape or colza seed,2020,0.0
+Czechia,Rape or colza seed,2020,567191.7437743177
+Germany,Rape or colza seed,2020,1490188.9974425852
+Denmark,Rape or colza seed,2020,240912.00329630487
+Estonia,Rape or colza seed,2020,86635.57486262433
+Greece,Rape or colza seed,2020,0.0
+Spain,Rape or colza seed,2020,73260.4584270102
+Finland,Rape or colza seed,2020,17898.213026991736
+France,Rape or colza seed,2020,1394278.7901754188
+Croatia,Rape or colza seed,2020,46909.99419390879
+Hungary,Rape or colza seed,2020,358706.6880106417
+Ireland,Rape or colza seed,2020,14014.746256617016
+Italy,Rape or colza seed,2020,11604.71246676682
+Lithuania,Rape or colza seed,2020,440316.59999395756
+Luxembourg,Rape or colza seed,2020,3575.0738209626124
+Latvia,Rape or colza seed,2020,189947.2129156813
+Malta,Rape or colza seed,2020,0.0
+Netherlands (Kingdom of the),Rape or colza seed,2020,2741.2706614409813
+Poland,Rape or colza seed,2020,1175205.5764819274
+Portugal,Rape or colza seed,2020,1439.167097256515
+Romania,Rape or colza seed,2020,276297.2387510722
+Sweden,Rape or colza seed,2020,139964.71118874077
+Slovenia,Rape or colza seed,2020,3152.461260657128
+Slovakia,Rape or colza seed,2020,184715.95473676475
+Austria,Sunflower seed,2020,24934.14105802359
+Bulgaria,Sunflower seed,2020,726905.0256865227
+Cyprus,Sunflower seed,2020,0.0
+Czechia,Sunflower seed,2020,12392.8277819311
+Germany,Sunflower seed,2020,23689.14729928581
+Greece,Sunflower seed,2020,100444.72581963327
+Spain,Sunflower seed,2020,359106.4566487685
+France,Sunflower seed,2020,771884.7084563335
+Croatia,Sunflower seed,2020,45196.700030508175
+Hungary,Sunflower seed,2020,691668.2757259168
+Ireland,Sunflower seed,2020,0.0
+Italy,Sunflower seed,2020,77155.34715847428
+Malta,Sunflower seed,2020,0.0
+Netherlands (Kingdom of the),Sunflower seed,2020,0.0
+Portugal,Sunflower seed,2020,4534.518552466956
+Romania,Sunflower seed,2020,790228.3779658094
+Sweden,Sunflower seed,2020,0.0
+Slovenia,Sunflower seed,2020,468.30040466283424
+Slovakia,Sunflower seed,2020,51775.749617966525
+Austria,Soya beans,2020,100433.30385854394
+Bulgaria,Soya beans,2020,2341.502023314171
+Cyprus,Soya beans,2020,0.0
+Czechia,Soya beans,2020,18789.125991960056
+Germany,Soya beans,2020,38217.881804923
+Greece,Soya beans,2020,6544.783704190342
+Spain,Soya beans,2020,2375.7679065821835
+France,Soya beans,2020,182865.5970402921
+Croatia,Soya beans,2020,104339.61455109733
+Hungary,Soya beans,2020,79633.9127148605
+Ireland,Soya beans,2020,0.0
+Italy,Soya beans,2020,331351.09120167856
+Malta,Soya beans,2020,0.0
+Portugal,Soya beans,2020,68.53176653602452
+Romania,Soya beans,2020,105687.40595963915
+Sweden,Soya beans,2020,0.0
+Slovenia,Soya beans,2020,1838.9357353833248
+Slovakia,Soya beans,2020,48189.25383591458
+Austria,Unmanufactured tobacco,2020,0.0
+Belgium,Unmanufactured tobacco,2020,228.43922178674842
+Bulgaria,Unmanufactured tobacco,2020,12587.001120449837
+Cyprus,Unmanufactured tobacco,2020,0.0
+Germany,Unmanufactured tobacco,2020,25505.23911249046
+Greece,Unmanufactured tobacco,2020,106612.58480787548
+Spain,Unmanufactured tobacco,2020,63380.46208473334
+France,Unmanufactured tobacco,2020,15008.45687138937
+Croatia,Unmanufactured tobacco,2020,21027.83036547019
+Hungary,Unmanufactured tobacco,2020,8041.060606893544
+Ireland,Unmanufactured tobacco,2020,0.0
+Italy,Unmanufactured tobacco,2020,229455.77632369945
+Malta,Unmanufactured tobacco,2020,0.0
+Poland,Unmanufactured tobacco,2020,52655.24062184551
+Portugal,Unmanufactured tobacco,2020,0.0
+Romania,Unmanufactured tobacco,2020,1404.9012139885028
+Sweden,Unmanufactured tobacco,2020,0.0
+Slovenia,Unmanufactured tobacco,2020,0.0
+Slovakia,Unmanufactured tobacco,2020,0.0
+Austria,Sugar beet,2020,63985.82602246823
+Belgium,Sugar beet,2020,151101.1232508447
+Cyprus,Sugar beet,2020,0.0
+Czechia,Sugar beet,2020,108017.48602186398
+Germany,Sugar beet,2020,886161.4291551545
+Denmark,Sugar beet,2020,78194.74561760399
+Greece,Sugar beet,2020,3300.9467548185144
+Spain,Sugar beet,2020,103768.51649663046
+Finland,Sugar beet,2020,18834.813836317404
+France,Sugar beet,2020,731348.168550275
+Croatia,Sugar beet,2020,37761.00336134952
+Hungary,Sugar beet,2020,32575.433026790324
+Ireland,Sugar beet,2020,0.0
+Italy,Sugar beet,2020,75087.97220130419
+Lithuania,Sugar beet,2020,40216.72499555705
+Malta,Sugar beet,2020,0.0
+Netherlands (Kingdom of the),Sugar beet,2020,310768.7173186926
+Poland,Sugar beet,2020,467500.8673865806
+Portugal,Sugar beet,2020,0.0
+Romania,Sugar beet,2020,22512.68530708406
+Sweden,Sugar beet,2020,61701.43380460075
+Slovenia,Sugar beet,2020,296.97098832277294
+Slovakia,Sugar beet,2020,45779.22004606439
+Austria,Wheat,2021,433356.0495562465
+Belgium,Wheat,2021,546970.0837275703
+Bulgaria,Wheat,2021,1669863.7339696568
+Cyprus,Wheat,2021,7569.5379835152235
+Czechia,Wheat,2021,1313149.2564965019
+Germany,Wheat,2021,6109717.1011850145
+Denmark,Wheat,2021,1112201.6778403712
+Estonia,Wheat,2021,169817.85369892433
+Greece,Wheat,2021,467288.86904797336
+Spain,Wheat,2021,2505386.971109447
+Finland,Wheat,2021,148185.53343040973
+France,Wheat,2021,9593514.166276202
+Croatia,Wheat,2021,206660.21435306483
+Hungary,Wheat,2021,1277134.8140593083
+Ireland,Wheat,2021,155766.89881702416
+Italy,Wheat,2021,3227899.3716359753
+Lithuania,Wheat,2021,1110392.085166187
+Luxembourg,Wheat,2021,19136.738214574423
+Latvia,Wheat,2021,563966.0619811818
+Malta,Wheat,2021,0.0
+Netherlands (Kingdom of the),Wheat,2021,434148.4855638958
+Poland,Wheat,2021,2669373.915080445
+Portugal,Wheat,2021,55931.78925631795
+Romania,Wheat,2021,2398762.9321697755
+Sweden,Wheat,2021,791726.3634632954
+Slovenia,Wheat,2021,33400.58635226092
+Slovakia,Wheat,2021,418831.99855037674
+Austria,Rye,2021,38628.29852212612
+Belgium,Rye,2021,887.0552324431902
+Bulgaria,Rye,2021,3394.464689482608
+Cyprus,Rye,2021,0.0
+Czechia,Rye,2021,29308.304879923006
+Germany,Rye,2021,621258.0025939128
+Denmark,Rye,2021,175246.63172147665
+Estonia,Rye,2021,10573.698370722826
+Greece,Rye,2021,3181.571433696242
+Spain,Rye,2021,95151.4579334062
+Finland,Rye,2021,14275.675540785742
+France,Rye,2021,50656.767474055785
+Croatia,Rye,2021,319.33988367954845
+Hungary,Rye,2021,17078.770075306224
+Ireland,Rye,2021,0.0
+Italy,Rye,2021,2235.3791857568394
+Lithuania,Rye,2021,14843.390889549382
+Luxembourg,Rye,2021,1312.8417440159217
+Latvia,Rye,2021,24802.064299111596
+Malta,Rye,2021,0.0
+Netherlands (Kingdom of the),Rye,2021,2661.1656973295703
+Poland,Rye,2021,446531.7766088027
+Portugal,Rye,2021,3039.6425965053318
+Romania,Rye,2021,8598.522053149323
+Sweden,Rye,2021,28870.690965251033
+Slovenia,Rye,2021,555.8879456643992
+Slovakia,Rye,2021,5807.254921728085
+Austria,Barley,2021,152786.39323601508
+Belgium,Barley,2021,81171.46747010152
+Bulgaria,Barley,2021,141668.63432272707
+Cyprus,Barley,2021,6658.827944873548
+Czechia,Barley,2021,416975.0962637956
+Germany,Barley,2021,2348413.6771763
+Denmark,Barley,2021,893489.3397291782
+Estonia,Barley,2021,98995.36394066003
+Greece,Barley,2021,67948.43080514837
+Spain,Barley,2021,2374717.8216690156
+Finland,Barley,2021,202970.0645861012
+France,Barley,2021,2748735.7898763623
+Croatia,Barley,2021,59893.9692945642
+Hungary,Barley,2021,343290.3749555146
+Ireland,Barley,2021,372705.1264633308
+Italy,Barley,2021,258156.72744716684
+Lithuania,Barley,2021,131461.5854480808
+Luxembourg,Barley,2021,6445.934689087182
+Latvia,Barley,2021,45890.32402506104
+Malta,Barley,2021,0.0
+Netherlands (Kingdom of the),Barley,2021,65535.64057290289
+Poland,Barley,2021,538608.1097364059
+Portugal,Barley,2021,12158.570386021327
+Romania,Barley,2021,474893.8892407863
+Sweden,Barley,2021,306897.45561914536
+Slovenia,Barley,2021,22507.548097858544
+Slovakia,Barley,2021,117363.3209537837
+Austria,Oats,2021,19598.006935444882
+Belgium,Oats,2021,2365.480619848507
+Bulgaria,Oats,2021,5014.818914078835
+Cyprus,Oats,2021,141.92883719091046
+Czechia,Oats,2021,45334.43607939664
+Germany,Oats,2021,149427.4107558302
+Denmark,Oats,2021,75269.59332357951
+Estonia,Oats,2021,18391.61181932214
+Greece,Oats,2021,22543.030307156274
+Spain,Oats,2021,272018.44387947913
+Finland,Oats,2021,151698.27215088476
+France,Oats,2021,95683.69107287211
+Croatia,Oats,2021,9390.958060798574
+Hungary,Oats,2021,15955.16678087818
+Ireland,Oats,2021,53223.313946591414
+Italy,Oats,2021,52998.5932877058
+Lithuania,Oats,2021,44009.766932281476
+Luxembourg,Oats,2021,1348.323953313649
+Latvia,Oats,2021,34370.43340639881
+Malta,Oats,2021,0.0
+Netherlands (Kingdom of the),Oats,2021,2933.195968612149
+Poland,Oats,2021,535852.3248142824
+Portugal,Oats,2021,7403.954340125828
+Romania,Oats,2021,56937.11851975357
+Sweden,Oats,2021,105654.19188553357
+Slovenia,Oats,2021,851.5730231454626
+Slovakia,Oats,2021,6800.756782064458
+Austria,Maize (corn),2021,623386.9351517764
+Belgium,Maize (corn),2021,168481.3571487099
+Bulgaria,Maize (corn),2021,821448.6274516919
+Cyprus,Maize (corn),2021,0.0
+Czechia,Maize (corn),2021,265773.57504307904
+Germany,Maize (corn),2021,988830.0361121723
+Denmark,Maize (corn),2021,23572.014376790376
+Greece,Maize (corn),2021,359564.88162007235
+Spain,Maize (corn),2021,1518934.2430202228
+Finland,Maize (corn),2021,0.0
+France,Maize (corn),2021,4297534.225722172
+Croatia,Maize (corn),2021,391569.8344066226
+Hungary,Maize (corn),2021,1602069.0594047986
+Ireland,Maize (corn),2021,0.0
+Italy,Maize (corn),2021,1902366.8240945665
+Lithuania,Maize (corn),2021,26919.16945387601
+Luxembourg,Maize (corn),2021,177.41104648863805
+Malta,Maize (corn),2021,0.0
+Netherlands (Kingdom of the),Maize (corn),2021,39030.43022750037
+Poland,Maize (corn),2021,1425213.9008618249
+Portugal,Maize (corn),2021,232751.46558999387
+Romania,Maize (corn),2021,3664176.7897577346
+Sweden,Maize (corn),2021,4695.479030399287
+Slovenia,Maize (corn),2021,91130.14087966374
+Slovakia,Maize (corn),2021,344981.69359870633
+Austria,Rice,2021,1088.1210851303133
+Belgium,Rice,2021,0.0
+Bulgaria,Rice,2021,23382.775927202492
+Cyprus,Rice,2021,0.0
+Greece,Rice,2021,88918.41650010538
+Spain,Rice,2021,306436.1868982748
+Finland,Rice,2021,0.0
+France,Rice,2021,22625.82212885097
+Hungary,Rice,2021,6942.685619255369
+Ireland,Rice,2021,0.0
+Italy,Rice,2021,405088.5561490569
+Lithuania,Rice,2021,0.0
+Malta,Rice,2021,0.0
+Portugal,Rice,2021,62732.54603838241
+Romania,Rice,2021,5239.539572964444
+Sweden,Rice,2021,0.0
+Slovenia,Rice,2021,0.0
+Slovakia,Rice,2021,0.0
+Austria,Cereals n.e.c.,2021,90976.38463937359
+Belgium,Cereals n.e.c.,2021,5322.331394659141
+Bulgaria,Cereals n.e.c.,2021,13790.752013716796
+Cyprus,Cereals n.e.c.,2021,555.8879456643992
+Czechia,Cereals n.e.c.,2021,43678.59964550268
+Germany,Cereals n.e.c.,2021,409086.21839660086
+Denmark,Cereals n.e.c.,2021,12312.32662631148
+Estonia,Cereals n.e.c.,2021,7250.198099835674
+Greece,Cereals n.e.c.,2021,0.0
+Spain,Cereals n.e.c.,2021,210527.77516651715
+Finland,Cereals n.e.c.,2021,449.4413177712164
+France,Cereals n.e.c.,2021,496112.2504008274
+Croatia,Cereals n.e.c.,2021,11247.86034737965
+Hungary,Cereals n.e.c.,2021,89947.40056973949
+Ireland,Cereals n.e.c.,2021,0.0
+Italy,Cereals n.e.c.,2021,271237.8352749291
+Lithuania,Cereals n.e.c.,2021,90349.53227511373
+Luxembourg,Cereals n.e.c.,2021,6244.868836400059
+Latvia,Cereals n.e.c.,2021,15198.212982526658
+Malta,Cereals n.e.c.,2021,0.0
+Netherlands (Kingdom of the),Cereals n.e.c.,2021,27522.36701193738
+Poland,Cereals n.e.c.,2021,1166524.940275192
+Portugal,Cereals n.e.c.,2021,4305.174728124283
+Romania,Cereals n.e.c.,2021,50254.63576868153
+Sweden,Cereals n.e.c.,2021,35020.94057685715
+Slovenia,Cereals n.e.c.,2021,8468.420619057655
+Slovakia,Cereals n.e.c.,2021,8823.242712034931
+Austria,Rape or colza seed,2021,48516.00751309288
+Belgium,Rape or colza seed,2021,23158.055268316886
+Bulgaria,Rape or colza seed,2021,202130.31896605494
+Cyprus,Rape or colza seed,2021,0.0
+Czechia,Rape or colza seed,2021,677651.060571101
+Germany,Rape or colza seed,2021,2249678.5161038237
+Denmark,Rape or colza seed,2021,355496.2549539329
+Estonia,Rape or colza seed,2021,126931.6900610709
+Greece,Rape or colza seed,2021,0.0
+Spain,Rape or colza seed,2021,141313.81222974983
+Finland,Rape or colza seed,2021,28681.45251566315
+France,Rape or colza seed,2021,2033343.4860155783
+Croatia,Rape or colza seed,2021,69509.64801424839
+Hungary,Rape or colza seed,2021,426602.60238657903
+Ireland,Rape or colza seed,2021,17800.241664360015
+Italy,Rape or colza seed,2021,19787.245385032762
+Lithuania,Rape or colza seed,2021,573546.2584915684
+Luxembourg,Rape or colza seed,2021,2531.064263237903
+Latvia,Rape or colza seed,2021,236122.275473278
+Malta,Rape or colza seed,2021,0.0
+Netherlands (Kingdom of the),Rape or colza seed,2021,2590.2012787341155
+Poland,Rape or colza seed,2021,1260564.6223172697
+Portugal,Rape or colza seed,2021,1537.5624029015298
+Romania,Rape or colza seed,2021,646793.3658851774
+Sweden,Rape or colza seed,2021,240841.40930987574
+Slovenia,Rape or colza seed,2021,3713.804573162156
+Slovakia,Rape or colza seed,2021,219043.50539797178
+Austria,Sunflower seed,2021,44163.52317257163
+Bulgaria,Sunflower seed,2021,1193999.9976747325
+Cyprus,Sunflower seed,2021,0.0
+Czechia,Sunflower seed,2021,32998.454646886676
+Germany,Sunflower seed,2021,58249.96026376949
+Greece,Sunflower seed,2021,99728.66293281307
+Spain,Sunflower seed,2021,484403.1213325773
+Finland,Sunflower seed,2021,0.0
+France,Sunflower seed,2021,1300079.9760718388
+Croatia,Sunflower seed,2021,96499.78188671985
+Hungary,Sunflower seed,2021,1044868.2719963833
+Ireland,Sunflower seed,2021,0.0
+Italy,Sunflower seed,2021,95553.58963878044
+Lithuania,Sunflower seed,2021,0.0
+Malta,Sunflower seed,2021,0.0
+Netherlands (Kingdom of the),Sunflower seed,2021,0.0
+Portugal,Sunflower seed,2021,6552.381316980364
+Romania,Sunflower seed,2021,1372830.3325352797
+Sweden,Sunflower seed,2021,0.0
+Slovenia,Sunflower seed,2021,650.5071704583395
+Slovakia,Sunflower seed,2021,99858.76436690474
+Austria,Soya beans,2021,164944.9636220364
+Bulgaria,Soya beans,2021,1502.080193603802
+Cyprus,Soya beans,2021,0.0
+Czechia,Soya beans,2021,31165.207166504082
+Germany,Soya beans,2021,67830.15677415594
+Greece,Soya beans,2021,4600.859805605346
+Spain,Soya beans,2021,2826.749340718966
+Finland,Soya beans,2021,0.0
+France,Soya beans,2021,286790.870350433
+Croatia,Soya beans,2021,156866.84730525373
+Hungary,Soya beans,2021,102200.59018055475
+Ireland,Soya beans,2021,0.0
+Italy,Soya beans,2021,467927.54881533247
+Lithuania,Soya beans,2021,0.0
+Malta,Soya beans,2021,0.0
+Portugal,Soya beans,2021,11.827403099242536
+Romania,Soya beans,2021,165630.95300179246
+Sweden,Soya beans,2021,0.0
+Slovenia,Soya beans,2021,2885.886356215179
+Slovakia,Soya beans,2021,91792.47545322133
+Austria,Unmanufactured tobacco,2021,0.0
+Belgium,Unmanufactured tobacco,2021,248.37546508409324
+Bulgaria,Unmanufactured tobacco,2021,24104.247516256288
+Cyprus,Unmanufactured tobacco,2021,0.0
+Germany,Unmanufactured tobacco,2021,23903.18166356917
+Greece,Unmanufactured tobacco,2021,96629.88332081152
+Spain,Unmanufactured tobacco,2021,70988.0734016537
+Finland,Unmanufactured tobacco,2021,0.0
+France,Unmanufactured tobacco,2021,15328.314416618327
+Croatia,Unmanufactured tobacco,2021,21963.487555293388
+Hungary,Unmanufactured tobacco,2021,8941.516743027358
+Ireland,Unmanufactured tobacco,2021,0.0
+Italy,Unmanufactured tobacco,2021,199007.8845478549
+Lithuania,Unmanufactured tobacco,2021,0.0
+Malta,Unmanufactured tobacco,2021,0.0
+Poland,Unmanufactured tobacco,2021,60165.99956584678
+Portugal,Unmanufactured tobacco,2021,0.0
+Romania,Unmanufactured tobacco,2021,1537.5624029015298
+Sweden,Unmanufactured tobacco,2021,0.0
+Slovenia,Unmanufactured tobacco,2021,0.0
+Slovakia,Unmanufactured tobacco,2021,11.827403099242536
+Austria,Sugar beet,2021,115612.86529509579
+Belgium,Sugar beet,2021,142839.54722955212
+Bulgaria,Sugar beet,2021,0.0
+Cyprus,Sugar beet,2021,0.0
+Czechia,Sugar beet,2021,175956.2759074312
+Germany,Sugar beet,2021,1113396.2455533945
+Denmark,Sugar beet,2021,82082.1775087432
+Greece,Sugar beet,2021,910.7100386416753
+Spain,Sugar beet,2021,107487.43936591616
+Finland,Sugar beet,2021,19574.3521292464
+France,Sugar beet,2021,1026251.9395181756
+Croatia,Sugar beet,2021,31685.612902870755
+Hungary,Sugar beet,2021,31378.10042229045
+Ireland,Sugar beet,2021,0.0
+Italy,Sugar beet,2021,62058.384061725585
+Lithuania,Sugar beet,2021,40686.26666139433
+Malta,Sugar beet,2021,0.0
+Netherlands (Kingdom of the),Sugar beet,2021,366649.4960765186
+Poland,Sugar beet,2021,565941.2382987554
+Portugal,Sugar beet,2021,0.0
+Romania,Sugar beet,2021,24447.242206134324
+Sweden,Sugar beet,2021,67794.67456485821
+Slovenia,Sugar beet,2021,295.6850774810634
+Slovakia,Sugar beet,2021,46730.069645107265
+Austria,Wheat,2022,518047.2776148007
+Belgium,Wheat,2022,594108.9807596672
+Bulgaria,Wheat,2022,1962461.4423476832
+Cyprus,Wheat,2022,13236.821383510613
+Czechia,Wheat,2022,1488073.5612770629
+Germany,Wheat,2022,7212340.654246461
+Denmark,Wheat,2022,1285287.9849984124
+Estonia,Wheat,2022,255638.0874352455
+Greece,Wheat,2022,555441.0347610586
+Spain,Wheat,2022,2268203.583993544
+Finland,Wheat,2022,271307.45117324375
+France,Wheat,2022,10001045.11918206
+Croatia,Wheat,2022,316104.1402467952
+Hungary,Wheat,2022,1501341.9741197228
+Ireland,Wheat,2022,229269.74953205494
+Italy,Wheat,2022,3512359.489179711
+Lithuania,Wheat,2022,1522013.3188896761
+Luxembourg,Wheat,2022,26115.606229997073
+Latvia,Wheat,2022,736502.2176314497
+Malta,Wheat,2022,0.0
+Netherlands (Kingdom of the),Wheat,2022,605892.5950223152
+Poland,Wheat,2022,3997646.4236568017
+Portugal,Wheat,2022,66858.05804606911
+Romania,Wheat,2022,2766874.7666635085
+Sweden,Wheat,2022,917289.607855881
+Slovenia,Wheat,2022,48798.2738991155
+Slovakia,Wheat,2022,619813.8980207249
+Austria,Rye,2022,49767.07864635732
+Belgium,Rye,2022,779.2559923466868
+Bulgaria,Rye,2022,5202.060273233288
+Cyprus,Rye,2022,0.0
+Czechia,Rye,2022,37846.56806072962
+Germany,Rye,2022,819808.8954078638
+Denmark,Rye,2022,198783.99145308658
+Estonia,Rye,2022,9666.986499652141
+Greece,Rye,2022,4907.206654507514
+Spain,Rye,2022,73850.30100442318
+Finland,Rye,2022,20028.985100586462
+France,Rye,2022,48692.96903528486
+Croatia,Rye,2022,600.23772383461
+Hungary,Rye,2022,17417.42447758676
+Ireland,Rye,2022,0.0
+Italy,Rye,2022,2664.213054915024
+Lithuania,Rye,2022,21008.320334211352
+Luxembourg,Rye,2022,1621.6949029917535
+Latvia,Rye,2022,31644.11158110532
+Malta,Rye,2022,0.0
+Netherlands (Kingdom of the),Rye,2022,3253.9202923665703
+Poland,Rye,2022,517383.85697266774
+Portugal,Rye,2022,3222.3288332173806
+Romania,Rye,2022,11825.736208180126
+Sweden,Rye,2022,34813.78798240739
+Slovenia,Rye,2022,1021.4571791571435
+Slovakia,Rye,2022,7223.913658781447
+Austria,Barley,2022,203638.54567567876
+Belgium,Barley,2022,106463.21733277032
+Bulgaria,Barley,2022,176985.8846401455
+Cyprus,Barley,2022,9182.584126031228
+Czechia,Barley,2022,545089.5666465074
+Germany,Barley,2022,3276645.081981221
+Denmark,Barley,2022,1230445.2119154183
+Estonia,Barley,2022,118910.25223755118
+Greece,Barley,2022,100766.22419953306
+Spain,Barley,2022,2210665.0063964864
+Finland,Barley,2022,423315.02211276296
+France,Barley,2022,3228436.5153195574
+Croatia,Barley,2022,114519.03941581378
+Hungary,Barley,2022,470502.1315952698
+Ireland,Barley,2022,563865.4238675094
+Italy,Barley,2022,361069.3171024756
+Lithuania,Barley,2022,176712.09199418584
+Luxembourg,Barley,2022,10625.260760510904
+Latvia,Barley,2022,77251.64810615263
+Malta,Barley,2022,0.0
+Netherlands (Kingdom of the),Barley,2022,103735.82135955691
+Poland,Barley,2022,724234.2009951809
+Portugal,Barley,2022,10614.730274127842
+Romania,Barley,2022,497081.07922612166
+Sweden,Barley,2022,427927.3751485447
+Slovenia,Barley,2022,31454.56282621018
+Slovakia,Barley,2022,165665.61177835238
+Austria,Oats,2022,22619.484750820044
+Belgium,Oats,2022,2822.170350660974
+Bulgaria,Oats,2022,7055.425876652434
+Cyprus,Oats,2022,179.0182685120767
+Czechia,Oats,2022,43164.46368417661
+Germany,Oats,2022,202101.09466375152
+Denmark,Oats,2022,116909.45982476915
+Estonia,Oats,2022,21334.765412086315
+Greece,Oats,2022,34529.46485006467
+Spain,Oats,2022,265010.2203161719
+Finland,Oats,2022,380161.08891496947
+France,Oats,2022,90562.18289434469
+Croatia,Oats,2022,11130.724106897944
+Hungary,Oats,2022,11088.602161365692
+Ireland,Oats,2022,75187.67277507222
+Italy,Oats,2022,69374.84429162124
+Lithuania,Oats,2022,62993.36954348486
+Luxembourg,Oats,2022,2316.7070042739338
+Latvia,Oats,2022,57886.08364769915
+Malta,Oats,2022,0.0
+Netherlands (Kingdom of the),Oats,2022,3727.7921796044207
+Poland,Oats,2022,553145.3887295509
+Portugal,Oats,2022,6960.651499204865
+Romania,Oats,2022,52220.68197361108
+Sweden,Oats,2022,183146.2191742375
+Slovenia,Oats,2022,852.9693970281302
+Slovakia,Oats,2022,5107.285895785717
+Austria,Maize (corn),2022,715820.3423751133
+Belgium,Maize (corn),2022,158220.5579055266
+Bulgaria,Maize (corn),2022,756984.0136465079
+Cyprus,Maize (corn),2022,0.0
+Czechia,Maize (corn),2022,203059.3689246103
+Germany,Maize (corn),2022,1105880.0884901623
+Denmark,Maize (corn),2022,26800.087844896185
+Estonia,Maize (corn),2022,0.0
+Greece,Maize (corn),2022,460266.49883093225
+Spain,Maize (corn),2022,1239311.8814499578
+Finland,Maize (corn),2022,0.0
+France,Maize (corn),2022,3429031.7504305304
+Croatia,Maize (corn),2022,442375.2024661077
+Hungary,Maize (corn),2022,915404.6507933127
+Ireland,Maize (corn),2022,0.0
+Italy,Maize (corn),2022,1835590.142404536
+Lithuania,Maize (corn),2022,35751.00127050002
+Luxembourg,Maize (corn),2022,410.68896893947004
+Malta,Maize (corn),2022,0.0
+Netherlands (Kingdom of the),Maize (corn),2022,41068.89689394701
+Poland,Maize (corn),2022,1971601.904528182
+Portugal,Maize (corn),2022,273634.6886639008
+Romania,Maize (corn),2022,2414651.058122806
+Sweden,Maize (corn),2022,4149.011634926954
+Slovenia,Maize (corn),2022,82116.73281512788
+Slovakia,Maize (corn),2022,193402.91291134123
+Austria,Rice,2022,768.7255059636234
+Belgium,Rice,2022,0.0
+Bulgaria,Rice,2022,27610.935296392065
+Cyprus,Rice,2022,0.0
+Denmark,Rice,2022,0.0
+Estonia,Rice,2022,0.0
+Greece,Rice,2022,65752.35697584746
+Spain,Rice,2022,210388.58744722238
+Finland,Rice,2022,0.0
+France,Rice,2022,22630.015237203108
+Hungary,Rice,2022,6065.560156644481
+Ireland,Rice,2022,0.0
+Italy,Rice,2022,529799.3004182994
+Lithuania,Rice,2022,0.0
+Malta,Rice,2022,0.0
+Netherlands (Kingdom of the),Rice,2022,0.0
+Portugal,Rice,2022,60339.68697495291
+Romania,Rice,2022,7771.498950700741
+Sweden,Rice,2022,0.0
+Slovenia,Rice,2022,0.0
+Slovakia,Rice,2022,0.0
+Austria,Cereals n.e.c.,2022,100871.52906336369
+Belgium,Cereals n.e.c.,2022,5138.877354934907
+Bulgaria,Cereals n.e.c.,2022,17154.162318010174
+Cyprus,Cereals n.e.c.,2022,589.7072374515467
+Czechia,Cereals n.e.c.,2022,54948.07794682448
+Germany,Cereals n.e.c.,2022,505726.6085466167
+Denmark,Cereals n.e.c.,2022,8971.974398369963
+Estonia,Cereals n.e.c.,2022,10077.675468591611
+Greece,Cereals n.e.c.,2022,0.0
+Spain,Cereals n.e.c.,2022,213968.9528174639
+Finland,Cereals n.e.c.,2022,1042.5181519232701
+France,Cereals n.e.c.,2022,487245.60494434054
+Croatia,Cereals n.e.c.,2022,10014.492550293231
+Hungary,Cereals n.e.c.,2022,76619.81892316883
+Ireland,Cereals n.e.c.,2022,0.0
+Italy,Cereals n.e.c.,2022,304583.7881437239
+Lithuania,Cereals n.e.c.,2022,106979.21116554043
+Luxembourg,Cereals n.e.c.,2022,8719.24272517644
+Latvia,Cereals n.e.c.,2022,23819.960198489265
+Malta,Cereals n.e.c.,2022,0.0
+Netherlands (Kingdom of the),Cereals n.e.c.,2022,38299.37897520135
+Poland,Cereals n.e.c.,2022,1672651.926599397
+Portugal,Cereals n.e.c.,2022,6044.499183878354
+Romania,Cereals n.e.c.,2022,47113.39607782536
+Sweden,Cereals n.e.c.,2022,39668.34220499958
+Slovenia,Cereals n.e.c.,2022,9466.907258373938
+Slovakia,Cereals n.e.c.,2022,9414.254826458622
+Austria,Rape or colza seed,2022,54484.736545969696
+Belgium,Rape or colza seed,2022,21650.680003578214
+Bulgaria,Rape or colza seed,2022,170309.5562732833
+Cyprus,Rape or colza seed,2022,0.0
+Czechia,Rape or colza seed,2022,721369.9086989876
+Germany,Rape or colza seed,2022,3074280.7251578933
+Denmark,Rape or colza seed,2022,549628.2062776078
+Estonia,Rape or colza seed,2022,144351.90733903222
+Greece,Rape or colza seed,2022,0.0
+Spain,Rape or colza seed,2022,166476.45922984826
+Finland,Rape or colza seed,2022,43311.8904935395
+France,Rape or colza seed,2022,2647090.4840561626
+Croatia,Rape or colza seed,2022,54147.76098171167
+Hungary,Rape or colza seed,2022,373168.8459566154
+Ireland,Rape or colza seed,2022,36509.19629008058
+Italy,Rape or colza seed,2022,19228.66813547365
+Lithuania,Rape or colza seed,2022,682112.2554629276
+Luxembourg,Rape or colza seed,2022,4675.535954080121
+Latvia,Rape or colza seed,2022,213653.038225972
+Malta,Rape or colza seed,2022,0.0
+Netherlands (Kingdom of the),Rape or colza seed,2022,5728.5845923864545
+Poland,Rape or colza seed,2022,2369580.5764032947
+Portugal,Rape or colza seed,2022,2264.054572358617
+Romania,Rape or colza seed,2022,722591.445119423
+Sweden,Rape or colza seed,2022,255859.22764928985
+Slovenia,Rape or colza seed,2022,4917.737140890577
+Slovakia,Rape or colza seed,2022,320200.4994498068
+Austria,Sunflower seed,2022,35887.89759347985
+Bulgaria,Sunflower seed,2022,1304537.714106652
+Cyprus,Sunflower seed,2022,0.0
+Czechia,Sunflower seed,2022,32886.7089743068
+Germany,Sunflower seed,2022,83454.10458577692
+Denmark,Sunflower seed,2022,0.0
+Greece,Sunflower seed,2022,131357.28714233206
+Spain,Sunflower seed,2022,587643.2621204663
+Finland,Sunflower seed,2022,0.0
+France,Sunflower seed,2022,1240744.0275980544
+Croatia,Sunflower seed,2022,98017.76725355352
+Hungary,Sunflower seed,2022,918237.3516303566
+Ireland,Sunflower seed,2022,0.0
+Italy,Sunflower seed,2022,114382.14309283395
+Lithuania,Sunflower seed,2022,0.0
+Malta,Sunflower seed,2022,0.0
+Netherlands (Kingdom of the),Sunflower seed,2022,0.0
+Portugal,Sunflower seed,2022,11067.541188599565
+Romania,Sunflower seed,2022,1303505.7264411119
+Sweden,Sunflower seed,2022,0.0
+Slovenia,Sunflower seed,2022,705.5425876652434
+Slovakia,Sunflower seed,2022,104904.70534807694
+Austria,Soya beans,2022,169288.09909412617
+Bulgaria,Soya beans,2022,6760.572257926661
+Cyprus,Soya beans,2022,0.0
+Czechia,Soya beans,2022,36045.8548892258
+Germany,Soya beans,2022,73924.01440910461
+Denmark,Soya beans,2022,0.0
+Greece,Soya beans,2022,5370.548055362301
+Spain,Soya beans,2022,2653.6825685319604
+Finland,Soya beans,2022,0.0
+France,Soya beans,2022,255543.31305779793
+Croatia,Soya beans,2022,122532.73955332497
+Hungary,Soya beans,2022,96448.72478247707
+Ireland,Soya beans,2022,0.0
+Italy,Soya beans,2022,483844.25784261106
+Lithuania,Soya beans,2022,0.0
+Malta,Soya beans,2022,0.0
+Netherlands (Kingdom of the),Soya beans,2022,0.0
+Portugal,Soya beans,2022,105.30486383063335
+Romania,Soya beans,2022,127671.61690825986
+Sweden,Soya beans,2022,0.0
+Slovenia,Soya beans,2022,3348.6946698141405
+Slovakia,Soya beans,2022,58159.8762936588
+Austria,Unmanufactured tobacco,2022,0.0
+Belgium,Unmanufactured tobacco,2022,221.14021404433004
+Bulgaria,Unmanufactured tobacco,2022,14100.321266921805
+Cyprus,Unmanufactured tobacco,2022,0.0
+Germany,Unmanufactured tobacco,2022,19881.558291223577
+Denmark,Unmanufactured tobacco,2022,0.0
+Estonia,Unmanufactured tobacco,2022,0.0
+Greece,Unmanufactured tobacco,2022,70017.2039609881
+Spain,Unmanufactured tobacco,2022,48229.62763443007
+Finland,Unmanufactured tobacco,2022,0.0
+France,Unmanufactured tobacco,2022,16911.961131199714
+Croatia,Unmanufactured tobacco,2022,18733.735275469673
+Hungary,Unmanufactured tobacco,2022,16269.601461832854
+Ireland,Unmanufactured tobacco,2022,0.0
+Italy,Unmanufactured tobacco,2022,165223.3313502637
+Lithuania,Unmanufactured tobacco,2022,0.0
+Malta,Unmanufactured tobacco,2022,0.0
+Netherlands (Kingdom of the),Unmanufactured tobacco,2022,0.0
+Poland,Unmanufactured tobacco,2022,50040.871292316966
+Portugal,Unmanufactured tobacco,2022,0.0
+Romania,Unmanufactured tobacco,2022,368.5670234072167
+Sweden,Unmanufactured tobacco,2022,0.0
+Slovenia,Unmanufactured tobacco,2022,0.0
+Slovakia,Unmanufactured tobacco,2022,0.0
+Austria,Sugar beet,2022,180155.56104144754
+Belgium,Sugar beet,2022,201932.60688162252
+Bulgaria,Sugar beet,2022,0.0
+Cyprus,Sugar beet,2022,0.0
+Czechia,Sugar beet,2022,145752.4620279796
+Germany,Sugar beet,2022,1371195.692911443
+Denmark,Sugar beet,2022,77641.27610232598
+Estonia,Sugar beet,2022,0.0
+Greece,Sugar beet,2022,189.54875489514004
+Spain,Sugar beet,2022,119773.75212096237
+Finland,Sugar beet,2022,17891.296364824608
+France,Sugar beet,2022,1200349.0818326236
+Croatia,Sugar beet,2022,25715.447747440667
+Hungary,Sugar beet,2022,32054.800550044794
+Ireland,Sugar beet,2022,0.0
+Italy,Sugar beet,2022,40616.08597947528
+Lithuania,Sugar beet,2022,36393.360939866885
+Malta,Sugar beet,2022,0.0
+Netherlands (Kingdom of the),Sugar beet,2022,574964.556515258
+Poland,Sugar beet,2022,728635.9443033013
+Portugal,Sugar beet,2022,0.0
+Romania,Sugar beet,2022,11415.047239240655
+Sweden,Sugar beet,2022,57127.88862811859
+Slovenia,Sugar beet,2022,147.42680936288667
+Slovakia,Sugar beet,2022,40247.51895606807

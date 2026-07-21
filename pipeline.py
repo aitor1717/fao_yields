@@ -4,6 +4,7 @@ import unicodedata
 
 from fao_filters import (
     livestock_pattern,
+    LIVESTOCK_FALSE_POSITIVES,
     AGGREGATE_ITEMS,
     AGGREGATE_AREAS,
     WB_TO_FAO_COUNTRY,
@@ -109,8 +110,13 @@ assert_no_nulls(df, ["Area_Name", "Item_Name", "Element_Name"], "Post-Merge")
 # domain also carries livestock and animal-derived products (meat, milk, eggs,
 # hides, rendered fat, etc.) under the same Element names ("Production", "Yield"),
 # so they must be excluded explicitly rather than assumed away by the Element filter.
-# See fao_filters.py for the keyword denylist and rollup-category/area sets below.
-df = df[~df["Item_Name"].str.contains(livestock_pattern, regex=True)]
+# See fao_filters.py for the keyword denylist, its false-positive exceptions
+# (e.g. "Cassava; fresh" - "ass" in cASSava - matched the livestock filter and
+# was being silently dropped from every output), and rollup-category/area sets.
+df = df[
+    df["Item_Name"].isin(LIVESTOCK_FALSE_POSITIVES)
+    | ~df["Item_Name"].str.contains(livestock_pattern, regex=True)
+]
 df = df[~df["Item_Name"].isin(AGGREGATE_ITEMS)]
 df = df[~df["Area_Name"].isin(AGGREGATE_AREAS)]
 

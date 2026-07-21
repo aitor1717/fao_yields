@@ -14,6 +14,7 @@ from pathlib import Path
 
 from fao_filters import (
     livestock_pattern,
+    LIVESTOCK_FALSE_POSITIVES,
     AGGREGATE_ITEMS,
     AGGREGATE_AREAS,
     WB_TO_FAO_COUNTRY,
@@ -25,8 +26,17 @@ print("Loading existing FAO_Crop_Yield_TableauReady.csv ...")
 df = pd.read_csv(base_dir / "FAO_Crop_Yield_TableauReady.csv")
 before_rows, before_crops, before_countries = len(df), df["Crop"].nunique(), df["Country"].nunique()
 
-# 1) Drop livestock/animal-derived items
-df = df[~df["Crop"].str.contains(livestock_pattern, regex=True)].copy()
+# 1) Drop livestock/animal-derived items - except the keyword filter's own
+# known false positives (see fao_filters.py: "ass" in cASSava, "egg" in
+# EGGplants, etc.). Note this can only re-filter what's already in the
+# checked-in CSV - if a false positive was already stripped out by an
+# earlier, buggy pipeline.py run (as Cassava was - confirmed directly, it
+# doesn't appear anywhere in the current file), this script can't bring it
+# back without the raw FAOSTAT bulk file to re-derive from scratch.
+df = df[
+    df["Crop"].isin(LIVESTOCK_FALSE_POSITIVES)
+    | ~df["Crop"].str.contains(livestock_pattern, regex=True)
+].copy()
 # 1a) Drop FAO's own crop-category rollups
 df = df[~df["Crop"].isin(AGGREGATE_ITEMS)].copy()
 after_scope_rows, after_scope_crops = len(df), df["Crop"].nunique()

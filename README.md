@@ -16,8 +16,8 @@ pip install -r requirements.txt
 streamlit run dashboard_app.py
 ```
 
-Reads `FAO_Crop_Yield_TableauReady.csv` and `FAO_Arable_Land_Productivity.csv`
-directly — no other setup needed.
+Reads `FAO_Crop_Yield_TableauReady.csv`, `FAO_Arable_Land_Productivity.csv`, and
+`FAO_Value_Kcal_per_ArableHa.csv` directly — no other setup needed.
 
 ## Regenerating the CSVs
 
@@ -45,6 +45,32 @@ Two ways to regenerate the output CSVs, depending on what raw data you have:
 Both scripts share their filtering/correction logic via `fao_filters.py`, so
 edits to livestock keywords, aggregate items/areas, or the country-name
 mapping only need to happen in one place.
+
+- **`derive_value_kcal.py`** — regenerates `FAO_Value_Kcal_per_ArableHa.csv`
+  (country-total value/kcal per arable hectare, behind the Global Value map,
+  Top Value, Value & Area, and "$ vs kcal per Arable Hectare" panels) and
+  `FAO_Crop_Value_TableauReady.csv` (the per-crop dollar-denominated
+  equivalent of `FAO_Crop_Yield_TableauReady.csv`, used only by the panels
+  that need a per-crop breakdown — Top Crops by Value, Crop Value vs.
+  Cultivated Area). Needs two more large FAOSTAT bulk files not included here
+  (see the script's docstring for exact download URLs): the Value of
+  Production domain (QV) and Food Balance Sheets (FBS). Its output has real,
+  documented coverage gaps (see each panel's own caption, or `the project docs` for
+  the full rationale) — it's a partial, not a complete, accounting of either
+  quantity.
+  ```bash
+  python derive_value_kcal.py
+  ```
+- **`derive_eu_value_gap.py`** — regenerates `FAO_EU_Crop_Value_Gap.csv`, which
+  `derive_value_kcal.py` merges in automatically if present. Fills part of the
+  gap QV leaves for the EU's 27 member states after 2017 (cereals, oilseeds,
+  sugar beet, tobacco only — fruit, vegetables, wine, and olives remain a real
+  gap) using Eurostat and FAOSTAT's own exchange rates, fetched directly via
+  API — no manual download needed. Run this **before** `derive_value_kcal.py`.
+  ```bash
+  python derive_eu_value_gap.py
+  python derive_value_kcal.py
+  ```
 
 ## Data caveats
 
