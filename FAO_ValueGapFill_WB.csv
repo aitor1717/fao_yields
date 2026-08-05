@@ -1,0 +1,316 @@
+Country,Year,ValuePerArableHa_USD_Est,KcalPerArableHa_Est,Source,Confidence
+Afghanistan,2005,246.0023288099044,1311619.7024263917,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2006,254.45201523102855,1106229.767731222,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2007,374.0252668648343,1390019.8673940715,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2008,320.7282075937331,947224.240369997,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2009,463.6276418086528,1557681.3231515468,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2010,529.7022299568034,1425645.031842844,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2011,538.8201237314415,1139505.1164761405,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2012,618.8595014575848,1561282.3839905802,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2013,585.7164389498356,1603935.2487904346,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2014,578.3147882281392,1682130.4576220987,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2015,503.21399993613306,1480458.8959628677,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2016,594.3490475573757,1469501.7439355454,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2017,631.4938238274497,1377152.7219988552,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2018,507.1951615513332,1209370.629867149,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2019,617.5584147404257,1582408.0541345072,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2020,762.414731183853,1703243.5353294224,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2021,610.6320315491959,1439959.0334557442,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Afghanistan,2022,622.7095121124573,1379732.7890971033,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Comoros,2005,2961.9197426242768,2103692.916372822,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2006,3111.6262475982458,2716787.897975724,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2007,3544.6193880792925,2765489.7913509444,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2008,4104.817372831692,2762895.0731200594,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2009,4183.094959205831,2791292.497822242,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2010,4248.78200576897,2823892.3796518156,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2011,4810.757695754585,2851440.08800201,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2012,4715.556827386076,2848377.810438192,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2013,5287.43930800577,2872302.2003479614,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2014,5307.814337053431,2808908.6127641425,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2015,4547.566245900077,2780248.7849905156,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2016,4887.861821227677,2891491.7472899766,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2017,5287.558292883785,2883776.0275402996,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2018,6167.143376772631,2936249.5353211374,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2019,6548.725049806969,2923374.568733243,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2020,6746.649619192569,2924743.9232535777,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2021,7042.981214982815,2943133.246196327,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Comoros,2022,6922.190517754754,3014337.115173604,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Democratic Republic of the Congo,2005,167.9674799000035,807269.5560854108,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2006,211.88019326434772,809966.8913515395,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2007,225.2810396261355,813187.8147895848,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2008,278.10464954850437,816619.6000115408,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2009,215.01403176741283,852511.3418035234,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2010,467.9897332798041,1542192.4411864106,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2011,278.8700603645215,1609155.9496442724,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2012,308.8682990189587,1629457.3028406517,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2013,320.24577798030145,1720242.4233676984,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2014,321.50814819147695,1829663.9403523647,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2015,335.940070433796,1837136.7060421144,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2016,318.42110161255596,1912684.6271441681,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2017,308.887543461521,1959318.5996489916,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2018,385.30342294537957,2012841.1388011065,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2019,413.5361610410661,2068344.0894546974,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2020,430.82221638880935,2180252.398295215,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2021,448.6469381669055,2189039.1998452307,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Democratic Republic of the Congo,2022,488.6313421630388,2258093.1177608753,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Djibouti,2013,8136.348546316966,5518753.420114863,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2014,9061.018862899333,5419376.56887798,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2015,8558.163826071966,5501201.526647079,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2016,8644.8714558212,5517435.406500755,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2017,11918.152985109633,8593384.710719505,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2018,13758.458295118,10453663.886563912,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2019,15643.511834092002,13754675.884615064,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2020,20934.12764951807,15208755.102645721,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2021,34008.96986475067,12435879.34279558,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Djibouti,2022,31246.099598059132,10796095.658600759,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2005,1583.5022457548248,670765.4167486846,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2006,1671.6687726323332,648684.6981142659,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2007,1694.3471041331072,586703.3584430901,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2008,1495.8369206207572,649830.671497688,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2009,1504.0700019916383,692079.7180736797,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2010,2047.2327157597626,771223.1359880021,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2011,2127.769117732407,768720.0697529285,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2012,2264.216247069887,802859.6383673415,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2013,2112.0329126208817,873218.4586165511,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2014,1986.1114869726553,892416.7068786033,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2015,1629.21354689348,802175.8406115185,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2016,1130.7544565312035,717403.1674620669,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2017,2045.9513098737004,833466.3507212973,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2018,1937.617177947305,899836.8184662362,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2019,1936.5424463959941,878011.605117686,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2020,1782.0729183044407,850099.2947584749,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2021,1947.379419069175,886543.9153753776,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Eswatini,2022,2030.382475071921,977749.2690658214,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2005,1469.7450794448278,1372737.7518307562,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2006,1560.6432016040555,1389953.3166400115,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2007,1900.0557942948121,1423841.158125072,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2008,2026.5951914151015,1499172.0172146554,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2009,1880.1093821018123,1520783.4345211284,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2010,1731.1033918796124,1584388.4654406551,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2011,1923.170866301246,1692960.8838469791,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2012,1771.8322152816277,1696061.5796628846,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2013,1802.3893398039293,1778098.7290491192,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2014,2028.31666939896,1839150.506169764,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2015,1908.1423130485446,1844517.2993944902,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2016,2145.930039959077,1856429.7895124992,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2017,2418.928318136846,1892908.020260619,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2018,2821.2304687645046,1900239.3502502553,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2019,2883.9298040692,1911587.9793066669,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2020,3123.3005011060923,1918638.7228194284,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2021,4050.423543365692,1921157.0662832595,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Gabon,2022,4092.011351709262,1928312.6077052427,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2005,2169.897078092632,2268559.256270173,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2006,2191.40227169684,2291824.371829683,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2007,2513.8319616747685,2506875.186809777,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2008,2808.1612744791246,2546551.2928844886,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2009,2830.715402467966,2739452.4551237337,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2010,2940.584634796345,2700754.468252591,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2011,3396.170501032439,2844566.0178868845,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2012,3422.0289264805792,2947870.2599723246,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2013,3531.8076911654184,3115657.1682528937,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2014,3750.5184129063705,3212413.326661361,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2015,3988.4730285478054,3405366.2927522757,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2016,4106.6155291838995,3468113.7869174033,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2017,4470.883856450341,3566572.298265045,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2018,4452.31885152408,3656532.9962378168,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2019,4672.4140964943945,3325845.022008559,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2020,4964.4031426422525,3430899.981047929,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2021,5103.59601343917,3692714.627860074,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Guatemala,2022,5586.109561991062,3635242.3548757466,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Haiti,2005,1262.839642450189,1796486.720835942,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2006,1346.5693588292038,1809298.6549452604,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2007,1751.614389687413,2071172.8689883791,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2008,1913.5004547577612,1953270.807396836,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2009,2168.635450215224,2286906.6623870116,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2010,2387.5209782830943,2529063.963936743,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2011,2594.386503328368,2557393.180176371,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2012,2655.835397301373,2504035.3218761683,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2013,2865.9487348914026,2784327.9502355345,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2014,2687.2174403991644,2782493.4942232,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2015,2544.3693220513333,2442663.1323770396,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2016,2517.5626781474625,2243562.369945756,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2017,2827.4094608145074,2274511.790209009,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2018,3053.243015905463,2139020.885112733,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2019,2866.863672970557,1976755.4509799255,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2020,2939.5382098708355,1882213.9424052264,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2021,4310.770461687971,1882892.5555833902,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Haiti,2022,4086.048159156358,1849018.2623801376,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Lesotho,2005,267.4377860552244,428280.40842285176,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2006,244.35806003282178,357060.93104261294,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2007,230.5717823833681,317709.6546404423,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2008,242.54119713928685,318727.5586942216,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2009,268.5665443410242,327814.007971047,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2010,304.5782127504625,581757.8345445578,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2011,328.5431847272304,459349.1968200053,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2012,339.9911743202625,374790.51399661414,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2013,336.03328517868636,417861.368020733,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2014,271.0135444503257,443782.9648431688,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2015,250.15157356573746,376035.9950066552,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2016,291.8498373697568,263089.1172381312,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2017,320.94918533062275,635691.52636407,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2018,304.51402518139696,594357.762931593,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2019,299.13613812642257,292468.34019882465,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2020,305.55034654907666,283453.0750109842,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2021,402.7284242283489,419407.03842969536,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Lesotho,2022,392.8304494559493,374735.7934155321,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2005,1253.3012,1461367.0225140788,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2006,1428.2474,1499722.440606763,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2007,1801.3252,1794921.1201228912,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2008,2249.826,2041482.5261615948,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2009,2052.144,2020218.6950285959,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2010,1435.3118,2051764.6259085296,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2011,1722.6616,2082094.0008025337,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2012,2005.4238,2143411.5614240225,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2013,2282.4174,2012556.9844159686,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2014,2317.2256,2035640.2006951938,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2015,2318.2482,2195305.3524245443,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2016,2441.3372,2411752.5333536514,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2017,2437.415,1998066.9349196546,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2018,2429.93,2075496.4523607567,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2019,2419.1328,2190903.1449479684,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2020,2495.9452,2259653.2237281785,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2021,2628.9988,2181261.6803842946,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Liberia,2022,2897.0018,2185508.8852938227,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Libya,2005,690.7592717490987,613451.7821401436,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2006,530.2424441956564,601803.5681710372,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2007,609.6928126237791,606684.2828915084,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2008,697.5440329897674,607291.2094214703,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2009,762.9592407044478,612050.219972154,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2010,788.6631218315465,666322.4290225983,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2011,856.3118092798023,713512.1573116215,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2012,976.8415107597268,759628.3304930395,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2013,1058.1946528079186,742848.116491624,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2014,1173.0240439223487,742668.4342776528,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2015,1242.3805012221337,711869.6120867418,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2016,1338.276151452314,765108.8501304256,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2017,1512.9076424736045,694717.0257048706,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2018,1631.8649904833721,757655.5115439192,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2019,822.2023441077035,693099.660422934,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2020,1178.6495568671571,694472.2713631864,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2021,395.02186209039706,690161.920145439,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Libya,2022,424.02434403341334,693814.2812103879,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Mauritania,2005,1309.4775435073623,961388.5449618777,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2006,1446.5107553569956,921290.895484139,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2007,1780.2587340553089,993305.0424494133,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2008,2147.2993494908555,1025375.8912003083,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2009,2009.274937466769,976028.7702391087,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2010,2093.0734016195,1376612.9085919708,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2011,2182.102762365031,1110201.237491322,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2012,2405.104518313733,1637535.1181339028,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2013,2616.3050129511557,1585610.143401868,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2014,2765.8978112943555,1829844.5509533132,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2015,2834.1803483922445,1613744.4257000121,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2016,3095.6160107616224,1579019.8349306455,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2017,3439.3647929989334,1849583.5889772098,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2018,3929.766558538689,2094824.1902574736,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2019,3501.395324306511,1746580.3062180856,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2020,3515.7599115652442,1989615.9086709856,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2021,3923.7760421063554,2395491.540398709,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Mauritania,2022,4511.416597067045,2526902.3903893027,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2005,21850.761644646078,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2006,17005.81659186221,13758661.841176696,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2007,20919.40080589326,4239129.774932874,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2008,26717.012530438566,5100252.353904193,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2009,27307.697557808176,5571240.189031048,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2010,24991.51702302033,5370857.071844768,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2011,25752.725631812045,5696171.9649881665,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2012,22025.650376389833,5244705.979610913,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2013,25455.64956120475,6107759.372004128,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2014,25887.298399237236,5678002.013968389,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2015,21998.69826646663,6668763.416626559,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2016,23140.69631951768,7269526.253855561,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2017,23548.06057288276,6576812.376053436,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2018,24177.596859278452,6867024.301412043,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2019,22440.503598050054,6269303.888774665,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2020,21886.45893685326,6560201.96960447,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2021,24265.243960040774,6583746.17112517,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Montenegro,2022,27644.644484145636,6889449.23899756,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Myanmar,2005,508.4235335158256,6073867.857931126,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2006,578.6479904095725,6781723.01553001,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2007,794.3439421273248,7013460.901440124,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2008,1165.8296612767836,7362361.960754613,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2009,1277.716717668923,7441560.767389244,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2010,1658.6502041456276,7496566.324597665,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2011,1770.6689818173104,6891377.685676,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2012,1665.7162418594987,6533081.115340051,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2013,1617.0946217349672,6666907.366692702,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2014,1656.827654974112,6443331.454341787,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2015,1449.7547493403943,6462974.229015571,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2016,1473.790241020903,6349788.596263696,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2017,1404.4400774071046,6253336.523189611,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2018,1360.967436400092,6523277.070688889,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2019,1421.3424174239226,6292512.771730172,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2020,1609.118913017623,6209268.688487361,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2021,1373.3543329330032,6420256.0615482675,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Myanmar,2022,1263.1411586673137,6536149.378980503,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Papua New Guinea,2006,5165.673653275606,7022294.467189857,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2007,5671.653544481878,7972046.166565128,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2008,7135.114249474969,7899113.982240959,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2009,7620.767613679061,8075420.362368963,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2010,8467.72550210282,7955125.497997362,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2011,10463.92302549488,8267781.690226583,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2012,12437.637346527908,8310981.073881559,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2013,12408.902503252728,8569564.92847545,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2014,12443.775895820181,9428018.849990208,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2015,11491.65221028803,9280365.50444206,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2016,11238.944320288272,9354184.331622867,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2017,12163.601077122454,9370802.430869069,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2018,12401.074308088302,9385982.767422331,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2019,12732.656363626696,9463775.628804423,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2020,13554.103077775788,8881586.407011347,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2021,15026.986476733,9014188.772191616,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Papua New Guinea,2022,16218.509231401242,8992412.171500733,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Sudan,2005,556.3530554291974,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2006,686.0204854756514,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2007,1009.8033053495452,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2008,1117.345101268235,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2009,823.8389305145893,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2010,859.3794371402047,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2011,801.890048257104,,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2012,548.4959994443105,542208.0549029259,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2013,627.0707089424434,913355.3998043058,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2014,752.3621247969708,1132827.966582694,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2015,773.6223969632007,681261.1918597287,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2016,641.6384289910312,1162254.4374112957,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2017,625.3008104650775,922772.3589831173,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2018,338.81551246845345,1375361.203349249,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2019,311.1356032979123,1108312.5797179963,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2020,262.6843117408907,1163905.8550289809,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2021,329.3337357721572,1010201.3312235381,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Sudan,2022,649.6811191168088,1218654.129686054,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)","conflict-affected, lower confidence"
+Uganda,2005,335.7578197586116,2264954.0863736644,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2006,347.55375854614636,2216863.8118826402,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2007,384.2995433146087,2273283.2069700123,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2008,447.5394861570145,1542272.495733047,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2009,1269.9687595100825,1619784.8731382869,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2010,1270.5839348975724,1673081.6737720403,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2011,1170.1781248596856,1675139.0670030962,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2012,1075.5071228124957,1614507.99305662,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2013,1090.8511365691347,1630792.9424687244,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2014,1173.0998769908333,1688487.5505039426,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2015,1101.7448548249665,1753515.9179020561,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2016,959.089580470842,1494111.3819402938,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2017,1045.2602185144929,1654494.1821509078,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2018,1109.5116102877957,1897519.8839579728,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2019,1175.643438540674,1712271.3075900492,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2020,1303.971709504961,2094285.008177222,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2021,1400.4395253687435,2117116.2947428715,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+Uganda,2022,1585.655241029971,2270856.419794279,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2005,50023.98338151,28440802.242416766,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2006,48241.43525309026,27580274.494610704,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2007,49997.70762585543,27432048.647033613,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2008,51800.94505241267,27872849.42342811,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2009,52177.896600966575,27593458.70874942,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2010,44729.09433638338,29835467.390338033,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2011,47602.3503268105,9454736.283280466,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2012,48937.84176354021,8906361.188777465,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2013,51325.30209944288,9278251.116129043,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2014,52764.36997327206,12623939.691117512,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2015,54303.17596996765,15141497.415667277,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2016,56126.31715683292,15392113.407546887,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2017,60340.77647047019,13442411.739626223,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2018,61699.84030568871,13469434.808727019,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2019,63266.59424155267,13610614.630334515,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2020,68263.16210603982,14183415.340573715,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2021,74652.15403316589,15135176.249832086,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
+United Arab Emirates,2022,75202.95251301644,13960598.646279138,"World Bank NV.AGR.TOTL.CD (value-added proxy, not FAOSTAT QV)",stable
