@@ -294,7 +294,7 @@ def load_data():
     # leaderboard panels (Top Value, Value per Arable Hectare), which stay
     # FAOSTAT-only. Same MIN_ARABLE_LAND_HA floor as the leaderboards, applied
     # here too - an earlier pass without it put UAE's estimate at $75,203/ha,
-    # ~4x the real dataset's actual top value (Costa Rica, $20,778/ha), the
+    # ~3.6x the real dataset's actual top value (Costa Rica, $20,778/ha), the
     # same small-denominator distortion the leaderboard floor exists to
     # prevent.
     est_fill = pd.read_csv("FAO_ValueGapFill_WB.csv").merge(arable, on="Country", how="left")
@@ -573,7 +573,7 @@ with st.container(border=True):
         )
     st.markdown(
         "<div class='cap-secondary'>The color scale is logarithmic. Value per hectare is heavily "
-        "skewed: a few countries are far above the rest.</div>",
+        "skewed. A few countries are far above the rest.</div>",
         unsafe_allow_html=True,
     )
 

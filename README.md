@@ -1,8 +1,14 @@
 # FAO Crop Yields
 
 A small data pipeline + dashboard that turns FAOSTAT crop production/area
-data and World Bank arable-land data into two clean CSVs, visualized in a
+data and World Bank arable-land data into clean CSVs, visualized in a
 Streamlit app. Not a package — flat scripts/CSVs in one directory.
+
+![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png)
+
+Dollar-denominated so crops are comparable across countries, median-based so
+outlier crops don't dominate, and every gap-filled or estimated figure is
+disclosed on the chart itself, not just in a footnote.
 
 ## Setup
 
@@ -16,8 +22,9 @@ pip install -r requirements.txt
 streamlit run dashboard_app.py
 ```
 
-Reads `FAO_Crop_Yield_TableauReady.csv`, `FAO_Arable_Land_Productivity.csv`, and
-`FAO_Value_Kcal_per_ArableHa.csv` directly — no other setup needed.
+Reads `FAO_Crop_Yield_TableauReady.csv`, `FAO_Value_Kcal_per_ArableHa.csv`,
+`FAO_Crop_Value_TableauReady.csv`, `arable_land_ha.csv`, `area_data.csv`, and
+`FAO_ValueGapFill_WB.csv` directly — no other setup needed.
 
 ## Regenerating the CSVs
 
