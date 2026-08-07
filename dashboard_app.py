@@ -117,18 +117,23 @@ MIN_REPORTED_CROPS = 5
 # Used only by the "$ vs kcal per Arable Hectare" panel: a country/year is
 # dropped if its reported crop-harvested area comes to less than this share
 # of the World Bank arable-land figure that both that panel's axes divide by.
-# Every other country checked clusters near full utilization (median 0.98
-# across all 192 countries in 2022) - only Iceland is a genuine outlier
-# (0.03: 3,528 ha actually cropped against a nominal 121,000 ha "arable"
-# figure, the rest presumably hay/pasture land FAOSTAT's crop domain doesn't
-# track as an item). At that ratio, both of the panel's per-arable-ha figures
-# are dividing a real, small numerator by a denominator that mostly isn't
-# describing the same land, and the panel's log-z-score contrast (see below)
-# reads that mismatch as the single most extreme "runs as a business" data
-# point on the map - confirmed directly, Iceland topped that ranking by a
-# wide margin before this filter. A general ratio threshold, not a
-# hardcoded per-country exclusion, so it applies to whichever country the
-# data next produces this pattern for, not just Iceland today.
+# Re-checked 2026-08-07 against the full 2022 distribution, not just Iceland
+# in isolation: this is a genuine, isolated outlier, not a threshold placed
+# arbitrarily near a cluster. Sorted by utilization ratio, Iceland sits at
+# 0.029 (3,528 ha actually cropped against a nominal 121,000 ha "arable"
+# figure) and the NEXT-lowest country in the entire dataset is Saudi Arabia
+# at 0.157 - a 0.128 gap, more than four times the width of the 0.05
+# threshold itself. Any cutoff between roughly 0.03 and 0.15 would exclude
+# the identical single country, so this isn't a threshold tuned to fit one
+# known case - it sits in the middle of an actual, isolated gap. Below this
+# ratio, both of the panel's per-arable-ha figures are dividing a real,
+# small numerator by a denominator that mostly isn't describing the same
+# land, and the panel's log-z-score contrast (see below) reads that
+# mismatch as the single most extreme "runs as a business" data point on
+# the map - confirmed directly, Iceland topped that ranking by a wide
+# margin before this filter. A general ratio threshold, not a hardcoded
+# per-country exclusion, so it applies to whichever country the data next
+# produces this pattern for, not just Iceland today.
 MIN_CROP_LAND_UTILIZATION = 0.05
 
 # Excluded by explicit request (2026-07-26), not by any statistical mechanism
@@ -149,9 +154,20 @@ MANUALLY_EXCLUDED_COUNTRIES = {"Israel"}
 # Confirmed directly: without this floor, 2022's top of the Value per Arable
 # Hectare leaderboard is Kuwait (8,000 ha), Palestine (41,900 ha), and Hong
 # Kong (2,000 ha), ahead of the Netherlands (1,009,000 ha) - the country this
-# dashboard's own "Top Value" narrative is built around. A general threshold,
-# not a hardcoded per-country exclusion, so it applies to whichever country
-# the data next produces this pattern for, not just these four today.
+# dashboard's own "Top Value" narrative is built around.
+#
+# Re-examined 2026-08-07: unlike MIN_CROP_LAND_UTILIZATION above, this one is
+# NOT sitting in a natural gap - the full distribution of arable land is
+# continuous through this range (Belize/Bhutan at 100,000 ha exactly,
+# Timor-Leste 111,500, Jamaica 120,000, Iceland 121,000, Lebanon 134,214, no
+# break anywhere). The honest justification is a bracket, not a derived
+# cutoff: 100,000 sits between the highest arable-land figure among the
+# known-distorting cases (Palestine, 41,900 ha) and the lowest among
+# known-legitimate high-value economies (Lebanon, 134,214 ha; Costa Rica,
+# 167,133 ha - both independently corroborated as genuine high-value
+# intensive producers, not artifacts). Any value in that bracket does the
+# same job; 100,000 isn't a statistically special point within it, and this
+# comment says so rather than implying a precision the data doesn't support.
 MIN_ARABLE_LAND_HA = 100_000
 
 TOP_N_BARS = 10
@@ -965,7 +981,7 @@ with st.container(border=True):
 # Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right)
 # ---------------------------------------------------------------------------
 col6, col5 = st.columns([2.2, 1])
-BOTTOM_HEIGHT = 660
+BOTTOM_HEIGHT = 940
 
 with col6:
     with st.container(border=True, height=BOTTOM_HEIGHT):
@@ -1019,7 +1035,7 @@ with col6:
                                   name="Value ($/arable ha)", yaxis="y2"))
         fig.update_layout(
             plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-            margin=dict(l=10, r=10, t=10, b=10), height=480,
+            margin=dict(l=10, r=10, t=10, b=10), height=700,
             legend=dict(orientation="h", yanchor="bottom", y=1.02),
             xaxis=dict(gridcolor=GRID, fixedrange=True),
             yaxis=dict(title="Area (ha)", gridcolor=GRID, fixedrange=True),
@@ -1067,6 +1083,14 @@ with col5:
             Top Crops by Value and Crop Value vs. Cultivated Area, above, undercount the EU after
             2017. Eurostat fills in cereals, oilseeds, sugar beet, and tobacco. Fruit, vegetables,
             wine, and olives are not recoverable at that per-crop level.<br><br>
+            The $ vs kcal map's color is relative to that year's own set of countries, not a fixed
+            scale. Moving the year slider changes which countries a given country is compared
+            against. A country's color can shift between years even when its own value and food
+            energy stay flat, because the comparison group shifted, not the country.<br><br>
+            The Top Yield Countries cohort's nine members come from the original Tableau
+            workbook's own selection. That original criterion is not documented here and cannot
+            be reproduced. The cohort stays fixed going forward for a consistent benchmark, not
+            because these nine are provably the best nine to track.<br><br>
             Data quality varies by country. FAOSTAT flags each figure as official, estimated, or
             imputed, but this dashboard does not show that flag. Value per Arable Hectare compares
             each year's value against one recent arable-land figure, not that year's own figure.
