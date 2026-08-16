@@ -72,7 +72,7 @@ import streamlit as st
 
 from fao_filters import KCAL_EXCLUDE_ITEMS, WB_TO_FAO_COUNTRY
 
-st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="🌾")
+st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="favicon.png")
 
 # --- Palette: colors sampled directly (pixel-picked) from archive/tableau/Global
 # Crop Yields.png so this matches the original workbook, not an approximation of
@@ -171,6 +171,14 @@ MANUALLY_EXCLUDED_COUNTRIES = {"Israel"}
 MIN_ARABLE_LAND_HA = 100_000
 
 TOP_N_BARS = 10
+
+# Value per Arable Hectare shows more entries than the other Top-N bars
+# (2026-08-12, by request) - kept as its own constant rather than reusing
+# TOP_N_BARS so Top Crops by Value stays at 10. Plotly auto-divides a bar
+# chart's fixed pixel height across however many bars it's given, so
+# doubling the count on the same chart height just narrows each bar - no
+# other layout change needed to keep the panel the same size.
+TOP_N_VALUE_PER_HA = 20
 
 ISO3_OVERRIDES = {
     "Bolivia (Plurinational State of)": "BOL",
@@ -343,6 +351,14 @@ st.markdown(
     .panel-title {{
         font-size: 13px; font-weight: 600; color: {MUTED}; margin: 4px 0 8px 0;
     }}
+    /* No borders anywhere on the page (2026-08-14) - sections are signaled
+       by spacing alone (proximity: a panel's own title/chart/captions sit
+       close together, then a large uniform gap separates it from the next
+       panel), not by a drawn card edge. .section-gap is inserted between
+       every top-level panel; its height is the single number that controls
+       inter-section spacing dashboard-wide, so it stays uniform by
+       construction rather than by eyeballing each gap individually. */
+    .section-gap {{ height: 56px; }}
     /* Caption hierarchy: cap-primary is the panel's one load-bearing sentence
        (what it means), cap-secondary is optional methodology/caveat detail
        underneath - smaller and muted, flush-left (no indent/rule - size and
@@ -360,27 +376,33 @@ st.markdown(
         border-radius: 4px;
     }}
     div[data-testid="stSelectbox"] input {{ background-color: transparent !important; }}
-    /* Year slider: a small, subdued round thumb - no pill background, no
-       shadow/glow, no hover scale, no bold fill. Solid muted teal (a flat
-       fill, not transparent) so it reads as a quiet control rather than a
-       call-to-action without depending on whatever sits behind it. Still
-       shows the year value via the native thumb-value label, centered
-       precisely in the circle (the inner <p> tag's default margin/line-
-       height otherwise pushes it off-center at this small size). Track
-       thinned to match. Tick labels (min/max year) keep the same muted tone
-       as every other axis/caption label on the page instead of Streamlit's
-       default.
+    /* Year slider (2026-08-16): thumb and track both pulled from the same
+       point on the Global Value map's own color ramp - specifically
+       France's rendered color at #bfe8b3, a pale flat green - rather than
+       the bold primaryColor teal, so the control reads as quieter than any
+       single data color on the page instead of competing with the map's
+       brightest values. A small, flat round thumb - no pill background,
+       no shadow/glow, no hover scale. Streamlit renders this as a tooltip-
+       style bubble floating above the track by default, not a thumb
+       sitting on it - nudged down with a negative margin so the circle's
+       own center lines up with the track's center instead of floating
+       above it (verified by screenshot, not just eyeballed). Track color
+       matches the thumb exactly via primaryColor override below. Tick
+       labels (min/max year) keep the same muted tone as every other axis/
+       caption label on the page instead of Streamlit's default.
     */
     div[data-testid="stSlider"] div[data-testid="stSliderThumbValue"] {{
-        width: 28px; height: 28px; min-width: 28px; padding: 0; border-radius: 50%;
+        width: 24px; height: 24px; min-width: 24px; padding: 0; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        background-color: #448a7e; border: none; box-shadow: none;
-        font-size: 10px; font-weight: 500; color: {TEXT} !important;
+        background-color: #bfe8b3; border: none; box-shadow: none;
+        font-size: 9px; font-weight: 500; color: {SURFACE} !important;
+        margin-top: 4px;
     }}
     div[data-testid="stSlider"] div[data-testid="stSliderThumbValue"] p {{
-        color: {TEXT} !important; margin: 0; line-height: 1; text-align: center;
+        color: {SURFACE} !important; margin: 0; line-height: 1; text-align: center;
     }}
-    div[data-testid="stSlider"] > div > div > div {{ height: 3px; }}
+    div[data-testid="stSlider"] > div > div > div {{ height: 3px; background-color: #bfe8b3 !important; }}
+    div[data-testid="stSlider"] div[role="slider"] {{ background-color: #bfe8b3 !important; }}
     div[data-testid="stSliderTickBar"] p {{ color: {MUTED}; font-size: 12px; }}
     /* Fixed-height bordered containers (the aligned two-up rows) shouldn't
        show a scrollbar even on marginal overflow - this is a presentational
@@ -395,37 +417,36 @@ st.markdown(
 
 # ---------------------------------------------------------------------------
 # Header (title, intro caption, year control) gets its own bordered frame,
-# matching every panel below - previously this sat directly on the page
-# background, the only unframed content on the page.
+# No frame (2026-08-14 - see .section-gap above): the title card is told
+# apart from the year control and the first panel below purely by spacing.
 # ---------------------------------------------------------------------------
-with st.container(border=True):
-    st.markdown(
-        f"<div style='font-size:28px; font-weight:700; color:{TEXT}; margin-bottom:0;'>Global Crop Yields</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='cap-secondary' style='margin-top:2px;'>This dashboard shows the value and food "
-        "energy each country gets from its farmland, and how these have changed over time. Most "
-        "figures use US dollars, not tonnes. A dollar of any crop is comparable; a tonne of one crop "
-        "is not equal to a tonne of another. All figures come from FAOSTAT and World Bank data. "
-        "No figure is invented or entered by hand.</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f"<div class='cap-primary'>FAO/World Bank data, {int(crops['Year'].min())}–{int(crops['Year'].max())}. "
-        f"Since 2012, a fixed group of historically top-yielding countries has pulled further ahead "
-        f"of the global median ({top_pct:+.1f}% vs {glob_pct:+.1f}%).</div>",
-        unsafe_allow_html=True,
-    )
+st.markdown(
+    f"<div style='font-size:28px; font-weight:700; color:{TEXT}; margin-bottom:0;'>Global Crop Yields</div>",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    "<div class='cap-primary' style='margin-top:2px;'>This dashboard shows the monetary value "
+    "and food energy each country gets from its available farmland, and how these have changed "
+    "over time. The figures come from FAOSTAT and World Bank data.</div>",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    f"<div class='cap-primary'>FAO/World Bank data, {int(crops['Year'].min())}–{int(crops['Year'].max())}. "
+    f"Since 2012, a fixed group of historically top-yielding countries has pulled further ahead "
+    f"of the global median.</div>",
+    unsafe_allow_html=True,
+)
 
-# Year control - deliberately outside the header's bordered frame and
-# unframed itself, so it reads as a page-level control rather than part of
-# the title card. A slider (matching the original workbook), since it's the
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
+
+# Year control - a slider (matching the original workbook), since it's the
 # one control that's genuinely global (every panel reads it). Years are a
 # contiguous range (2005-2022, confirmed directly), so a plain slider works
 # without needing st.select_slider's explicit option list.
 years = sorted(crops["Year"].unique().tolist())
 year = st.slider("Year", min_value=years[0], max_value=years[-1], value=2022 if 2022 in years else years[-1])
+
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Global Value choropleth (full width) - value per ARABLE hectare, country
@@ -444,7 +465,7 @@ year = st.slider("Year", min_value=years[0], max_value=years[-1], value=2022 if 
 # which sidesteps the problem entirely: FAOSTAT's own aggregate categories
 # (Cereals primary, Vegetables and Fruit Primary, etc.) keep fruit/veg in the
 # total as a lump sum even where item-level detail is missing.
-with st.container(border=True):
+with st.container():
     st.markdown(f"<div class='panel-title'>Global Value {year}</div>", unsafe_allow_html=True)
     map_df = value_kcal[value_kcal["Year"] == year].dropna(subset=["ISO3", "ValuePerArableHa_USD"])[
         ["ISO3", "DisplayCountry", "ValuePerArableHa_USD"]
@@ -563,41 +584,19 @@ with st.container(border=True):
     )
     st.markdown(
         "<div class='cap-primary'>This map shows each country's total crop production value "
-        "per hectare of arable land.</div>"
-        "<div class='cap-secondary'>This is a country total, not a per-crop figure. It does not "
-        "change with which crops a country happens to report in a given year.</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='cap-secondary'>FAOSTAT has no item-level Value of Production data for the EU "
-        "after 2017. This map uses each EU country's total value instead, which FAOSTAT still "
-        "reports.</div>",
-        unsafe_allow_html=True,
-    )
-    if not est_map.empty:
-        n_conflict = int((est_map["Confidence"] == "conflict-affected, lower confidence").sum())
-        st.markdown(
-            "<div class='cap-secondary'>Hover a country to see whether its value is FAOSTAT-"
-            f"reported or estimated. FAOSTAT has no Value of Production figure for "
-            f"{est_map['DisplayCountry'].nunique()} of the countries shown. Their estimate uses "
-            "World Bank agricultural value-added data instead, a related but different measure. "
-            f"{n_conflict} of these are conflict-affected countries; their estimate carries extra "
-            "uncertainty, noted in the hover text. The $ vs kcal map below shows the same "
-            "countries. Only the Top Value and Value per Arable Hectare rankings exclude them, "
-            "since those rank FAOSTAT-reported figures only.</div>",
-            unsafe_allow_html=True,
-        )
-    st.markdown(
-        "<div class='cap-secondary'>The color scale is logarithmic. Value per hectare is heavily "
-        "skewed. A few countries are far above the rest.</div>",
+        "per hectare of arable land. It's meant to show what each country does with what it "
+        "has.</div>"
+        "<div class='cap-secondary'>This is a country total, not a per-crop figure. The color "
+        "scale is logarithmic. Value per hectare is skewed.</div>",
         unsafe_allow_html=True,
     )
 
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Top Yields (full width, direct end-of-line labels, no legend)
 # ---------------------------------------------------------------------------
-with st.container(border=True):
+with st.container():
     st.markdown("<div class='panel-title'>Top Value</div>", unsafe_allow_html=True)
     # Country-total value per arable ha (same value_kcal metric as the map
     # above and the "Value per Arable Hectare" bar chart), not a per-crop
@@ -660,23 +659,28 @@ with st.container(border=True):
     fig.update_yaxes(showgrid=False, fixedrange=True)
     st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
     st.markdown(
-        f"<div class='cap-primary'>The top six countries by value per arable hectare are "
-        f"{', '.join(top_countries_now)}.</div>"
-        "<div class='cap-secondary'>Each one runs intensive, high-value production on a small land "
-        "base. This is often greenhouse horticulture or export crops, not high yields spread over "
-        "a large area.</div>"
+        "<div class='cap-primary'>Each of the top six countries runs intensive, high-value "
+        "production on a small land base. This is often greenhouse horticulture or export crops, "
+        "not high yields spread over a large area.</div>"
         f"<div class='cap-secondary'>This chart excludes countries with under {MIN_ARABLE_LAND_HA:,} ha "
-        "of arable land, such as Kuwait, Palestine, and Hong Kong. Their high ratio comes from a "
-        "small denominator, not from genuinely intensive production.</div>",
+        "of arable land, such as Kuwait and Hong Kong. Their high ratio comes from a small "
+        "denominator, not from genuinely intensive production. Costa Rica's and Malaysia's own "
+        "totals are inflated the same way, by a different mechanism: arable land excludes their "
+        "large permanent-crop plantations. See Notes.</div>"
+        "<div class='cap-secondary'>The Netherlands, often cited as the world's second-largest "
+        "agricultural exporter by value, does not appear here. That figure measures export trade, "
+        "not crop production value per hectare - they are not the same measurement. See "
+        "Notes.</div>",
         unsafe_allow_html=True,
     )
 
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Top Crops bar (full width, rank-graded color to match the original)
 # ---------------------------------------------------------------------------
-with st.container(border=True):
-    st.markdown(f"<div class='panel-title'>Top Crops by Value, {year}</div>", unsafe_allow_html=True)
+with st.container():
+    st.markdown(f"<div class='panel-title'>Top Crops by Value in {year}</div>", unsafe_allow_html=True)
     year_crop_value_all = crop_value[crop_value["Year"] == year]
     top_crops = (
         year_crop_value_all.groupby("DisplayCrop", as_index=False)["Value_kUSD"].sum()
@@ -700,25 +704,25 @@ with st.container(border=True):
     st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
     st.markdown(
         f"<div class='cap-primary'>This chart ranks the top {TOP_N_BARS} crops by total value, summed "
-        "across countries with item-level data.</div>"
-        "<div class='cap-secondary'>This is not the same ranking as by tonnage. Tea alone reaches "
-        "this list on price: its tonnage is a small fraction of wheat's or rice's.</div>"
-        "<div class='cap-secondary'>EU countries are undercounted here since 2018. See Notes below "
-        "for the per-crop reporting gap this chart shares with Crop Value vs. Cultivated Area.</div>",
+        "across countries.</div>"
+        "<div class='cap-secondary'>Note this is not the same ranking as by tonnage.</div>",
         unsafe_allow_html=True,
     )
 
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Two-up row: Crop bubble scatter | Production per Arable Hectare
-# (this replaces the original's "Countries Sampled" text-wall slot)
+# (this replaces the original's "Countries Sampled" text-wall slot). No
+# fixed shared height (2026-08-14, see .section-gap above) - each column
+# sizes to its own content; gap="large" signals the two-column split
+# through the same spacing-only language as everything else on the page.
 # ---------------------------------------------------------------------------
-col3, col4 = st.columns([1, 1])
-ROW_HEIGHT = 555
+col3, col4 = st.columns([1, 1], gap="large")
 
 with col3:
-    with st.container(border=True, height=ROW_HEIGHT):
-        st.markdown(f"<div class='panel-title'>Crop Value vs. Cultivated Area, {year}</div>", unsafe_allow_html=True)
+    with st.container():
+        st.markdown(f"<div class='panel-title'>Crop Value vs. Cultivated Area in {year}</div>", unsafe_allow_html=True)
         bubble = (
             year_crop_value_all.groupby("DisplayCrop", as_index=False)
             .agg(Value_kUSD=("Value_kUSD", "sum"),
@@ -759,21 +763,18 @@ with col3:
         fig.update_yaxes(gridcolor=GRID, fixedrange=True)
         st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.markdown(
-            "<div class='cap-primary'>Each bubble is one crop. It plots total value against "
-            "total cultivated area, across all reporting countries.</div>"
-            "<div class='cap-secondary'>Bubble size shows the number of countries growing that "
-            "crop with item-level value data.</div>"
-            "<div class='cap-secondary'>This chart shares the same EU per-crop gap as Top Crops "
-            "by Value above. See Notes below.</div>",
+            "<div class='cap-secondary'>Each bubble is one crop. It plots total value against "
+            "total cultivated area, across all reporting countries. Bubble size shows the number "
+            "of countries growing that crop with item-level value data.</div>",
             unsafe_allow_html=True,
         )
 
 with col4:
-    with st.container(border=True, height=ROW_HEIGHT):
-        st.markdown(f"<div class='panel-title'>Value per Arable Hectare {year}</div>", unsafe_allow_html=True)
+    with st.container():
+        st.markdown(f"<div class='panel-title'>Value per Arable Hectare in {year}</div>", unsafe_allow_html=True)
         value_ha_year = (
             value_kcal[(value_kcal["Year"] == year) & (value_kcal["ArableLand_ha"] >= MIN_ARABLE_LAND_HA)]
-            .sort_values("ValuePerArableHa_USD", ascending=False).head(TOP_N_BARS)
+            .sort_values("ValuePerArableHa_USD", ascending=False).head(TOP_N_VALUE_PER_HA)
             .sort_values("ValuePerArableHa_USD")
         )
         prod_colors = (
@@ -793,15 +794,17 @@ with col4:
         fig.update_yaxes(gridcolor=GRID, fixedrange=True)
         st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.markdown(
-            f"<div class='cap-primary'>This chart ranks the top {TOP_N_BARS} countries by value per "
-            "arable hectare.</div>"
             "<div class='cap-secondary'>Arable land excludes permanent-crop land such as palm oil, "
-            "bananas, and coffee. This favors tree-crop economies.</div>"
-            f"<div class='cap-secondary'>This chart excludes countries with under {MIN_ARABLE_LAND_HA:,} ha "
-            "of arable land. See Top Value above for why.</div>",
+            "bananas, and coffee - this is a real land-use distinction, not a per-crop tally, and "
+            "it can be large: Malaysia's permanent cropland (mostly oil palm) measures about 9 "
+            "times its arable land; Costa Rica's is about 2 times. Both countries' production "
+            "value still includes everything grown on that permanent-crop land, divided only by "
+            "the smaller arable-land figure - which meaningfully inflates their ranking here. "
+            f"This chart excludes countries with under {MIN_ARABLE_LAND_HA:,} ha of arable land.</div>",
             unsafe_allow_html=True,
         )
 
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Value vs Kcal per Arable Hectare (full width) - a sidenote panel, not part
@@ -852,9 +855,9 @@ if not est_vk_year.empty:
 
 # Bordered container matching every other panel - previously the only
 # unframed chart on the page besides the (now also framed) header.
-with st.container(border=True):
+with st.container():
     st.markdown(
-        f"<div class='panel-title'>$ vs kcal per Arable Hectare {year}</div>",
+        f"<div class='panel-title'>$ vs kcal per Arable Hectare in {year}</div>",
         unsafe_allow_html=True,
     )
     all_contrast = pd.concat([vk_year["Contrast"], est_vk_year["Contrast"]]) if not est_vk_year.empty else vk_year["Contrast"]
@@ -942,49 +945,35 @@ with st.container(border=True):
         simplify_crop_name(c).lower()
         for c in KCAL_EXCLUDE_ITEMS - {"Other sugar crops n.e.c.", "Seed cotton; unginned"}
     ))
+    _est_disclosure = (
+        "For estimated countries, the food-energy side is real FAOSTAT data: their own reported "
+        "crop production, run through the same kcal-per-tonne factors used elsewhere. Only the "
+        "value side is a World Bank estimate, the same as on the Global Value map above. "
+        if not est_vk_year.empty else ""
+    )
     st.markdown(
         "<div class='cap-primary'>Teal countries lean toward feeding people. Red countries lean "
-        "toward export or cash value.</div>"
-        "<div class='cap-secondary'>Both sides come from FAOSTAT's own figures. Value comes from "
-        "Gross Production Value; food energy comes from Food Balance Sheets. Value data covers "
-        "about 64% of tracked items and excludes coffee, onions, and most tree nuts. For the EU "
-        "after 2017, this map uses FAOSTAT's aggregate categories instead of item-level data.</div>",
+        "toward cash value.</div>"
+        f"<div class='cap-secondary'>{_est_disclosure}"
+        f"This map drops countries using under {MIN_CROP_LAND_UTILIZATION:.0%} of their nominal "
+        "arable land for tracked crops. Below this level, a small numerator becomes an extreme "
+        "data point. Iceland is the clearest case: only about 3% of its arable-land figure is "
+        "actually cropped. Value data covers about 64% of tracked items and excludes coffee, "
+        "onions, and most tree nuts.</div>",
         unsafe_allow_html=True,
     )
-    st.markdown(
-        f"<div class='cap-secondary'>Food energy excludes crops that mostly become a separately-"
-        f"tracked product: {_kcal_excluded_display}. These crops keep their full value on the "
-        "dollar side, with nothing removed to match. Countries dominated by these crops (Malaysia, "
-        "Mauritius, Barbados, Cabo Verde) skew toward red here. This is a data artifact, not "
-        "always a real choice.</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f"<div class='cap-secondary'>This map drops countries using under {MIN_CROP_LAND_UTILIZATION:.0%} "
-        "of their nominal arable land for tracked crops. Below this level, a small numerator "
-        "becomes an extreme data point. Iceland is the clearest case: only about 3% of its "
-        "arable-land figure is actually cropped.</div>",
-        unsafe_allow_html=True,
-    )
-    if not est_vk_year.empty:
-        st.markdown(
-            "<div class='cap-secondary'>Hover a country to see whether its figure is FAOSTAT-"
-            "reported or estimated. For estimated countries, the food-energy side is real FAOSTAT "
-            "data: their own reported crop production, run through the same kcal-per-tonne factors "
-            "used elsewhere on this page. Only the value side is a World Bank estimate, the same "
-            "as on the Global Value map above.</div>",
-            unsafe_allow_html=True,
-        )
 
+st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right)
+# Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right). No
+# fixed shared height (2026-08-14, see .section-gap above) - each column
+# sizes to its own content; gap="large" signals the split through spacing.
 # ---------------------------------------------------------------------------
-col6, col5 = st.columns([2.2, 1])
-BOTTOM_HEIGHT = 940
+col6, col5 = st.columns([2.2, 1], gap="large")
 
 with col6:
-    with st.container(border=True, height=BOTTOM_HEIGHT):
+    with st.container():
         # Title reserved here, filled in after the selector below it in the
         # script determines the country - so the title still renders first.
         title_slot = st.empty()
@@ -1035,7 +1024,7 @@ with col6:
                                   name="Value ($/arable ha)", yaxis="y2"))
         fig.update_layout(
             plot_bgcolor=SURFACE, paper_bgcolor=SURFACE, font_color=TEXT,
-            margin=dict(l=10, r=10, t=10, b=10), height=700,
+            margin=dict(l=10, r=10, t=10, b=10), height=420,
             legend=dict(orientation="h", yanchor="bottom", y=1.02),
             xaxis=dict(gridcolor=GRID, fixedrange=True),
             yaxis=dict(title="Area (ha)", gridcolor=GRID, fixedrange=True),
@@ -1055,8 +1044,9 @@ with col6:
             )
 
 with col5:
-    with st.container(border=True, height=BOTTOM_HEIGHT):
+    with st.container():
         st.markdown("<div class='panel-title'>Conclusion &amp; Notes</div>", unsafe_allow_html=True)
+        _notes_n_conflict = int((est_map["Confidence"] == "conflict-affected, lower confidence").sum()) if not est_map.empty else 0
         st.markdown(
             f"""
             <div class="callout-box">
@@ -1069,35 +1059,41 @@ with col5:
             This is a fixed historical benchmark. It does not depend on which country currently
             tops the Top Value chart.</span>
             <span class="notes">
-            This benchmark stays in tonnage. Unlike most of this page, it does not use dollars.
-            The cohort is defined by tonnage yield, so scoring it in dollars would answer a
-            different question. The Top Value panel above already covers that question. The
-            Global Median side is checked against all 178 countries in this dashboard. About 18%
-            of these have never reported Value of Production to FAOSTAT. Switching this
-            comparator to dollars would shrink it by the same share.<br><br>
-            This chart uses crops only, not livestock or rollup categories. Yield equals
-            production divided by harvested area. Cross-crop figures use the median, which is
-            more robust to outlier crops such as greenhouse produce. This chart excludes
-            territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years reporting fewer
-            than {MIN_REPORTED_CROPS} crops.<br><br>
-            Top Crops by Value and Crop Value vs. Cultivated Area, above, undercount the EU after
-            2017. Eurostat fills in cereals, oilseeds, sugar beet, and tobacco. Fruit, vegetables,
-            wine, and olives are not recoverable at that per-crop level.<br><br>
-            The $ vs kcal map's color is relative to that year's own set of countries, not a fixed
-            scale. Moving the year slider changes which countries a given country is compared
-            against. A country's color can shift between years even when its own value and food
-            energy stay flat, because the comparison group shifted, not the country.<br><br>
-            The Top Yield Countries cohort's nine members come from the original Tableau
-            workbook's own selection. That original criterion is not documented here and cannot
-            be reproduced. The cohort stays fixed going forward for a consistent benchmark, not
-            because these nine are provably the best nine to track.<br><br>
-            Data quality varies by country. FAOSTAT flags each figure as official, estimated, or
-            imputed, but this dashboard does not show that flag. Value per Arable Hectare compares
-            each year's value against one recent arable-land figure, not that year's own figure.
-            For example, 2005 production is divided by present-day land area. Arable land changes
-            slowly, so this effect is small.<br><br>
-            Source: FAOSTAT (QCL, QV domains) and World Bank (AG.LND.ARBL.HA). Both may revise
-            figures in later releases.
+            Crops only, median-based (robust to outliers like greenhouse produce). The nine-country
+            cohort is fixed, from the original Tableau workbook; its original selection criterion
+            isn't documented and can't be reproduced.<br><br>
+            Excludes territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years with fewer
+            than {MIN_REPORTED_CROPS} reported crops, throughout.<br><br>
+            "Harvested area" (actual crop use that year) and "arable land" (the World Bank's
+            broader temporary-crop/fallow classification) aren't the same - a country's arable
+            land can far exceed what it harvests (Iceland: only 3% of its nominal arable land is
+            actually cropped, hence the $ vs kcal map's utilization filter). Arable land also
+            excludes permanent-crop land - palm oil, bananas, coffee - entirely: Malaysia's is
+            about 9&times; its arable land, Costa Rica's about 2&times; (World Bank, 2022). Top
+            Value and Value per Arable Hectare still divide full production value by the smaller
+            arable-land figure, inflating both countries' rank.<br><br>
+            The Netherlands (famed as the world's second-largest agricultural exporter) doesn't
+            rank near the top here - not an arable-land issue, but because that export figure
+            includes re-exports, livestock/dairy, and cut flowers (outside FAOSTAT's crop scope
+            entirely), while its real strength - greenhouse vegetables - lacks item-level value
+            data since the EU's 2017 reporting change.<br><br>
+            Top Crops by Value and Crop Value vs. Cultivated Area undercount the EU after 2017:
+            Eurostat fills in field crops only; fruit, vegetables, wine, and olives aren't
+            recoverable at the per-crop level.<br><br>
+            Global Value and $ vs kcal show two kinds of countries: FAOSTAT-reported, or (where
+            FAOSTAT has none) a World Bank value-added estimate, disclosed on hover -
+            {_notes_n_conflict} of these are conflict-affected, with extra uncertainty. Leaderboards
+            exclude estimates entirely.<br><br>
+            Food energy excludes crops that mostly become a separately-tracked product
+            ({_kcal_excluded_display}), pulling Malaysia, Mauritius, Barbados, and Cabo Verde
+            toward "ROI-oriented" on the $ vs kcal map for this reason, not always by real choice.
+            That map's color is also relative to each year's own country set, not fixed - a
+            country's color can shift year to year even when its own numbers don't.<br><br>
+            FAOSTAT's official/estimated/imputed flags aren't shown here. Value per Arable Hectare
+            uses one recent arable-land snapshot for every year; arable land changes slowly, so
+            the effect is small.<br><br>
+            Source: FAOSTAT (QCL, QV domains), World Bank (AG.LND.ARBL.HA, AG.LND.CROP.ZS) - both
+            may revise figures in later releases.
             </span>
             </div>
             """,
