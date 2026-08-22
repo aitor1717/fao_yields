@@ -55,6 +55,9 @@ the largest field-crop categories by value for most EU producers - but
 fruit, vegetables, wine, and olives remain unrecovered for the EU after
 2017. Documented as a residual, known gap on the affected panels.
 """
+import io
+import urllib.request
+import zipfile
 from pathlib import Path
 
 import pandas as pd
@@ -62,7 +65,10 @@ import pandas as pd
 from fao_filters import WB_TO_FAO_COUNTRY
 
 base_dir = Path(__file__).resolve().parent
-raw_dir = base_dir
+
+EUROSTAT_URL = "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/aact_eaa01/?format=TSV"
+FX_ZIP_URL = "https://bulks-faostat.fao.org/production/Exchange_rate_E_All_Data_(Normalized).zip"
+FX_CSV_NAME = "Exchange_rate_E_All_Data_(Normalized).csv"
 
 EU_GEO_TO_COUNTRY = {
     "AT": "Austria", "BE": "Belgium", "BG": "Bulgaria", "HR": "Croatia",
@@ -97,7 +103,8 @@ ITEM_MAP = {
 }
 
 print("Fetching Eurostat aact_eaa01 (current-price Value of Production) ...")
-eu = pd.read_csv(raw_dir / "eurostat_aact_eaa01.tsv", sep="\t")
+with urllib.request.urlopen(EUROSTAT_URL, timeout=60) as r:
+    eu = pd.read_csv(io.BytesIO(r.read()), sep="\t")
 key_col = eu.columns[0]
 keys = eu[key_col].str.split(",", expand=True)
 keys.columns = ["freq", "am_item", "indic_agr", "unit", "geo"]
@@ -138,7 +145,11 @@ print("Loading FAOSTAT's own exchange rates (Local currency units per USD) ...")
 # (Local currency units per USD) and "SLC" (Standard local currency units per
 # USD) - identical in value for every country checked, but both present, so
 # this also filters to one to avoid a doubled join.
-fx = pd.read_csv(raw_dir / "Exchange_rate_E_All_Data_(Normalized).csv")
+with urllib.request.urlopen(FX_ZIP_URL, timeout=120) as r:
+    fx_zip_bytes = r.read()
+with zipfile.ZipFile(io.BytesIO(fx_zip_bytes)) as zf:
+    with zf.open(FX_CSV_NAME) as f:
+        fx = pd.read_csv(f)
 fx_eur = fx[(fx["Element Code"] == "LCU") & (fx["Months"] == "Annual value") & (fx["Currency"] == "Euro")]
 fx_eur = fx_eur[fx_eur["Year"].isin(eu_long["Year"].unique())]
 fx_eur = fx_eur[["Year", "Value"]].drop_duplicates().rename(columns={"Value": "EUR_per_USD"})

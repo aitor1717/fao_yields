@@ -3,3 +3,9 @@ pandas
 plotly
 pycountry
 streamlit>=1.59
+# pyarrow>=25 (streamlit's own dataframe-serialization dependency, not
+# imported directly here) segfaults under Python 3.14 - reproduced directly,
+# 4 crashes (SIGSEGV in libarrow.so.2500) across repeated Year-slider
+# interactions in this environment, 0 crashes across 6 identical interactions
+# after pinning below. Not root-caused further into libarrow itself.
+pyarrow<25

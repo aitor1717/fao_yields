@@ -1,5 +1,5 @@
-# Theme colors mirror the constants at the top of dashboard_app.py (BG,
-# SURFACE, TEXT, LINE_COLORS) - keep the two in sync if either changes.
+# Theme colors mirror the constants at the top of dashboard_app.py (SURFACE,
+# TEXT, LINE_COLORS) - keep the two in sync if either changes.
 # backgroundColor and secondaryBackgroundColor are intentionally the same
 # flat tone: the original Tableau workbook uses one background throughout,
 # with no separate "card" contrast.

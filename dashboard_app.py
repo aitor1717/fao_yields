@@ -376,40 +376,48 @@ st.markdown(
         border-radius: 4px;
     }}
     div[data-testid="stSelectbox"] input {{ background-color: transparent !important; }}
-    /* Year slider (2026-08-16): thumb and track both pulled from the same
-       point on the Global Value map's own color ramp - specifically
-       France's rendered color at #bfe8b3, a pale flat green - rather than
-       the bold primaryColor teal, so the control reads as quieter than any
-       single data color on the page instead of competing with the map's
-       brightest values. A small, flat round thumb - no pill background,
-       no shadow/glow, no hover scale. Streamlit renders this as a tooltip-
-       style bubble floating above the track by default, not a thumb
-       sitting on it - nudged down with a negative margin so the circle's
-       own center lines up with the track's center instead of floating
-       above it (verified by screenshot, not just eyeballed). Track color
-       matches the thumb exactly via primaryColor override below. Tick
-       labels (min/max year) keep the same muted tone as every other axis/
-       caption label on the page instead of Streamlit's default.
+    /* Year selectbox specifically (2026-08-21) - targeted via the input's
+       own aria-label rather than position, since it's not a sibling of the
+       Country selectbox elsewhere on the page and CSS has no "first select
+       box in the document" selector. Narrower than the column alone gets it
+       (a 4-digit year doesn't need as much room as Streamlit's own default
+       combobox padding assumes) and a teal accent - LINE_COLORS' own
+       #51d2bb - instead of the neutral gray every other selectbox uses, so
+       it doesn't disappear against the page the way a bare gray outline did.
     */
-    div[data-testid="stSlider"] div[data-testid="stSliderThumbValue"] {{
-        width: 24px; height: 24px; min-width: 24px; padding: 0; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        background-color: #bfe8b3; border: none; box-shadow: none;
-        font-size: 9px; font-weight: 500; color: {SURFACE} !important;
-        margin-top: 4px;
+    div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) {{ max-width: 120px; }}
+    div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) div[role="group"] {{
+        border: 1.5px solid #51d2bb !important; background-color: rgba(81, 210, 187, 0.18) !important;
     }}
-    div[data-testid="stSlider"] div[data-testid="stSliderThumbValue"] p {{
-        color: {SURFACE} !important; margin: 0; line-height: 1; text-align: center;
+    div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) input {{
+        padding-left: 6px !important; padding-right: 2px !important; color: {TEXT} !important;
+        font-size: 13px !important;
     }}
-    div[data-testid="stSlider"] > div > div > div {{ height: 3px; background-color: #bfe8b3 !important; }}
-    div[data-testid="stSlider"] div[role="slider"] {{ background-color: #bfe8b3 !important; }}
-    div[data-testid="stSliderTickBar"] p {{ color: {MUTED}; font-size: 12px; }}
+    div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) svg {{ color: #51d2bb !important; }}
     /* Fixed-height bordered containers (the aligned two-up rows) shouldn't
        show a scrollbar even on marginal overflow - this is a presentational
        dashboard, not a scrolling one, and Linux Firefox renders a visible
        scrollbar track by default (unlike overlay-scrollbar platforms). */
     div[data-testid="stVerticalBlock"] {{ scrollbar-width: none; }}
     div[data-testid="stVerticalBlock"]::-webkit-scrollbar {{ display: none; }}
+    /* Global Value and $ vs kcal choropleths: back to a plain fixed
+       layout.height (2026-08-21), no CSS involved at all. The responsive
+       version (CSS aspect-ratio driving Plotly's autosize instead of a
+       fixed height, so the map would fill any container width without the
+       dead-space-on-wide-screens problem a fixed height has) went through
+       three separate fix attempts - a stale-render dead gap at the bottom,
+       a scrollbar-in-a-box from Streamlit's own default sizing, then a
+       ResizeObserver feedback loop oscillating the whole map large-small-
+       large on every Year change - and the third one still didn't hold up
+       under actual use. Every one of those was a direct consequence of
+       asking Plotly to recompute its own size reactively instead of just
+       reading a constant from the layout. A fixed height re-accepts the
+       original, purely cosmetic tradeoff (a symmetric margin appears on
+       monitors wider than ~1408px, the width this crop was tuned at) in
+       exchange for a map that behaves identically on every render, with
+       nothing left to race or feed back into itself. See each map's own
+       `height=630` in its `fig.update_layout` for where this lives now.
+    */
     </style>
     """,
     unsafe_allow_html=True,
@@ -431,22 +439,33 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    f"<div class='cap-primary'>FAO/World Bank data, {int(crops['Year'].min())}–{int(crops['Year'].max())}. "
+    f"<div class='cap-primary'>FAO/World Bank data, {int(crops['Year'].min())} to {int(crops['Year'].max())}. "
     f"Since 2012, a fixed group of historically top-yielding countries has pulled further ahead "
     f"of the global median.</div>",
     unsafe_allow_html=True,
 )
 
-st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
-
-# Year control - a slider (matching the original workbook), since it's the
-# one control that's genuinely global (every panel reads it). Years are a
-# contiguous range (2005-2022, confirmed directly), so a plain slider works
-# without needing st.select_slider's explicit option list.
+# Year control - a compact selectbox (2026-08-21, replacing a full-width
+# slider) so the header takes less vertical space, leaving more room for the
+# map right below it and a less cramped page overall. The slider itself grew
+# into a real maintenance cost - a fixed-height-vs-responsive-width fight for
+# the map next to it, plus several rounds of react-aria's own default styling
+# (a background gradient, a hover-revealed tick bar, transition lag, a
+# leftover focus-ring glow) all needed individual overrides. A selectbox has
+# none of that: no custom CSS at all below, out of the box. Narrow column
+# ratio (1:9, not the original 1:5) so the box hugs a 4-digit year plus some
+# breathing room instead of stretching across a fifth of the page - the CSS
+# below caps it at 120px regardless, but the column still needs to be wide
+# enough for that cap to actually be reachable rather than clamped smaller.
+# No .control-gap div around it either (confirmed directly: stVerticalBlock
+# already applies a 16px flex `gap` between every element regardless, so a
+# .control-gap on top of that was double spacing - 16px gap + the div's own
+# height + another 16px gap - not the single number it looked like from the
+# source alone).
 years = sorted(crops["Year"].unique().tolist())
-year = st.slider("Year", min_value=years[0], max_value=years[-1], value=2022 if 2022 in years else years[-1])
-
-st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
+year_col, _ = st.columns([1, 9])
+with year_col:
+    year = st.selectbox("Year", years, index=years.index(2022) if 2022 in years else len(years) - 1)
 
 # ---------------------------------------------------------------------------
 # Global Value choropleth (full width) - value per ARABLE hectare, country
@@ -535,7 +554,17 @@ with st.container():
         # to 0.98 rebalances this: measured margins are now a consistent
         # 6-9px on every side, no clipping, no dead space - not just "picked
         # to look right," each number here is the result of that same
-        # measure-adjust-remeasure loop, not a first guess.
+        # measure-adjust-remeasure loop, not a first guess. No explicit
+        # `height` below (2026-08-17): an earlier version fixed height=630 to
+        # match this same 1408px container, which only avoided letterboxing
+        # at that one width - wider containers left the extra width unused as
+        # dead white space down both sides, since the geo subplot's own pixel
+        # height stayed locked at 630 regardless (confirmed directly at
+        # 1920px). CSS below (`aspect-ratio` on the chart's own wrapper) now
+        # locks the wrapper to this same lataxis/lonaxis ratio instead, and
+        # leaving `height` unset lets Plotly's autosize read that CSS-driven
+        # box directly, so the map fills the actual available width at any
+        # container size rather than the one it was measured against.
         geo=dict(
             bgcolor="white", lakecolor="white", landcolor="#dcdcdc", showframe=False,
             showland=True, showcountries=False, showcoastlines=False,
@@ -548,7 +577,7 @@ with st.container():
         # zoom/autoscale doesn't respect the manual lataxis/lonaxis crop above -
         # interacting with it re-fits to a wider default that clips Alaska.
         dragmode=False,
-        coloraxis_showscale=False,  # legend is drawn below as a plain HTML footnote instead -
+        coloraxis_showscale=False,  # legend is drawn below as a plain HTML footnote instead.
     )  # Plotly's own colorbar sat on top of the map itself, illegible against whatever landmass was under it
     st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
 
@@ -561,13 +590,6 @@ with st.container():
         f"transform:translateX(-50%);'>{tick_labels[v]}</span>"
         for v in tick_vals if cmin <= np.log10(v) <= cmax
     )
-    est_swatch = (
-        f"""<div style='margin-top:8px;'>
-            {est_map["DisplayCountry"].nunique() if not est_map.empty else 0} of the countries shown
-            are estimated (World Bank proxy, not FAOSTAT). Hover a country to see which.
-        </div>"""
-        if not est_map.empty else ""
-    )
     st.markdown(
         f"""
         <div style='margin-top:8px; font-size:12px; color:{MUTED};'>
@@ -577,17 +599,21 @@ with st.container():
             <div style='position:relative; width:520px; height:14px; margin-top:2px; font-size:11px;'>
                 {ticks_html}
             </div>
-            {est_swatch}
         </div>
         """,
         unsafe_allow_html=True,
+    )
+    _est_count_sentence = (
+        f" {est_map['DisplayCountry'].nunique()} of the countries shown are estimated "
+        "(World Bank proxy, not FAOSTAT); hover a country to see which."
+        if not est_map.empty else ""
     )
     st.markdown(
         "<div class='cap-primary'>This map shows each country's total crop production value "
         "per hectare of arable land. It's meant to show what each country does with what it "
         "has.</div>"
         "<div class='cap-secondary'>This is a country total, not a per-crop figure. The color "
-        "scale is logarithmic. Value per hectare is skewed.</div>",
+        f"scale is logarithmic. Value per hectare is skewed.{_est_count_sentence}</div>",
         unsafe_allow_html=True,
     )
 
@@ -666,11 +692,10 @@ with st.container():
         "of arable land, such as Kuwait and Hong Kong. Their high ratio comes from a small "
         "denominator, not from genuinely intensive production. Costa Rica's and Malaysia's own "
         "totals are inflated the same way, by a different mechanism: arable land excludes their "
-        "large permanent-crop plantations. See Notes.</div>"
+        "large permanent-crop plantations.</div>"
         "<div class='cap-secondary'>The Netherlands, often cited as the world's second-largest "
         "agricultural exporter by value, does not appear here. That figure measures export trade, "
-        "not crop production value per hectare - they are not the same measurement. See "
-        "Notes.</div>",
+        "not crop production value per hectare; they are not the same measurement.</div>",
         unsafe_allow_html=True,
     )
 
@@ -795,11 +820,11 @@ with col4:
         st.plotly_chart(fig, width='stretch', config=dict(displayModeBar=False, scrollZoom=False, doubleClick=False))
         st.markdown(
             "<div class='cap-secondary'>Arable land excludes permanent-crop land such as palm oil, "
-            "bananas, and coffee - this is a real land-use distinction, not a per-crop tally, and "
+            "bananas, and coffee. This is a real land-use distinction, not a per-crop tally, and "
             "it can be large: Malaysia's permanent cropland (mostly oil palm) measures about 9 "
             "times its arable land; Costa Rica's is about 2 times. Both countries' production "
             "value still includes everything grown on that permanent-crop land, divided only by "
-            "the smaller arable-land figure - which meaningfully inflates their ranking here. "
+            "the smaller arable-land figure, which meaningfully inflates their ranking here. "
             f"This chart excludes countries with under {MIN_ARABLE_LAND_HA:,} ha of arable land.</div>",
             unsafe_allow_html=True,
         )
@@ -895,16 +920,8 @@ with st.container():
             projection=dict(scale=0.98, rotation=dict(lon=0)), center=dict(lon=0, lat=11),
         ),
         paper_bgcolor="white", font_color="#333333", autosize=True,
-        # height=630, matching the Global Value map above, not an arbitrary
-        # smaller value (500 previously) - Plotly's geo subplot letterboxes to
-        # fit the container's own aspect ratio rather than the lataxis/lonaxis
-        # crop (see the comment on the Global Value map), so a height that
-        # doesn't match this same lon/lat range's natural ratio at full
-        # container width leaves visible white bars down both sides even
-        # though margin is already zero. Confirmed directly: at height=500 the
-        # rendered landmass left off ~96px of white on each side of a 1408px-
-        # wide container; at height=630 (matching this same width) it fills
-        # edge to edge.
+        # height=630, matching the Global Value map above - see that map's
+        # own comment for why this is a fixed constant again, not CSS-driven.
         margin=dict(l=0, r=0, t=0, b=0), height=630,
         dragmode=False,
         coloraxis_showscale=False,
@@ -920,23 +937,14 @@ with st.container():
         "<span style='position:absolute; left:50%; transform:translateX(-50%); white-space:nowrap;'>balanced</span>"
         "<span style='position:absolute; right:0; white-space:nowrap;'>ROI-oriented</span>"
     )
-    est_vk_swatch = (
-        f"""<div style='margin-top:8px;'>
-            {est_vk_year["DisplayCountry"].nunique()} of the countries shown are estimated
-            (World Bank/FAOSTAT proxy). Hover a country to see which.
-        </div>"""
-        if not est_vk_year.empty else ""
-    )
     st.markdown(
         f"""
         <div style='margin-top:8px; font-size:12px; color:{MUTED};'>
-            Teal &rarr; kcal-oriented &nbsp;|&nbsp; Red &rarr; ROI-oriented
             <div style='width:520px; height:12px; margin-top:4px; border-radius:2px;
                          background:linear-gradient(to right, {", ".join(DIVERGING_RAMP)});'></div>
             <div style='position:relative; width:520px; height:14px; margin-top:2px; font-size:11px;'>
                 {vk_ticks_html}
             </div>
-            {est_vk_swatch}
         </div>
         """,
         unsafe_allow_html=True,
@@ -945,21 +953,24 @@ with st.container():
         simplify_crop_name(c).lower()
         for c in KCAL_EXCLUDE_ITEMS - {"Other sugar crops n.e.c.", "Seed cotton; unginned"}
     ))
-    _est_disclosure = (
-        "For estimated countries, the food-energy side is real FAOSTAT data: their own reported "
-        "crop production, run through the same kcal-per-tonne factors used elsewhere. Only the "
-        "value side is a World Bank estimate, the same as on the Global Value map above. "
+    # Primary explanation carries the mechanism (2026-08-21) - the previous
+    # one-liner ("teal feeds people, red is cash") named the two ends of the
+    # ramp without saying what's actually being compared or how a country
+    # lands on one side of it. Caveats (the utilization filter, QV coverage
+    # gap, estimated-country split) moved to the Notes panel below instead of
+    # stacking up here - see that panel for where each one landed.
+    _est_count_sentence = (
+        f" {est_vk_year['DisplayCountry'].nunique()} of the countries shown are estimated "
+        "(World Bank/FAOSTAT proxy); hover a country to see which."
         if not est_vk_year.empty else ""
     )
     st.markdown(
-        "<div class='cap-primary'>Teal countries lean toward feeding people. Red countries lean "
-        "toward cash value.</div>"
-        f"<div class='cap-secondary'>{_est_disclosure}"
-        f"This map drops countries using under {MIN_CROP_LAND_UTILIZATION:.0%} of their nominal "
-        "arable land for tracked crops. Below this level, a small numerator becomes an extreme "
-        "data point. Iceland is the clearest case: only about 3% of its arable-land figure is "
-        "actually cropped. Value data covers about 64% of tracked items and excludes coffee, "
-        "onions, and most tree nuts.</div>",
+        "<div class='cap-primary'>This map compares each country's farmland value against its "
+        "food energy, both per arable hectare and scaled relative to other countries that year. "
+        "Red countries lean toward cash value: farmland run more like an export business. Teal "
+        "countries lean toward food energy: farmland run more to feed people.</div>"
+        f"<div class='cap-secondary'>Color is relative to each year's own country set, so it can "
+        f"shift year to year even when a country's own numbers don't.{_est_count_sentence}</div>",
         unsafe_allow_html=True,
     )
 
@@ -982,7 +993,7 @@ with col6:
         focus_country = st.selectbox(
             "Country", all_countries, index=all_countries.index(default_country)
         )
-        title_slot.markdown(f"<div class='panel-title'>Value &amp; Area — {focus_country}</div>", unsafe_allow_html=True)
+        title_slot.markdown(f"<div class='panel-title'>Value &amp; Area: {focus_country}</div>", unsafe_allow_html=True)
         focus_row_country = crops.loc[crops["DisplayCountry"] == focus_country, "Country"].iloc[0]
         area_series = (
             crops[crops["Country"] == focus_row_country]
@@ -1056,43 +1067,31 @@ with col5:
             <b>Global Median</b><br>
             2012: {glob_2012:.1f} t/ha &rarr; 2022: {glob_2022:.1f} t/ha ({glob_pct:+.1f}%)
             <span class="insight">Top producers are pulling further ahead of the global median.
-            This is a fixed historical benchmark. It does not depend on which country currently
-            tops the Top Value chart.</span>
+            This is a fixed historical benchmark, independent of which country currently tops the
+            Top Value chart.</span>
             <span class="notes">
-            Crops only, median-based (robust to outliers like greenhouse produce). The nine-country
-            cohort is fixed, from the original Tableau workbook; its original selection criterion
-            isn't documented and can't be reproduced.<br><br>
-            Excludes territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years with fewer
-            than {MIN_REPORTED_CROPS} reported crops, throughout.<br><br>
-            "Harvested area" (actual crop use that year) and "arable land" (the World Bank's
-            broader temporary-crop/fallow classification) aren't the same - a country's arable
-            land can far exceed what it harvests (Iceland: only 3% of its nominal arable land is
-            actually cropped, hence the $ vs kcal map's utilization filter). Arable land also
-            excludes permanent-crop land - palm oil, bananas, coffee - entirely: Malaysia's is
-            about 9&times; its arable land, Costa Rica's about 2&times; (World Bank, 2022). Top
-            Value and Value per Arable Hectare still divide full production value by the smaller
-            arable-land figure, inflating both countries' rank.<br><br>
-            The Netherlands (famed as the world's second-largest agricultural exporter) doesn't
-            rank near the top here - not an arable-land issue, but because that export figure
-            includes re-exports, livestock/dairy, and cut flowers (outside FAOSTAT's crop scope
-            entirely), while its real strength - greenhouse vegetables - lacks item-level value
-            data since the EU's 2017 reporting change.<br><br>
-            Top Crops by Value and Crop Value vs. Cultivated Area undercount the EU after 2017:
-            Eurostat fills in field crops only; fruit, vegetables, wine, and olives aren't
-            recoverable at the per-crop level.<br><br>
-            Global Value and $ vs kcal show two kinds of countries: FAOSTAT-reported, or (where
-            FAOSTAT has none) a World Bank value-added estimate, disclosed on hover -
-            {_notes_n_conflict} of these are conflict-affected, with extra uncertainty. Leaderboards
-            exclude estimates entirely.<br><br>
-            Food energy excludes crops that mostly become a separately-tracked product
+            Crops only, median-based (robust to outliers like greenhouse produce). Excludes
+            territories under {MIN_LAND_AREA_KM2:,} km&sup2; and country-years with fewer than
+            {MIN_REPORTED_CROPS} reported crops, throughout.<br><br>
+            "Harvested area" (crop use that year) &ne; "arable land" (the World Bank's broader
+            measure, which also excludes permanent-crop land like palm oil, bananas, and coffee).
+            Malaysia's permanent cropland is ~9&times; its arable land, Costa Rica's ~2&times;
+            (World Bank, 2022); yet Top Value and Value per Arable Hectare divide by the smaller
+            figure, inflating both countries' rank.<br><br>
+            The Netherlands (the world's #2 agricultural exporter) doesn't rank near the top: that
+            export figure counts re-exports and livestock, not crop production.<br>
+            Top Crops by Value and Crop Value vs. Cultivated Area undercount the EU post-2017:
+            Eurostat covers field crops only; fruit, vegetables, wine, and olives aren't
+            recoverable per-crop.<br>
+            Global Value and $ vs kcal mix FAOSTAT-reported figures with World Bank estimates
+            where FAOSTAT has none (disclosed on hover; {_notes_n_conflict} conflict-affected,
+            lower confidence). For $ vs kcal, only the value side is estimated; food energy is
+            still real FAOSTAT data. Leaderboards exclude estimates.<br>
+            Food energy excludes crops that mostly convert into a separately-tracked product
             ({_kcal_excluded_display}), pulling Malaysia, Mauritius, Barbados, and Cabo Verde
-            toward "ROI-oriented" on the $ vs kcal map for this reason, not always by real choice.
-            That map's color is also relative to each year's own country set, not fixed - a
-            country's color can shift year to year even when its own numbers don't.<br><br>
-            FAOSTAT's official/estimated/imputed flags aren't shown here. Value per Arable Hectare
-            uses one recent arable-land snapshot for every year; arable land changes slowly, so
-            the effect is small.<br><br>
-            Source: FAOSTAT (QCL, QV domains), World Bank (AG.LND.ARBL.HA, AG.LND.CROP.ZS) - both
+            toward "ROI-oriented" on the $ vs kcal map, not always by real choice. Value data also
+            covers about 64% of tracked items, missing coffee, onions, and most tree nuts.<br><br>
+            Source: FAOSTAT (QCL, QV domains), World Bank (AG.LND.ARBL.HA, AG.LND.CROP.ZS); both
             may revise figures in later releases.
             </span>
             </div>

@@ -46,6 +46,16 @@ flags_path = base_dir / 'Production_Crops_Livestock_E_Flags.csv'
 # should be used as the comparison base instead.
 arable_land_path = base_dir / 'arable_land_ha.csv'
 
+if not all_data_path.exists():
+    raise SystemExit(
+        f"Missing raw FAOSTAT bulk file: {all_data_path.name}\n"
+        "Download the normalized QCL (Crops and livestock products) bulk export from "
+        "https://www.fao.org/faostat/en/#data/QCL and place it in the project root "
+        "under that exact filename, then re-run pipeline.py.\n"
+        "If you don't have that file, run apply_fixes_to_existing_output.py instead - "
+        "it applies the same corrections directly to the checked-in output CSV."
+    )
+
 # Load data
 df_base = pd.read_csv(all_data_path, dtype=str)
 df_area = pd.read_csv(area_codes_path, dtype=str)
