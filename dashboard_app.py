@@ -74,8 +74,8 @@ from fao_filters import KCAL_EXCLUDE_ITEMS, WB_TO_FAO_COUNTRY
 
 st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="favicon.png")
 
-# --- Palette: colors sampled directly (pixel-picked) from archive/tableau/Global
-# Crop Yields.png so this matches the original workbook, not an approximation of
+# --- Palette: colors sampled directly (pixel-picked) from the original
+# Tableau workbook's own export so this matches it, not an approximation of
 # it. SURFACE (#333333) is the original's actual panel/chart background, sampled
 # from its "Top Yields" panel, and is also the page background (one flat tone,
 # no separate "card" contrast) - see .streamlit/config.toml, which sets the

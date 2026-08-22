@@ -62,9 +62,8 @@ mapping only need to happen in one place.
   Cultivated Area). Needs two more large FAOSTAT bulk files not included here
   (see the script's docstring for exact download URLs): the Value of
   Production domain (QV) and Food Balance Sheets (FBS). Its output has real,
-  documented coverage gaps (see each panel's own caption, or `the project docs` for
-  the full rationale) — it's a partial, not a complete, accounting of either
-  quantity.
+  documented coverage gaps (see each panel's own caption) — it's a partial,
+  not a complete, accounting of either quantity.
   ```bash
   python derive_value_kcal.py
   ```
@@ -81,9 +80,8 @@ mapping only need to happen in one place.
 
 ## Data caveats
 
-The source data has several real pitfalls that both scripts correct for —
-summarized here; full rationale (with the numbers behind each decision) is
-in `the project docs`:
+The source data has several real pitfalls that both scripts correct for,
+summarized here:
 
 - **Yield is derived, not trusted.** FAOSTAT's own "Yield" element has
   changed units across revisions (hg/ha vs kg/ha). Yield is always computed
@@ -144,5 +142,7 @@ exclusions and one statistic choice, all documented inline in the app's
 ## Project history
 
 This project originally shipped a parallel Tableau workbook alongside the
-Streamlit app. It's been retired — see `archive/tableau/README.md` for why —
-and Streamlit is now the only dashboard.
+Streamlit app. It was retired after an audit found its data and formulas
+had gone stale relative to the corrected pipeline and were quietly
+contradicting the Streamlit app's numbers — Streamlit is now the only
+dashboard.
