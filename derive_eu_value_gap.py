@@ -1,8 +1,8 @@
 """
 Fills the EU per-crop Value of Production gap that FAOSTAT's QV domain leaves
-from 2018 onward (see derive_value_kcal.py and the project docs: all 27 EU member
-states report item-level detail through 2017 and none do from 2018 on - a
-clean cutoff pointing to an EU-side reporting-format change). Produces
+from 2018 onward (see derive_value_kcal.py: all 27 EU member states report
+item-level detail through 2017 and none do from 2018 on - a clean cutoff
+pointing to an EU-side reporting-format change). Produces
 FAO_EU_Crop_Value_Gap.csv (Country/Crop/Year/Value_kUSD), which
 derive_value_kcal.py merges in wherever FAOSTAT's own QV has no item-level
 row for an EU country/year.

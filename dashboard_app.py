@@ -104,8 +104,8 @@ DIVERGING_RAMP = ["#41b7c4", "#77c2bf", "#b8dfd6", "#feffd9", "#f6cdc2", "#ee9c8
 # Countries/territories under this land area are excluded throughout: a
 # handful of crop entries concentrated on very little land (e.g. greenhouse
 # produce in a microstate) can otherwise dominate simple per-country averages
-# and per-area ratios. area_data.csv is World Bank total land area in km2
-# (see the project docs - it's mislabeled as "arable land" but is genuinely this).
+# and per-area ratios. area_data.csv is World Bank total land area in km2,
+# despite its header calling it "arable land" (see README's Data caveats).
 MIN_LAND_AREA_KM2 = 1000
 
 # Country-years reporting fewer distinct crops than this are excluded

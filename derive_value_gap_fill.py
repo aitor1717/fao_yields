@@ -1,7 +1,7 @@
 """
 Fills part of the Global Value map's country gap - the ~46 countries FAOSTAT's
 QV domain (Gross Production Value) has never once reported for in 2005-2022
-(see the project docs and the dashboard's own map caption). Most of that gap is
+(see the dashboard's own map caption). Most of that gap is
 conflict-affected or currency-distorted countries (Somalia, Syria, Venezuela,
 Cuba, ...) where any figure would carry false precision and is deliberately
 left unfilled. This script covers the dozen where a real, if imperfect, proxy
