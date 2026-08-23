@@ -5,9 +5,9 @@ by dollar value and food energy per hectare, not raw tonnage. FAOSTAT crop
 production/area data and World Bank arable-land data, turned into clean CSVs
 and visualized in Streamlit.
 
-**[Live demo →](https://faocropyields.streamlit.app/)**
+**[Live demo](https://faocropyields.streamlit.app/)**
 
-![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png)
+![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png?v=2)
 
 Dollar-denominated so crops are comparable across countries, median-based so
 outlier crops don't dominate, and every gap-filled or estimated figure is
