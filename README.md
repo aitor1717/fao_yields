@@ -7,7 +7,7 @@ and visualized in Streamlit.
 
 **[Live demo](https://faocropyields.streamlit.app/)**
 
-![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png?v=2)
+![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png?v=3)
 
 Dollar-denominated so crops are comparable across countries, median-based so
 outlier crops don't dominate, and every gap-filled or estimated figure is
