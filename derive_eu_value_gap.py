@@ -65,6 +65,7 @@ import pandas as pd
 from fao_filters import WB_TO_FAO_COUNTRY
 
 base_dir = Path(__file__).resolve().parent
+data_dir = base_dir / "data"
 
 EUROSTAT_URL = "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/aact_eaa01/?format=TSV"
 FX_ZIP_URL = "https://bulks-faostat.fao.org/production/Exchange_rate_E_All_Data_(Normalized).zip"
@@ -167,7 +168,7 @@ print(f"EU rows with a matching exchange rate: {len(merged)} / {len(eu_long)}")
 merged["Value_kUSD"] = merged["Value_MEUR"] * 1_000_000 / merged["EUR_per_USD"] / 1_000
 
 out = merged[["Country", "Crop", "Year", "Value_kUSD"]]
-out_path = base_dir / "FAO_EU_Crop_Value_Gap.csv"
+out_path = data_dir / "FAO_EU_Crop_Value_Gap.csv"
 out.to_csv(out_path, index=False)
 print(f"Saved {len(out)} rows to {out_path}")
 print(f"Countries covered: {out['Country'].nunique()} / {len(EU_GEO_TO_COUNTRY)}")

@@ -27,13 +27,14 @@ from fao_filters import (
 
 # Define base path
 base_dir = Path(__file__).resolve().parent
+data_dir = base_dir / 'data'
 
 # File paths
-all_data_path = base_dir / 'Production_Crops_Livestock_E_All_Data_(Normalized).csv'
-area_codes_path = base_dir / 'Production_Crops_Livestock_E_AreaCodes.csv'
-item_codes_path = base_dir / 'Production_Crops_Livestock_E_ItemCodes.csv'
-element_codes_path = base_dir / 'Production_Crops_Livestock_E_Elements.csv'
-flags_path = base_dir / 'Production_Crops_Livestock_E_Flags.csv'
+all_data_path = data_dir / 'Production_Crops_Livestock_E_All_Data_(Normalized).csv'
+area_codes_path = data_dir / 'Production_Crops_Livestock_E_AreaCodes.csv'
+item_codes_path = data_dir / 'Production_Crops_Livestock_E_ItemCodes.csv'
+element_codes_path = data_dir / 'Production_Crops_Livestock_E_Elements.csv'
+flags_path = data_dir / 'Production_Crops_Livestock_E_Flags.csv'
 # NOTE: area_data.csv (the file originally used here) is NOT arable land despite
 # its header. Its values match the World Bank "Land area (sq. km)" indicator
 # (AG.LND.TOTL.K2) almost exactly for every country checked (e.g. Egypt
@@ -44,13 +45,13 @@ flags_path = base_dir / 'Production_Crops_Livestock_E_Flags.csv'
 # is the real World Bank "Arable land (hectares)" indicator (AG.LND.ARBL.HA,
 # most recent value per country, fetched from api.worldbank.org) and is what
 # should be used as the comparison base instead.
-arable_land_path = base_dir / 'arable_land_ha.csv'
+arable_land_path = data_dir / 'arable_land_ha.csv'
 
 if not all_data_path.exists():
     raise SystemExit(
         f"Missing raw FAOSTAT bulk file: {all_data_path.name}\n"
         "Download the normalized QCL (Crops and livestock products) bulk export from "
-        "https://www.fao.org/faostat/en/#data/QCL and place it in the project root "
+        f"https://www.fao.org/faostat/en/#data/QCL and place it in {data_dir}/ "
         "under that exact filename, then re-run pipeline.py.\n"
         "If you don't have that file, run apply_fixes_to_existing_output.py instead - "
         "it applies the same corrections directly to the checked-in output CSV."
@@ -190,7 +191,7 @@ df_pivot["Yield_tonha"] = df_pivot["Production_tons"] / df_pivot["AreaHarvested_
 df_pivot.loc[df_pivot["AreaHarvested_ha"] == 0, "Yield_tonha"] = pd.NA
 
 # Export
-output_path = base_dir / 'FAO_Crop_Yield_TableauReady.csv'
+output_path = data_dir / 'FAO_Crop_Yield_TableauReady.csv'
 df_pivot.to_csv(output_path, index=False)
 
 # Validate output
@@ -250,6 +251,6 @@ if unmatched:
     for name in unmatched:
         print(f"  - {name}")
 
-productivity_path = base_dir / 'FAO_Arable_Land_Productivity.csv'
+productivity_path = data_dir / 'FAO_Arable_Land_Productivity.csv'
 df_productivity.to_csv(productivity_path, index=False)
 print("Arable land productivity file saved at:", productivity_path)

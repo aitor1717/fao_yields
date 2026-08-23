@@ -21,9 +21,10 @@ from fao_filters import (
 )
 
 base_dir = Path(__file__).resolve().parent
+data_dir = base_dir / "data"
 
 print("Loading existing FAO_Crop_Yield_TableauReady.csv ...")
-df = pd.read_csv(base_dir / "FAO_Crop_Yield_TableauReady.csv")
+df = pd.read_csv(data_dir / "FAO_Crop_Yield_TableauReady.csv")
 before_rows, before_crops, before_countries = len(df), df["Crop"].nunique(), df["Country"].nunique()
 
 # 1) Drop livestock/animal-derived items - except the keyword filter's own
@@ -54,7 +55,7 @@ df.loc[df["AreaHarvested_ha"] == 0, "Yield_tonha"] = pd.NA
 out_cols = ["Country", "Crop", "Year", "AreaHarvested_ha", "Production_tons", "Yield_tonha"]
 df = df[out_cols]
 
-out_path = base_dir / "FAO_Crop_Yield_TableauReady.csv"
+out_path = data_dir / "FAO_Crop_Yield_TableauReady.csv"
 df.to_csv(out_path, index=False)
 
 print(f"Rows: {before_rows:,} -> {after_scope_rows:,} (dropped {before_rows - after_scope_rows:,} livestock rows)")
@@ -68,7 +69,7 @@ print("Corrected crop file saved at:", out_path)
 # land (hectares)"). arable_land_ha.csv holds the real World Bank arable-land
 # indicator (AG.LND.ARBL.HA), fetched directly from api.worldbank.org.
 print("\nBuilding arable land productivity file (using real arable-land data) ...")
-df_arable = pd.read_csv(base_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
+df_arable = pd.read_csv(data_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
 df_arable["Country"] = df_arable["Country"].replace(WB_TO_FAO_COUNTRY)
 
 # Restricted to rows with a reported harvested area - see pipeline.py for the
@@ -85,7 +86,7 @@ df_productivity["ProductionPerArableHa_tons"] = df_productivity["Production_tons
 matched = set(df_productivity["Country"])
 unmatched = sorted(set(df_arable["Country"]) - matched)
 
-productivity_path = base_dir / "FAO_Arable_Land_Productivity.csv"
+productivity_path = data_dir / "FAO_Arable_Land_Productivity.csv"
 df_productivity.to_csv(productivity_path, index=False)
 
 print(f"Countries in area_data.csv: {df_arable['Country'].nunique()}")
@@ -93,9 +94,9 @@ print(f"Countries matched to FAO production data: {len(matched)}")
 print(f"Unmatched (region aggregates / micro-territories with no FAO crop data expected): {len(unmatched)}")
 print("Arable land productivity file saved at:", productivity_path)
 
-with open(base_dir / "arable_land_unmatched.txt", "w") as f:
+with open(data_dir / "arable_land_unmatched.txt", "w") as f:
     f.write("\n".join(unmatched))
-print("Full unmatched list written to arable_land_unmatched.txt for review.")
+print("Full unmatched list written to data/arable_land_unmatched.txt for review.")
 
 # Quick sanity spot-check on the unit fix
 print("\nSpot check - top 5 countries by 2022 production-per-arable-hectare:")

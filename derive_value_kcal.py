@@ -98,9 +98,10 @@ import pandas as pd
 from fao_filters import KCAL_EXCLUDE_ITEMS, WB_TO_FAO_COUNTRY
 
 base_dir = Path(__file__).resolve().parent
-# Extracted CSVs from the two zips above go directly in the project root,
-# same as Production_Crops_Livestock_E_All_Data_(Normalized).csv for pipeline.py.
-raw_dir = base_dir
+data_dir = base_dir / "data"
+# Extracted CSVs from the two zips above go directly in data/, same as
+# Production_Crops_Livestock_E_All_Data_(Normalized).csv for pipeline.py.
+raw_dir = data_dir
 
 # ---------------------------------------------------------------------------
 # Direct QCL item -> FBS food-group matches (covers the great majority of
@@ -188,8 +189,8 @@ piv = world.pivot_table(index="Item", columns="Element", values="Value", aggfunc
 kcal_per_tonne = (piv["Food supply (kcal)"] * 1e6 / (piv["Production"] * 1e3)).dropna()
 
 print("Loading crop production data ...")
-crops = pd.read_csv(base_dir / "FAO_Crop_Yield_TableauReady.csv")
-items = pd.read_csv(base_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
+crops = pd.read_csv(data_dir / "FAO_Crop_Yield_TableauReady.csv")
+items = pd.read_csv(data_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
 items["CPC_clean"] = items["CPC Code"].str.strip("'")
 items["CPCGroup"] = items["CPC_clean"].str[:3].map(CPC_GROUPS)
 
@@ -262,7 +263,7 @@ crop_value_qv = qv_items[["Country", "Item", "Year", "Value_kUSD"]].rename(colum
 # oilseeds, sugar beet, tobacco; fruit/vegetables/wine/olives are a residual,
 # still-unrecovered gap). Only added where FAOSTAT QV has no row at all for
 # that exact Country/Crop/Year, so this can never overwrite real QV data.
-eu_gap_path = base_dir / "FAO_EU_Crop_Value_Gap.csv"
+eu_gap_path = data_dir / "FAO_EU_Crop_Value_Gap.csv"
 if eu_gap_path.exists():
     eu_gap = pd.read_csv(eu_gap_path)
     have_qv = set(zip(crop_value_qv["Country"], crop_value_qv["Crop"], crop_value_qv["Year"]))
@@ -278,7 +279,7 @@ crop_value = crop_value_qv.merge(
 )
 crop_value = crop_value[crop_value["AreaHarvested_ha"] > 0].copy()
 crop_value["Value_per_ha"] = crop_value["Value_kUSD"] * 1000 / crop_value["AreaHarvested_ha"]
-crop_value_path = base_dir / "FAO_Crop_Value_TableauReady.csv"
+crop_value_path = data_dir / "FAO_Crop_Value_TableauReady.csv"
 crop_value[["Country", "Crop", "Year", "AreaHarvested_ha", "Value_kUSD", "Value_per_ha"]].to_csv(crop_value_path, index=False)
 print(f"Saved {len(crop_value)} rows to {crop_value_path}")
 covered_countries_2022 = crop_value[crop_value["Year"] == 2022]["Country"].nunique()
@@ -310,7 +311,7 @@ print(f"Country-years recovered via aggregate fallback: {len(value_agg_only)}")
 value_by_country_year = pd.concat([value_item_level, value_agg_only], ignore_index=True)
 
 print("Joining to arable land ...")
-arable = pd.read_csv(base_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
+arable = pd.read_csv(data_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
 arable["Country"] = arable["Country"].replace(WB_TO_FAO_COUNTRY)
 
 merged = value_by_country_year.merge(kcal_by_country_year, on=["Country", "Year"], how="inner")
@@ -318,7 +319,7 @@ merged = merged.merge(arable, on="Country", how="inner")
 merged["ValuePerArableHa_USD"] = merged["Value_kUSD"] * 1000 / merged["ArableLand_ha"]
 merged["KcalPerArableHa"] = merged["Kcal"] / merged["ArableLand_ha"]
 
-out_path = base_dir / "FAO_Value_Kcal_per_ArableHa.csv"
+out_path = data_dir / "FAO_Value_Kcal_per_ArableHa.csv"
 merged[["Country", "Year", "ValuePerArableHa_USD", "KcalPerArableHa"]].to_csv(out_path, index=False)
 print(f"Saved {len(merged)} rows to {out_path}")
 

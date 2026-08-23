@@ -260,11 +260,11 @@ def simplify_crop_name(name: str) -> str:
 
 @st.cache_data
 def load_data():
-    crops = pd.read_csv("FAO_Crop_Yield_TableauReady.csv")
-    value_kcal = pd.read_csv("FAO_Value_Kcal_per_ArableHa.csv")
-    crop_value = pd.read_csv("FAO_Crop_Value_TableauReady.csv")
+    crops = pd.read_csv("data/FAO_Crop_Yield_TableauReady.csv")
+    value_kcal = pd.read_csv("data/FAO_Value_Kcal_per_ArableHa.csv")
+    crop_value = pd.read_csv("data/FAO_Crop_Value_TableauReady.csv")
 
-    land_area = pd.read_csv("area_data.csv").rename(columns={"country": "Country", "area": "LandArea_km2"})
+    land_area = pd.read_csv("data/area_data.csv").rename(columns={"country": "Country", "area": "LandArea_km2"})
     land_area["Country"] = land_area["Country"].replace(WB_TO_FAO_COUNTRY)
     small_countries = set(land_area.loc[land_area["LandArea_km2"] < MIN_LAND_AREA_KM2, "Country"])
     excluded_countries = small_countries | MANUALLY_EXCLUDED_COUNTRIES
@@ -301,7 +301,7 @@ def load_data():
     # Arable land per country, carried through only so the "$ vs kcal" panel
     # can compute each country/year's actual crop-land utilization ratio
     # (see MIN_CROP_LAND_UTILIZATION above) - not used by any other panel.
-    arable = pd.read_csv("arable_land_ha.csv")[["Country", "ArableLand_ha"]]
+    arable = pd.read_csv("data/arable_land_ha.csv")[["Country", "ArableLand_ha"]]
     arable["Country"] = arable["Country"].replace(WB_TO_FAO_COUNTRY)
     value_kcal = value_kcal.merge(arable, on="Country", how="left")
 
@@ -321,7 +321,7 @@ def load_data():
     # ~3.6x the real dataset's actual top value (Costa Rica, $20,778/ha), the
     # same small-denominator distortion the leaderboard floor exists to
     # prevent.
-    est_fill = pd.read_csv("FAO_ValueGapFill_WB.csv").merge(arable, on="Country", how="left")
+    est_fill = pd.read_csv("data/FAO_ValueGapFill_WB.csv").merge(arable, on="Country", how="left")
     est_fill = est_fill[est_fill["ArableLand_ha"].fillna(0) >= MIN_ARABLE_LAND_HA]
     est_fill["DisplayCountry"] = est_fill["Country"].replace(DISPLAY_NAME_OVERRIDES)
     est_fill["ISO3"] = est_fill["Country"].apply(to_iso3)

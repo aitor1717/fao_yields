@@ -2,7 +2,7 @@
 
 A small data pipeline + dashboard that turns FAOSTAT crop production/area
 data and World Bank arable-land data into clean CSVs, visualized in a
-Streamlit app. Not a package — flat scripts/CSVs in one directory.
+Streamlit app. Not a package — flat scripts at the root, CSVs in `data/`.
 
 ![Global Crop Yields dashboard — value per arable hectare by country](docs/dashboard-preview.png)
 
@@ -22,9 +22,9 @@ pip install -r requirements.txt
 streamlit run dashboard_app.py
 ```
 
-Reads `FAO_Crop_Yield_TableauReady.csv`, `FAO_Value_Kcal_per_ArableHa.csv`,
-`FAO_Crop_Value_TableauReady.csv`, `arable_land_ha.csv`, `area_data.csv`, and
-`FAO_ValueGapFill_WB.csv` directly — no other setup needed.
+Reads `data/FAO_Crop_Yield_TableauReady.csv`, `data/FAO_Value_Kcal_per_ArableHa.csv`,
+`data/FAO_Crop_Value_TableauReady.csv`, `data/arable_land_ha.csv`, `data/area_data.csv`,
+and `data/FAO_ValueGapFill_WB.csv` directly — no other setup needed.
 
 ## Regenerating the CSVs
 
@@ -38,12 +38,12 @@ Two ways to regenerate the output CSVs, depending on what raw data you have:
   ```
 - **`pipeline.py`** — the source-of-truth pipeline, run from the full raw
   FAOSTAT bulk export. Needs
-  `Production_Crops_Livestock_E_All_Data_(Normalized).csv` in the project
-  root (not included here — it's too large to check in; only a small sample,
-  `Production_Crops_Livestock_E_All_Data_(Normalized)_sample.csv`, is
+  `data/Production_Crops_Livestock_E_All_Data_(Normalized).csv`
+  (not included here — it's too large to check in; only a small sample,
+  `data/Production_Crops_Livestock_E_All_Data_(Normalized)_sample.csv`, is
   present). Download the full normalized bulk file for the QCL
   (Crops and livestock products) domain from the FAOSTAT site
-  (`https://www.fao.org/faostat/en/#data/QCL`), place it in the project root
+  (`https://www.fao.org/faostat/en/#data/QCL`), place it in `data/`
   under that exact filename, then run:
   ```bash
   python pipeline.py

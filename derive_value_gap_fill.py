@@ -96,6 +96,7 @@ import pandas as pd
 from fao_filters import KCAL_EXCLUDE_ITEMS, WB_TO_FAO_COUNTRY
 
 base_dir = Path(__file__).resolve().parent
+data_dir = base_dir / "data"
 
 # FAOSTAT country name -> ISO3, for the WB API call. Names already match
 # FAOSTAT's own naming for all sixteen (confirmed directly against
@@ -167,7 +168,7 @@ rows += fetch(CONFLICT_TIER, "conflict-affected, lower confidence")
 
 ag = pd.DataFrame(rows)
 
-arable = pd.read_csv(base_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
+arable = pd.read_csv(data_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
 arable["Country"] = arable["Country"].replace(WB_TO_FAO_COUNTRY)
 merged = ag.merge(arable, on="Country", how="inner")
 dropped = set(ag["Country"]) - set(merged["Country"])
@@ -239,9 +240,9 @@ kcal_per_tonne = (piv["Food supply (kcal)"] * 1e6 / (piv["Production"] * 1e3)).d
 print(f"  {len(kcal_per_tonne)} FBS food-group factors computed")
 
 print("Loading crop production tonnage for the 16 gap countries ...")
-crops = pd.read_csv(base_dir / "FAO_Crop_Yield_TableauReady.csv")
+crops = pd.read_csv(data_dir / "FAO_Crop_Yield_TableauReady.csv")
 crops = crops[crops["Country"].isin(all_gap_countries)]
-items = pd.read_csv(base_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
+items = pd.read_csv(data_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
 items["CPC_clean"] = items["CPC Code"].str.strip("'")
 items["CPCGroup"] = items["CPC_clean"].str[:3].map(CPC_GROUPS)
 item_to_group = dict(zip(items["Item"], items["CPCGroup"]))
@@ -268,7 +269,7 @@ print(f"Kcal estimate coverage: {merged['KcalPerArableHa_Est'].notna().sum()} / 
 out = merged[[
     "Country", "Year", "ValuePerArableHa_USD_Est", "KcalPerArableHa_Est", "Source", "Confidence",
 ]].sort_values(["Country", "Year"])
-out_path = base_dir / "FAO_ValueGapFill_WB.csv"
+out_path = data_dir / "FAO_ValueGapFill_WB.csv"
 out.to_csv(out_path, index=False)
 print(f"\nSaved {len(out)} rows to {out_path}")
 print(f"Countries covered: {out['Country'].nunique()} / {len(CANDIDATES) + len(CONFLICT_TIER)}")
