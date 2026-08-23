@@ -11,52 +11,47 @@ callout.
 Most panels are dollar-denominated (FAOSTAT's Value of Production, constant
 2014-2016 USD), not tonnage - a dollar is comparable across crop types where
 a ton isn't (a ton of tomatoes and a ton of wheat aren't the same thing).
-This trades away some country/year coverage: Value of Production only covers
-~64% of tracked crop items, and the EU's 27 member states stop reporting
-item-level detail entirely after 2017 - confirmed directly, all 27 report
-through 2017 and precisely zero of them do from 2018 onward, a clean cutoff
-pointing to a reporting-format change on the EU's side, not a gradual
-data-quality drift.
+This trades away some coverage: Value of Production covers ~64% of tracked
+crop items, and the EU's 27 member states stop reporting item-level detail
+after 2017 (a clean, uniform cutoff - a reporting-format change on the EU's
+side, not gradual data-quality drift).
 
 Two choropleths (Global Value, $ vs kcal per Arable Hectare) also show a
-second, explicitly-flagged layer: countries FAOSTAT's Value of Production
-domain has never covered get a World Bank-derived estimate instead (see
+second, flagged layer: countries FAOSTAT's Value of Production domain has
+never covered get a World Bank-derived estimate instead (see
 derive_value_gap_fill.py), disclosed via hover text and a legend note, never
 blended into the ranked leaderboard panels. Israel is excluded throughout by
-explicit request, not by any statistical rule used elsewhere in this file -
-see MANUALLY_EXCLUDED_COUNTRIES below for why that's recorded plainly rather
-than dressed up as a data-quality finding.
+explicit request rather than any statistical rule used elsewhere in this
+file - see MANUALLY_EXCLUDED_COUNTRIES below.
 
 The Global Value map, Top Value, and Value & Area panels use each country's
 TOTAL value per arable hectare (value_kcal / FAO_Value_Kcal_per_ArableHa.csv),
-not a per-crop figure - an earlier version used the median value/ha across
-each country's own reported crops, which broke badly for the EU: Eurostat's
+not a per-crop figure. An earlier version used the median value/ha across
+each country's own reported crops, which broke for the EU: Eurostat's
 fill-in for the post-2017 gap only covers 12 field crops (see
 derive_eu_value_gap.py), so every EU country's median lost its highest-value
-produce and appeared to crash 80-90% right at 2018 (confirmed directly for
-Germany, France, Romania) even though nothing about farmland value actually
-changed. The country-total figure doesn't have this problem - FAOSTAT's own
-aggregate categories keep fruit/veg in as a lump sum even without item-level
-detail - so it stays smooth across the 2017/2018 boundary. Only the
-per-crop-comparison panels (Top Crops by Value, Crop Value vs. Cultivated
-Area) still carry the EU's item-level gap, since a cross-country sum for a
-specific crop can't be reconstructed from an aggregate category. The
-Conclusion box's fixed year-over-year cohort comparison stays in tonnage
-deliberately, for two reasons. First, its own 9-country cohort is itself
-defined by tonnage yield (the original workbook's "top-yielding countries"
-calculated field) - re-scoring a yield-defined cohort in dollars would be
-answering a different question, not just re-denominating the same one (the
-dashboard's Top Value panel already covers that question, with its own
-value-defined leaderboard). Second, the "Global Median" side of this same
-comparison - unlike the 9-country cohort, which does now have full
-value_kcal coverage every year - is checked against all 178 countries in the
-dashboard's own universe (after the land-area and Israel exclusions above),
-and 32 of those (18.0%, re-verified 2026-07-28 - mostly conflict-affected or
-lower-statistical-capacity states that have never reported Value of
-Production to FAOSTAT - see derive_value_kcal.py) have no value_kcal row at
-all in 2022, so switching the global comparator to dollars would silently
-shrink it by roughly a fifth. See derive_value_kcal.py and each panel's own caption for
-the full rationale.
+produce and appeared to crash 80-90% right at 2018 (Germany, France,
+Romania) with no real change in farmland value. The country-total figure
+avoids this - FAOSTAT's own aggregate categories keep fruit/veg in as a lump
+sum even without item-level detail - so it stays smooth across the
+2017/2018 boundary. Only the per-crop panels (Top Crops by Value, Crop
+Value vs. Cultivated Area) still carry the EU's item-level gap, since a
+cross-country sum for a specific crop can't be reconstructed from an
+aggregate category.
+
+The Conclusion box's fixed year-over-year cohort comparison stays in
+tonnage for two reasons. First, its 9-country cohort is itself defined by
+tonnage yield (the original workbook's "top-yielding countries" calculated
+field) - re-scoring it in dollars would answer a different question than
+re-denominating the same one (the Top Value panel already covers the
+value-defined version). Second, the "Global Median" side of that comparison
+is checked against all 178 countries in the dashboard's universe (after the
+land-area and Israel exclusions above), and 32 of those (18.0%, mostly
+conflict-affected or lower-statistical-capacity states that have never
+reported Value of Production to FAOSTAT - see derive_value_kcal.py) have no
+value_kcal row at all in 2022, so switching that comparator to dollars would
+shrink it by roughly a fifth. See derive_value_kcal.py and each panel's own
+caption for more.
 
 Reads the corrected pipeline outputs directly - no Tableau, no extract.
 Run with: streamlit run dashboard_app.py
@@ -74,13 +69,12 @@ from fao_filters import KCAL_EXCLUDE_ITEMS, WB_TO_FAO_COUNTRY
 
 st.set_page_config(page_title="Global Crop Yields", layout="wide", page_icon="favicon.png")
 
-# --- Palette: colors sampled directly (pixel-picked) from the original
-# Tableau workbook's own export so this matches it, not an approximation of
-# it. SURFACE (#333333) is the original's actual panel/chart background, sampled
-# from its "Top Yields" panel, and is also the page background (one flat tone,
-# no separate "card" contrast) - see .streamlit/config.toml, which sets the
-# same value as the app's theme backgroundColor/secondaryBackgroundColor and
-# must be kept in sync with this if it ever changes. SEQ_RAMP is the original's
+# --- Palette: pixel-picked from the original Tableau workbook's own export.
+# SURFACE (#333333) is the original's panel/chart background, sampled from
+# its "Top Yields" panel, and also the page background (one flat tone, no
+# separate "card" contrast) - see .streamlit/config.toml, which sets the same
+# value as the app's theme backgroundColor/secondaryBackgroundColor and must
+# be kept in sync with this if it changes. SEQ_RAMP is the original's
 # choropleth legend gradient, sampled stop-by-stop. LINE_COLORS is the bold
 # 4-color green->teal set the original reuses for the Top Yields lines and bars.
 SURFACE = "#333333"
@@ -117,31 +111,25 @@ MIN_REPORTED_CROPS = 5
 # Used only by the "$ vs kcal per Arable Hectare" panel: a country/year is
 # dropped if its reported crop-harvested area comes to less than this share
 # of the World Bank arable-land figure that both that panel's axes divide by.
-# Re-checked 2026-08-07 against the full 2022 distribution, not just Iceland
-# in isolation: this is a genuine, isolated outlier, not a threshold placed
-# arbitrarily near a cluster. Sorted by utilization ratio, Iceland sits at
-# 0.029 (3,528 ha actually cropped against a nominal 121,000 ha "arable"
-# figure) and the NEXT-lowest country in the entire dataset is Saudi Arabia
-# at 0.157 - a 0.128 gap, more than four times the width of the 0.05
-# threshold itself. Any cutoff between roughly 0.03 and 0.15 would exclude
-# the identical single country, so this isn't a threshold tuned to fit one
-# known case - it sits in the middle of an actual, isolated gap. Below this
-# ratio, both of the panel's per-arable-ha figures are dividing a real,
-# small numerator by a denominator that mostly isn't describing the same
-# land, and the panel's log-z-score contrast (see below) reads that
-# mismatch as the single most extreme "runs as a business" data point on
-# the map - confirmed directly, Iceland topped that ranking by a wide
-# margin before this filter. A general ratio threshold, not a hardcoded
-# per-country exclusion, so it applies to whichever country the data next
-# produces this pattern for, not just Iceland today.
+# Against the full 2022 distribution, sorted by utilization ratio, Iceland
+# sits at 0.029 (3,528 ha actually cropped against a nominal 121,000 ha
+# "arable" figure); the next-lowest country is Saudi Arabia at 0.157 - a gap
+# more than four times the width of the 0.05 threshold itself, so this is a
+# general ratio threshold sitting in an isolated gap, not one tuned around a
+# single known case. Below this ratio, both of the panel's per-arable-ha
+# figures divide a real, small numerator by a denominator that mostly isn't
+# describing the same land, and the panel's log-z-score contrast (see below)
+# reads that mismatch as the single most extreme "runs as a business" data
+# point on the map - Iceland topped that ranking by a wide margin before
+# this filter.
 MIN_CROP_LAND_UTILIZATION = 0.05
 
-# Excluded by explicit request (2026-07-26), not by any statistical mechanism
-# checked in this codebase - unlike every other exclusion above (land area,
+# Excluded by explicit request, not by any statistical mechanism used
+# elsewhere in this codebase - unlike every other exclusion above (land area,
 # reported-crop count, land utilization), Israel's FAOSTAT data doesn't show
 # a small-denominator, reporting-gap, or capacity-collapse pattern; arable
 # land (271,400 ha) and reporting history are both unremarkable by the
-# criteria used everywhere else here. Recorded plainly as a manual exclusion
+# criteria used everywhere else here. Recorded as a plain manual exclusion
 # rather than inventing a technical justification for it.
 MANUALLY_EXCLUDED_COUNTRIES = {"Israel"}
 
@@ -151,30 +139,27 @@ MANUALLY_EXCLUDED_COUNTRIES = {"Israel"}
 # into an extreme per-hectare ratio that reads as "runs an intensive business"
 # when it's mostly an artifact of a small denominator (same mechanism as
 # MIN_CROP_LAND_UTILIZATION above, applied here to rank rather than color).
-# Confirmed directly: without this floor, 2022's top of the Value per Arable
-# Hectare leaderboard is Kuwait (8,000 ha), Palestine (41,900 ha), and Hong
-# Kong (2,000 ha), ahead of the Netherlands (1,009,000 ha) - the country this
-# dashboard's own "Top Value" narrative is built around.
+# Without this floor, 2022's top of the Value per Arable Hectare leaderboard
+# is Kuwait (8,000 ha), Palestine (41,900 ha), and Hong Kong (2,000 ha),
+# ahead of the Netherlands (1,009,000 ha) - the country this dashboard's own
+# "Top Value" narrative is built around.
 #
-# Re-examined 2026-08-07: unlike MIN_CROP_LAND_UTILIZATION above, this one is
-# NOT sitting in a natural gap - the full distribution of arable land is
-# continuous through this range (Belize/Bhutan at 100,000 ha exactly,
-# Timor-Leste 111,500, Jamaica 120,000, Iceland 121,000, Lebanon 134,214, no
-# break anywhere). The honest justification is a bracket, not a derived
+# Unlike MIN_CROP_LAND_UTILIZATION above, this threshold isn't sitting in a
+# natural gap - arable land is continuous through this range (Belize/Bhutan
+# at 100,000 ha exactly, Timor-Leste 111,500, Jamaica 120,000, Iceland
+# 121,000, Lebanon 134,214). The justification is a bracket, not a derived
 # cutoff: 100,000 sits between the highest arable-land figure among the
 # known-distorting cases (Palestine, 41,900 ha) and the lowest among
 # known-legitimate high-value economies (Lebanon, 134,214 ha; Costa Rica,
-# 167,133 ha - both independently corroborated as genuine high-value
-# intensive producers, not artifacts). Any value in that bracket does the
-# same job; 100,000 isn't a statistically special point within it, and this
-# comment says so rather than implying a precision the data doesn't support.
+# 167,133 ha). Any value in that bracket does the same job - 100,000 isn't a
+# statistically special point within it.
 MIN_ARABLE_LAND_HA = 100_000
 
 TOP_N_BARS = 10
 
-# Value per Arable Hectare shows more entries than the other Top-N bars
-# (2026-08-12, by request) - kept as its own constant rather than reusing
-# TOP_N_BARS so Top Crops by Value stays at 10. Plotly auto-divides a bar
+# Value per Arable Hectare shows more entries than the other Top-N bars -
+# kept as its own constant rather than reusing TOP_N_BARS so Top Crops by
+# Value stays at 10. Plotly auto-divides a bar
 # chart's fixed pixel height across however many bars it's given, so
 # doubling the count on the same chart height just narrows each bar - no
 # other layout change needed to keep the panel the same size.
@@ -196,9 +181,8 @@ ISO3_OVERRIDES = {
     "Republic of Korea": "KOR",
     "Democratic People's Republic of Korea": "PRK",
     # Same bug, same fix: search_fuzzy("Niger") returns Nigeria as its top
-    # hit (Niger's own record is second) - confirmed directly while doing a
-    # general pass for this exact class of bug. Both resolved to NGA, so
-    # Niger's shape showed no data on every choropleth in this dashboard.
+    # hit (Niger's own record is second). Both resolved to NGA, so Niger's
+    # shape showed no data on every choropleth in this dashboard.
     "Niger": "NER",
     "Nigeria": "NGA",
 }
@@ -335,7 +319,7 @@ crops, value_kcal, crop_value, est_fill = load_data()
 # bottom callout box can use them without duplicating the calculation. Median,
 # not mean: a country's per-crop yields are right-skewed (a couple of very
 # high-yield crops, e.g. greenhouse produce, otherwise dominate the figure -
-# confirmed directly: Iceland's mean yield was 144 t/ha vs a median of 16).
+# Iceland's mean yield was 144 t/ha vs a median of 16).
 top_2012 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2012)]["Yield_tonha"].median()
 top_2022 = crops[(crops["Country"].isin(TOP_YIELD_COUNTRIES)) & (crops["Year"] == 2022)]["Yield_tonha"].median()
 glob_2012 = crops[crops["Year"] == 2012]["Yield_tonha"].median()
@@ -351,13 +335,12 @@ st.markdown(
     .panel-title {{
         font-size: 13px; font-weight: 600; color: {MUTED}; margin: 4px 0 8px 0;
     }}
-    /* No borders anywhere on the page (2026-08-14) - sections are signaled
-       by spacing alone (proximity: a panel's own title/chart/captions sit
-       close together, then a large uniform gap separates it from the next
-       panel), not by a drawn card edge. .section-gap is inserted between
-       every top-level panel; its height is the single number that controls
-       inter-section spacing dashboard-wide, so it stays uniform by
-       construction rather than by eyeballing each gap individually. */
+    /* No borders anywhere on the page - sections are signaled by spacing
+       alone (a panel's own title/chart/captions sit close together, then a
+       large uniform gap separates it from the next panel), not a drawn card
+       edge. .section-gap is inserted between every top-level panel; its
+       height is the single number that controls inter-section spacing
+       dashboard-wide. */
     .section-gap {{ height: 56px; }}
     /* Caption hierarchy: cap-primary is the panel's one load-bearing sentence
        (what it means), cap-secondary is optional methodology/caveat detail
@@ -376,15 +359,13 @@ st.markdown(
         border-radius: 4px;
     }}
     div[data-testid="stSelectbox"] input {{ background-color: transparent !important; }}
-    /* Year selectbox specifically (2026-08-21) - targeted via the input's
-       own aria-label rather than position, since it's not a sibling of the
-       Country selectbox elsewhere on the page and CSS has no "first select
-       box in the document" selector. Narrower than the column alone gets it
-       (a 4-digit year doesn't need as much room as Streamlit's own default
-       combobox padding assumes) and a teal accent - LINE_COLORS' own
-       #51d2bb - instead of the neutral gray every other selectbox uses, so
-       it doesn't disappear against the page the way a bare gray outline did.
-    */
+    /* Year selectbox specifically - targeted via the input's own aria-label
+       rather than position, since it's not a sibling of the Country
+       selectbox elsewhere on the page and CSS has no "first select box in
+       the document" selector. Narrower than the column alone gets it (a
+       4-digit year doesn't need as much room as Streamlit's default combobox
+       padding assumes) and a teal accent - LINE_COLORS' own #51d2bb -
+       instead of the neutral gray every other selectbox uses. */
     div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) {{ max-width: 120px; }}
     div[data-testid="stSelectbox"]:has(input[aria-label="Year"]) div[role="group"] {{
         border: 1.5px solid #51d2bb !important; background-color: rgba(81, 210, 187, 0.18) !important;
@@ -400,23 +381,18 @@ st.markdown(
        scrollbar track by default (unlike overlay-scrollbar platforms). */
     div[data-testid="stVerticalBlock"] {{ scrollbar-width: none; }}
     div[data-testid="stVerticalBlock"]::-webkit-scrollbar {{ display: none; }}
-    /* Global Value and $ vs kcal choropleths: back to a plain fixed
-       layout.height (2026-08-21), no CSS involved at all. The responsive
-       version (CSS aspect-ratio driving Plotly's autosize instead of a
-       fixed height, so the map would fill any container width without the
-       dead-space-on-wide-screens problem a fixed height has) went through
-       three separate fix attempts - a stale-render dead gap at the bottom,
-       a scrollbar-in-a-box from Streamlit's own default sizing, then a
-       ResizeObserver feedback loop oscillating the whole map large-small-
-       large on every Year change - and the third one still didn't hold up
-       under actual use. Every one of those was a direct consequence of
-       asking Plotly to recompute its own size reactively instead of just
-       reading a constant from the layout. A fixed height re-accepts the
-       original, purely cosmetic tradeoff (a symmetric margin appears on
-       monitors wider than ~1408px, the width this crop was tuned at) in
-       exchange for a map that behaves identically on every render, with
-       nothing left to race or feed back into itself. See each map's own
-       `height=630` in its `fig.update_layout` for where this lives now.
+    /* Global Value and $ vs kcal choropleths: a plain fixed layout.height,
+       no CSS involved. A responsive version (CSS aspect-ratio driving
+       Plotly's autosize instead of a fixed height, so the map fills any
+       container width) was tried and dropped - it produced a stale-render
+       gap at the bottom, then a scrollbar-in-a-box from Streamlit's own
+       sizing, then a ResizeObserver feedback loop oscillating the map
+       large-small-large on every Year change. Each was a direct consequence
+       of asking Plotly to recompute its size reactively instead of reading
+       a constant. A fixed height re-accepts the original tradeoff (a
+       symmetric margin on monitors wider than ~1408px, the width this crop
+       was tuned at) for a map that behaves identically on every render. See
+       each map's own `height=630` in its `fig.update_layout`.
     */
     </style>
     """,
@@ -424,9 +400,9 @@ st.markdown(
 )
 
 # ---------------------------------------------------------------------------
-# Header (title, intro caption, year control) gets its own bordered frame,
-# No frame (2026-08-14 - see .section-gap above): the title card is told
-# apart from the year control and the first panel below purely by spacing.
+# Header (title, intro caption, year control). No frame (see .section-gap
+# above): the title card is told apart from the year control and the first
+# panel below purely by spacing.
 # ---------------------------------------------------------------------------
 st.markdown(
     f"<div style='font-size:28px; font-weight:700; color:{TEXT}; margin-bottom:0;'>Global Crop Yields</div>",
@@ -445,23 +421,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Year control - a compact selectbox (2026-08-21, replacing a full-width
-# slider) so the header takes less vertical space, leaving more room for the
-# map right below it and a less cramped page overall. The slider itself grew
-# into a real maintenance cost - a fixed-height-vs-responsive-width fight for
-# the map next to it, plus several rounds of react-aria's own default styling
-# (a background gradient, a hover-revealed tick bar, transition lag, a
-# leftover focus-ring glow) all needed individual overrides. A selectbox has
-# none of that: no custom CSS at all below, out of the box. Narrow column
-# ratio (1:9, not the original 1:5) so the box hugs a 4-digit year plus some
-# breathing room instead of stretching across a fifth of the page - the CSS
-# below caps it at 120px regardless, but the column still needs to be wide
-# enough for that cap to actually be reachable rather than clamped smaller.
-# No .control-gap div around it either (confirmed directly: stVerticalBlock
-# already applies a 16px flex `gap` between every element regardless, so a
-# .control-gap on top of that was double spacing - 16px gap + the div's own
-# height + another 16px gap - not the single number it looked like from the
-# source alone).
+# Year control - a compact selectbox rather than a full-width slider, so the
+# header takes less vertical space, leaving more room for the map below and
+# a less cramped page overall. The slider it replaced needed a
+# fixed-height-vs-responsive-width fight for the map next to it, plus several
+# individual overrides for react-aria's default styling (a background
+# gradient, a hover-revealed tick bar, transition lag, a leftover focus-ring
+# glow); the selectbox needs none of that. Narrow column ratio (1:9, not the
+# original 1:5) so the box hugs a 4-digit year plus some breathing room - the
+# CSS below caps it at 120px regardless, but the column still needs to be
+# wide enough for that cap to be reachable rather than clamped smaller. No
+# .control-gap div around it: stVerticalBlock already applies a 16px flex
+# `gap` between every element, so a .control-gap on top of that would double
+# the spacing.
 years = sorted(crops["Year"].unique().tolist())
 year_col, _ = st.columns([1, 9])
 with year_col:
@@ -477,9 +449,9 @@ with year_col:
 # EU's 27 member states stopped reporting item-level Value of Production
 # after 2017 (see derive_eu_value_gap.py): the Eurostat fill-in only covers
 # 12 field crops, so every EU country's median lost its highest-value produce
-# and appeared to crash 80-90% right at 2018 - confirmed directly (Germany,
-# France, Romania) - with no such cliff in this country-total metric for the
-# same countries/years. Switched to the country-total figure already used by
+# and appeared to crash 80-90% right at 2018 (Germany, France, Romania) with
+# no such cliff in this country-total metric for the same countries/years.
+# Switched to the country-total figure already used by
 # the "Value per Arable Hectare" bar chart and the "$ vs kcal" map below,
 # which sidesteps the problem entirely: FAOSTAT's own aggregate categories
 # (Cereals primary, Vegetables and Fruit Primary, etc.) keep fruit/veg in the
@@ -533,38 +505,18 @@ with st.container():
         # color contrast alone. Light gray (not white) for countries with no
         # yield data, distinct from the white ocean and the colored countries;
         # showland must be explicit or the land layer doesn't render at all.
-        # lataxis/lonaxis crop tightly to the populated landmass extent - this is
-        # deliberately manual rather than fitbounds="locations", which pulled in
-        # a disconnected, badly-distorted sliver of Antarctica at the edge.
-        # Revised 2026-07-29 after a pixel-measurement pass (rendered the geo
-        # trace standalone at the exact 1408x630 container size, then measured
-        # the non-white bounding box in each direction): the previous -176/178
-        # lon range still clipped Alaska and Chukotka mid-shape (8-31% of the
-        # very edge columns were land, not ocean) while leaving 25px of dead
-        # white margin top/bottom. A -176/178 seam is wide enough to reach past
-        # Alaska's Aleutian tail and Chukotka's peninsula tip, both of which
-        # cross close to the antimeridian - any simple rectangular crop that
-        # tries to include them clips one or the other. Narrowing to -160/160
-        # (excludes the Aleutian tail and the Chukotka peninsula tip entirely,
-        # keeps all of mainland Alaska and mainland Russia) removes the clip,
-        # but also changes the lon:lat aspect ratio Plotly fits the frame to,
-        # which pushed Greenland's tip and Antarctica-adjacent content to the
-        # opposite extreme (touching row 0/629 - confirmed by the same
-        # measurement). Extending lataxis from -56 to -58 and scale from 1.13
-        # to 0.98 rebalances this: measured margins are now a consistent
-        # 6-9px on every side, no clipping, no dead space - not just "picked
-        # to look right," each number here is the result of that same
-        # measure-adjust-remeasure loop, not a first guess. No explicit
-        # `height` below (2026-08-17): an earlier version fixed height=630 to
-        # match this same 1408px container, which only avoided letterboxing
-        # at that one width - wider containers left the extra width unused as
-        # dead white space down both sides, since the geo subplot's own pixel
-        # height stayed locked at 630 regardless (confirmed directly at
-        # 1920px). CSS below (`aspect-ratio` on the chart's own wrapper) now
-        # locks the wrapper to this same lataxis/lonaxis ratio instead, and
-        # leaving `height` unset lets Plotly's autosize read that CSS-driven
-        # box directly, so the map fills the actual available width at any
-        # container size rather than the one it was measured against.
+        # lataxis/lonaxis crop tightly to the populated landmass extent,
+        # manually rather than via fitbounds="locations", which pulled in a
+        # disconnected, distorted sliver of Antarctica at the edge. These
+        # exact bounds came from rendering the geo trace standalone at the
+        # 1408x630 container size and measuring the non-white bounding box: a
+        # -160/160 lon range keeps all of mainland Alaska and Russia while
+        # excluding the Aleutian tail and Chukotka peninsula tip that a wider
+        # seam would otherwise clip; lataxis -58/78 and scale 0.98 keep
+        # Greenland and the southern landmass off the frame edge. Margins
+        # measure a consistent 6-9px on every side at that container width.
+        # `height=630` below is a fixed constant, not CSS-driven - see the
+        # page-level style block near the top of this file for why.
         geo=dict(
             bgcolor="white", lakecolor="white", landcolor="#dcdcdc", showframe=False,
             showland=True, showcountries=False, showcoastlines=False,
@@ -737,11 +689,11 @@ with st.container():
 st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
-# Two-up row: Crop bubble scatter | Production per Arable Hectare
-# (this replaces the original's "Countries Sampled" text-wall slot). No
-# fixed shared height (2026-08-14, see .section-gap above) - each column
-# sizes to its own content; gap="large" signals the two-column split
-# through the same spacing-only language as everything else on the page.
+# Two-up row: Crop bubble scatter | Production per Arable Hectare (replaces
+# the original's "Countries Sampled" text-wall slot). No fixed shared height
+# (see .section-gap above) - each column sizes to its own content; gap="large"
+# signals the two-column split through the same spacing-only language as
+# everything else on the page.
 # ---------------------------------------------------------------------------
 col3, col4 = st.columns([1, 1], gap="large")
 
@@ -910,9 +862,8 @@ with st.container():
             marker_line_width=0,
         ))
     fig.update_layout(
-        # Same geo crop as the Global Value map above, and revised the same
-        # way (2026-07-29) - see that panel's comment for the full
-        # measure-adjust-remeasure process behind these exact numbers.
+        # Same geo crop as the Global Value map above - see that panel's
+        # comment for how these bounds were derived.
         geo=dict(
             bgcolor="white", lakecolor="white", landcolor="#dcdcdc", showframe=False,
             showland=True, showcountries=False, showcoastlines=False,
@@ -953,12 +904,11 @@ with st.container():
         simplify_crop_name(c).lower()
         for c in KCAL_EXCLUDE_ITEMS - {"Other sugar crops n.e.c.", "Seed cotton; unginned"}
     ))
-    # Primary explanation carries the mechanism (2026-08-21) - the previous
-    # one-liner ("teal feeds people, red is cash") named the two ends of the
-    # ramp without saying what's actually being compared or how a country
-    # lands on one side of it. Caveats (the utilization filter, QV coverage
-    # gap, estimated-country split) moved to the Notes panel below instead of
-    # stacking up here - see that panel for where each one landed.
+    # Primary explanation carries the mechanism - a previous one-liner
+    # ("teal feeds people, red is cash") named the two ends of the ramp
+    # without saying what's being compared or how a country lands on one
+    # side of it. Caveats (the utilization filter, QV coverage gap,
+    # estimated-country split) live in the Notes panel below instead.
     _est_count_sentence = (
         f" {est_vk_year['DisplayCountry'].nunique()} of the countries shown are estimated "
         "(World Bank/FAOSTAT proxy); hover a country to see which."
@@ -978,8 +928,8 @@ st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Bottom row: Yield/Area by Country (left) | Conclusion + Notes (right). No
-# fixed shared height (2026-08-14, see .section-gap above) - each column
-# sizes to its own content; gap="large" signals the split through spacing.
+# fixed shared height (see .section-gap above) - each column sizes to its
+# own content; gap="large" signals the split through spacing.
 # ---------------------------------------------------------------------------
 col6, col5 = st.columns([2.2, 1], gap="large")
 

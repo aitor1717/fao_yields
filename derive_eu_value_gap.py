@@ -10,50 +10,42 @@ row for an EU country/year.
 Source: Eurostat's Economic Accounts for Agriculture, dataset aact_eaa01
 ("value at current prices"), indicator PRD_BP ("Production value at basic
 price" - the closest EAA equivalent to FAOSTAT's Gross Production Value),
-unit MIO_EUR. Bulk TSV, fetched directly (no manual download step - unlike
-the FAOSTAT raw files, Eurostat's SDMX API serves this without needing an
-account or a large multi-domain zip):
+unit MIO_EUR. Bulk TSV, fetched directly via Eurostat's SDMX API (no account
+or manual download needed, unlike the FAOSTAT raw files):
   https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/aact_eaa01/?format=TSV
 
-This is CURRENT-price EUR, not constant-price like the rest of this
-dashboard's dollar figures - deliberately. Eurostat's constant-price series
-(aact_eaa04) uses chain-linked volumes on a 2010/2015/2020 rebasing scheme
-that doesn't reduce to a single "price level" a specific year's exchange
-rate could convert - there's no clean way to turn "2020-based chain-linked
-EUR" into "2014-2016 US$" without inventing a bridging assumption this
-project avoids elsewhere (see the oil-palm extraction-rate and kcal
-food-share decisions). Current-price EUR, converted via that SPECIFIC year's
-own USD exchange rate, avoids that problem at the cost of a different, real
-one: EU-derived figures reflect that year's actual prices, while the rest of
-the map (FAOSTAT QV) reflects constant 2014-2016 prices. For a same-year,
-cross-country comparison (which is what every panel on this dashboard
-actually does - nothing compares one country's own trend across years using
-these EU-derived figures) this is a minor, disclosed approximation, not a
-silent error - documented on every panel that uses it.
+This is current-price EUR, not constant-price like the rest of this
+dashboard's dollar figures. Eurostat's constant-price series (aact_eaa04)
+uses chain-linked volumes on a 2010/2015/2020 rebasing scheme that doesn't
+reduce to a single "price level" a given year's exchange rate could convert
+- there's no clean way to turn "2020-based chain-linked EUR" into
+"2014-2016 US$" without inventing a bridging assumption. Current-price EUR,
+converted via that specific year's own USD exchange rate, avoids that
+problem at the cost of a different one: EU-derived figures reflect that
+year's actual prices, while the rest of the map (FAOSTAT QV) reflects
+constant 2014-2016 prices. Every panel on this dashboard only compares
+countries within the same year, never a country's own trend across years
+using these EU-derived figures, so this is a minor approximation -
+documented on every panel that uses it.
 
 Exchange rate: FAOSTAT's own Exchange Rates domain (PE), "Local currency
-units per USD", annual value - the SAME source FAOSTAT itself uses to
-produce its own USD-denominated series, chosen over an independent ECB rate
-specifically for methodological consistency with the rest of this project's
-dollar figures.
+units per USD", annual value - the same source FAOSTAT itself uses for its
+own USD-denominated series, chosen over an independent ECB rate for
+methodological consistency with the rest of this project's dollar figures.
   https://bulks-faostat.fao.org/production/Exchange_rate_E_All_Data_(Normalized).zip
 
-Item coverage is partial, and more narrowly than intended: this table's
-codelist defines item codes for vegetables, fruit, grapes, olives, and wine
-(AM040000 upward), and an early version of this script mapped 35 items
-expecting real data behind all of them. Checked directly - it isn't there.
-Only 27 am_item codes have any actual PRD_BP/MIO_EUR row in the live data,
-and every one of them falls in AM010000-AM039000: cereals, oilseeds,
-protein crops, tobacco, sugar beet, fibre crops, forage. Vegetables, fruit,
-potatoes, grapes, olives, and wine (AM040000 and up) return zero rows -
-Eurostat evidently tracks item-level value for those elsewhere (likely a
-separate crop-statistics domain, not the Economic Accounts for Agriculture
-table used here), which this script does not attempt to locate. ITEM_MAP
-below is restricted to the 12 field crops that actually have data. This
-closes a real, substantial part of the EU gap - cereals and oilseeds are
-the largest field-crop categories by value for most EU producers - but
-fruit, vegetables, wine, and olives remain unrecovered for the EU after
-2017. Documented as a residual, known gap on the affected panels.
+Item coverage is narrower than the table's own codelist suggests: it defines
+item codes for vegetables, fruit, grapes, olives, and wine (AM040000
+upward), but only 27 am_item codes have any actual PRD_BP/MIO_EUR row in the
+live data, all in AM010000-AM039000: cereals, oilseeds, protein crops,
+tobacco, sugar beet, fibre crops, forage. Vegetables, fruit, potatoes,
+grapes, olives, and wine (AM040000 and up) return zero rows - Eurostat
+tracks item-level value for those elsewhere, not in this table. ITEM_MAP
+below is restricted to the 12 field crops that actually have data, closing a
+substantial part of the EU gap (cereals and oilseeds are the largest
+field-crop categories by value for most EU producers), but fruit,
+vegetables, wine, and olives remain unrecovered for the EU after 2017 -
+documented as a residual gap on the affected panels.
 """
 import io
 import urllib.request
@@ -83,8 +75,8 @@ EU_GEO_TO_COUNTRY = {
 }
 
 # Eurostat AM item code -> FAOSTAT Crop name. Restricted to the 12 field
-# crops confirmed to actually have PRD_BP/MIO_EUR data (see module
-# docstring) - vegetables, fruit, potatoes, grapes, olives, and wine are in
+# crops that actually have PRD_BP/MIO_EUR data (see module docstring) -
+# vegetables, fruit, potatoes, grapes, olives, and wine are in
 # Eurostat's own AM item codelist but return zero rows in this table, so
 # there is no matching entry for them here despite unambiguous crop names
 # existing (e.g. AM041200 "Tomatoes" is a real code with no real data).
@@ -140,9 +132,9 @@ print("Loading FAOSTAT's own exchange rates (Local currency units per USD) ...")
 # all 27 countries, not each country's own domestic-currency rate. Getting
 # this wrong is a real bug this script had: joining on (Country, Year) against
 # FAOSTAT's per-country rate silently used Hungary's Forint rate, Poland's
-# Zloty rate, etc. against an already-EUR-denominated value - confirmed
-# directly, it undervalued Hungary's wheat by ~370x (Forint/USD is ~370,
-# EUR/USD is ~0.9). FAOSTAT carries this under two Element codes - "LCU"
+# Zloty rate, etc. against an already-EUR-denominated value, undervaluing
+# Hungary's wheat by ~370x (Forint/USD is ~370, EUR/USD is ~0.9). FAOSTAT
+# carries this under two Element codes - "LCU"
 # (Local currency units per USD) and "SLC" (Standard local currency units per
 # USD) - identical in value for every country checked, but both present, so
 # this also filters to one to avoid a doubled join.

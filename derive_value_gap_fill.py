@@ -26,62 +26,55 @@ arable_land_ha.csv figure the rest of the dashboard uses, so the unit
 (USD / arable ha) is at least dimensionally consistent with the real data
 it sits next to on the map.
 
-Country selection: the twelve non-conflict, non-currency-distorted gap
-countries identified in review (2026-07-26) with a visibly large enough land
-area to matter on the map and ordinary WB reporting coverage, plus a second,
-explicitly lower-confidence tier of conflict-affected countries whose WB
-series is at least internally plausible - DR Congo, Afghanistan, Libya,
-Myanmar (2026-07-26 follow-up), and Sudan, Haiti (2026-07-28 second pass,
-after being asked to push coverage as far as real data allows). Both tiers
-are tagged via the Confidence column so the dashboard can (and does)
-disclose the difference rather than presenting them identically.
+Country selection: twelve non-conflict, non-currency-distorted gap countries
+with a large enough land area to matter on the map and ordinary WB reporting
+coverage, plus a second, lower-confidence tier of conflict-affected
+countries whose WB series is at least internally plausible - DR Congo,
+Afghanistan, Libya, Myanmar, Sudan, Haiti. Both tiers are tagged via the
+Confidence column so the dashboard can disclose the difference rather than
+presenting them identically.
 
-Sudan and Haiti passed the same plausibility check as the first four: real
-WB coverage through 2022, values within the rest of the dataset's envelope
-($263-$4,311/ha), and swings that track known events rather than contradict
-them (Sudan's 2018-2020 decline lines up with its 2018-2019 revolution and
-currency crisis; Haiti's 2021 jump lines up with the president's July 2021
-assassination and the crisis that followed) - unlike Syria, below. South
-Sudan and Cuba were re-checked too and still don't clear the bar: South
+Sudan and Haiti passed the same plausibility check as the other four in that
+tier: real WB coverage through 2022, values within the rest of the
+dataset's envelope ($263-$4,311/ha), and swings that track known events
+rather than contradict them (Sudan's 2018-2020 decline lines up with its
+2018-2019 revolution and currency crisis; Haiti's 2021 jump lines up with
+the president's July 2021 assassination and the crisis that followed) -
+unlike Syria, below. South Sudan and Cuba don't clear the bar: South
 Sudan's WB series stops in 2015, before 8 of the dashboard's 18 years, and
 during its own civil war for the years it does cover; Cuba's stops in 2020,
-exactly at its 2021 currency reunification, reinforcing the currency-
-distortion concern rather than resolving it. Somalia has zero WB data at all
-(re-confirmed).
+exactly at its 2021 currency reunification, reinforcing the
+currency-distortion concern. Somalia has zero WB data at all.
 
-Explicitly NOT attempted, even in the lower-confidence tier: Syria (WB's
-2022 figure rebounds to an 11-year high mid-conflict, directly contradicting
-its well-documented agricultural collapse - the series doesn't hold together
-enough to stand behind) and Venezuela (WB has literally no data 2012-2022,
-and only placeholder zeros before that - not a real series at all). Also not
-attempted: Taiwan (not a World Bank member, no NV.AGR.TOTL.CD row possible).
+Not attempted, even in the lower-confidence tier: Syria (WB's 2022 figure
+rebounds to an 11-year high mid-conflict, contradicting its well-documented
+agricultural collapse) and Venezuela (WB has no data 2012-2022, only
+placeholder zeros before that). Also not attempted: Taiwan (not a World
+Bank member, no NV.AGR.TOTL.CD row possible).
 
 ---
 
-Second half of this script (2026-07-26 follow-up): a real, FAOSTAT-derived
-KcalPerArableHa_Est for these same sixteen countries, so the $ vs kcal map
-can show them too, not just the Global Value map. This was initially assumed
-impossible (no food-energy equivalent for QV-gap countries) - wrong. The
-$-vs-kcal panel's kcal side (see derive_value_kcal.py) is computed purely
-from each country's own crop PRODUCTION TONNAGE (FAOSTAT's QCL domain,
-FAO_Crop_Yield_TableauReady.csv) times a world-level kcal-per-tonne factor
-from Food Balance Sheets - it never touches Value of Production (QV) at all.
-These sixteen countries lack QV data, but confirmed directly: all sixteen
-DO have real QCL production-tonnage rows (32-74 crop rows each in 2022).
-The only reason they were missing from FAO_Value_Kcal_per_ArableHa.csv is
-that derive_value_kcal.py's own merge is an INNER join against QV-derived
-value_by_country_year - so a real, computable kcal figure was being silently
-dropped for want of a value figure, not for want of real data. This section
-mirrors derive_value_kcal.py's exact methodology (same ITEM_TO_FBS/
-CPC_GROUP_TO_FBS mapping, same KCAL_EXCLUDE_ITEMS, same Production-not-Food
-denominator) rather than reusing its code directly, since that script's
-merge order isn't easily reused for a country subset without risking the
-150+ countries it already handles correctly - kept in sync by mirroring, not
-importing; re-check both if either changes.
+Second half of this script: a real, FAOSTAT-derived KcalPerArableHa_Est for
+these same sixteen countries, so the $ vs kcal map can show them too, not
+just the Global Value map. The $-vs-kcal panel's kcal side (see
+derive_value_kcal.py) is computed purely from each country's own crop
+production tonnage (FAOSTAT's QCL domain, FAO_Crop_Yield_TableauReady.csv)
+times a world-level kcal-per-tonne factor from Food Balance Sheets - it
+never touches Value of Production (QV). These sixteen countries lack QV
+data, but all sixteen do have real QCL production-tonnage rows (32-74 crop
+rows each in 2022); the only reason they were missing from
+FAO_Value_Kcal_per_ArableHa.csv is that derive_value_kcal.py's own merge is
+an inner join against QV-derived value_by_country_year, dropping a
+computable kcal figure for want of a value figure, not for want of real
+data. This section mirrors derive_value_kcal.py's methodology (same
+ITEM_TO_FBS/CPC_GROUP_TO_FBS mapping, same KCAL_EXCLUDE_ITEMS, same
+Production-not-Food denominator) rather than reusing its code, since that
+script's merge order isn't easily reused for a country subset without
+risking the 150+ countries it already handles correctly - kept in sync by
+mirroring, not importing; re-check both if either changes.
 
 Needs the same raw FoodBalanceSheets_E_All_Data_(Normalized).csv as
-derive_value_kcal.py (not checked into this repo - fetched directly here,
-same no-manual-step pattern as the WB API calls above):
+derive_value_kcal.py (not checked into this repo, fetched directly here):
   https://bulks-faostat.fao.org/production/FoodBalanceSheets_E_All_Data_(Normalized).zip
 """
 import io
@@ -99,8 +92,7 @@ base_dir = Path(__file__).resolve().parent
 data_dir = base_dir / "data"
 
 # FAOSTAT country name -> ISO3, for the WB API call. Names already match
-# FAOSTAT's own naming for all sixteen (confirmed directly against
-# FAO_Value_Kcal_per_ArableHa.csv) except DR Congo, whose arable_land_ha.csv
+# FAOSTAT's own naming for all sixteen except DR Congo, whose arable_land_ha.csv
 # row is only reachable via WB_TO_FAO_COUNTRY (same mapping the rest of the
 # dashboard uses) - applied below before the arable-land merge.
 CANDIDATES = {
@@ -121,9 +113,8 @@ CANDIDATES = {
 # Lower-confidence tier: conflict/crisis-affected countries where a WB series
 # exists and is at least internally plausible, but statistical capacity
 # during the disrupted years is a real, disclosed concern (see module
-# docstring and the 2026-07-26 review that assessed each one against known
-# events - Libya's crashes track the 2019/2021 conflict escalation and oil
-# blockade; Afghanistan's and Myanmar's trends are suspiciously smooth
+# docstring - Libya's crashes track the 2019/2021 conflict escalation and
+# oil blockade; Afghanistan's and Myanmar's trends are suspiciously smooth
 # through 2021's Taliban takeover and coup respectively, suggesting
 # extrapolation rather than fresh survey data for the most recent years).
 CONFLICT_TIER = {

@@ -4,92 +4,76 @@ Balance Sheets (FBS) domains:
 
   - FAO_Value_Kcal_per_ArableHa.csv: Country/Year totals - Gross Production
     Value and food energy (kcal) per hectare of arable land, the two lenses
-    behind the dashboard's "$ vs kcal per Arable Hectare" panel. Does a
+    behind the dashboard's "$ vs kcal per Arable Hectare" panel: does a
     country's farmland run as an export/value business, or as calorie
-    production to feed people? Uses the aggregate-basket fallback (see
-    below), so it has full country coverage even after 2018.
+    production to feed people? Uses the aggregate-basket fallback below, so
+    it keeps full country coverage even after the EU's 2018 reporting change.
 
   - FAO_Crop_Value_TableauReady.csv: Country/Crop/Year value per harvested
-    hectare, mirroring FAO_Crop_Yield_TableauReady.csv's own shape - the
-    dollar-denominated equivalent of Yield_tonha, used by the dashboard's
-    per-crop panels (the map, Top Yields, Yield & Area by Country) as a
-    directly comparable, cross-crop-commensurable alternative to tonnage
-    yield. This one CANNOT use the aggregate-basket fallback (no per-crop
-    breakdown in an aggregate total), so country coverage drops for the
-    EU's 27 member states - including the Netherlands - whose item-level QV
-    reporting stops in 2018 (confirmed directly: zero rows 2018 onward for
-    all 27, a clean cutoff, not gradual attrition - this is most of why
-    Europe looks empty on the map for recent years). A real, documented gap,
-    not silently patched over - see the panels' own captions.
+    hectare, mirroring FAO_Crop_Yield_TableauReady.csv's shape - the dollar
+    equivalent of Yield_tonha, used by the dashboard's per-crop panels (the
+    map, Top Yields, Yield & Area by Country). This one can't use the
+    aggregate-basket fallback (no per-crop breakdown in an aggregate total),
+    so coverage drops for the EU's 27 member states - including the
+    Netherlands - whose item-level QV reporting stops in 2018 (a clean
+    cutoff across all 27, not gradual attrition; most of why Europe looks
+    empty on the map in recent years). Documented on the panels' own
+    captions rather than patched over.
 
-Needs two large FAOSTAT bulk files, NOT checked into this repo (same pattern as
-Production_Crops_Livestock_E_All_Data_(Normalized).csv - see README):
+Needs two large FAOSTAT bulk files, not checked into this repo (same pattern
+as Production_Crops_Livestock_E_All_Data_(Normalized).csv - see README):
   - Value_of_Production_E_All_Data_(Normalized).csv (QV domain)
     https://bulks-faostat.fao.org/production/Value_of_Production_E_All_Data_(Normalized).zip
   - FoodBalanceSheets_E_All_Data_(Normalized).csv (FBS domain)
     https://bulks-faostat.fao.org/production/FoodBalanceSheets_E_All_Data_(Normalized).zip
 
-Value: uses Element "Gross Production Value (constant 2014-2016 thousand US$)"
-(code 58), not current US$ - constant prices avoid conflating real value
-change with inflation/exchange-rate drift across 2005-2022, the same reason
-Production per Arable Hectare uses a real (not nominal) unit throughout.
+Value: Element "Gross Production Value (constant 2014-2016 thousand US$)"
+(code 58), not current US$ - constant prices keep real value change separate
+from inflation/exchange-rate drift across 2005-2022, the same reason
+Production per Arable Hectare uses a real, not nominal, unit.
 
-Kcal: FAOSTAT has no per-crop-item calorie table, but the Food Balance Sheets
-domain reports "Food supply (kcal)" alongside "Production" (tonnes) for the
-same Item/Year, at the World level - dividing one by the other yields an
-FAO-derived (not invented) kcal-per-PRODUCTION-tonne factor for ~90 broader
-food groups. This is deliberately Production, not "Food" tonnes, in the
-denominator: an earlier version of this script divided by "Food" tonnes
-instead (kcal per tonne of the FOOD-designated portion only) and then applied
-that factor to a country's full raw production - which silently assumes
-100% of the harvest becomes food. Checked directly against FBS's own
-Food/Production shares and it doesn't: globally in 2022, only ~12% of maize
-production and ~4% of soybean production is allocated to direct food use
-(the rest is animal feed and industrial processing) - the old method
-overstated kcal by 8x and 25x respectively for those two crops alone, and by
-up to 6,600x for Cottonseed. Dividing by Production instead of Food bakes
-the real-world food-conversion rate into the factor itself.
+Kcal: FAOSTAT has no per-crop-item calorie table, but FBS reports "Food
+supply (kcal)" alongside "Production" (tonnes) for the same Item/Year at the
+World level; dividing one by the other gives an FAO-derived kcal-per-
+production-tonne factor for ~90 food groups. The denominator is Production,
+not "Food" tonnes: dividing by Food tonnes and applying that rate to a
+country's full raw harvest assumes 100% of it becomes food, which doesn't
+hold - globally in 2022 only ~12% of maize and ~4% of soybean production is
+direct food use (the rest is feed and industrial processing), so that
+approach overstates kcal 8x for maize, 25x for soybeans, and up to 6,600x
+for cottonseed. Dividing by Production instead bakes the real conversion
+rate into the factor.
 
-That fix doesn't fully close the gap, though: a handful of crops convert
-almost entirely into a DIFFERENT, separately-tracked FBS item rather than
-genuine animal feed - Sugar cane/beet into "Sugar & Sweeteners", Oil palm
-fruit into "Palm Oil", Soybeans/Rapeseed/Sunflower/Cottonseed mostly into
-their respective "X Oil" items, Barley significantly into "Beer" - so FBS's
-own Food/Production ratio computed against the RAW crop's own row is near-
-zero (0.03% for sugar beet, 0.02% for cottonseed) even though most of the
-harvest does eventually become an edible product, just tracked under a name
-this script never looks up. Rather than invent an unverified extraction-rate
-assumption to bridge that gap, KCAL_EXCLUDE_ITEMS drops these entirely.
+That still isn't enough for a handful of crops whose harvest converts almost
+entirely into a different, separately-tracked FBS item rather than feed -
+sugar cane/beet into "Sugar & Sweeteners", oil palm fruit into "Palm Oil",
+soybeans/rapeseed/sunflower/cottonseed mostly into their "X Oil" items,
+barley significantly into "Beer". For these, the raw item's own
+Food/Production share is a near-zero artifact of that split (0.03% for
+sugar beet, 0.02% for cottonseed), not a real measure of food use, and there
+is no verified extraction rate to bridge it without inventing one -
+KCAL_EXCLUDE_ITEMS drops these seven items entirely. Maize (~12% food
+share) and Oats (~26%) keep their Production-based factor despite also
+being feed-dominated: neither has a comparably large hidden-edible
+derivative sibling, so their low share is a genuine, correctly-discounted
+reflection of feed use rather than calories hiding elsewhere.
 
-This is a different, narrower test than "food share is low" - it's
-specifically "a large, separately-tracked edible derivative exists that this
-script isn't counting." Maize also has a low food share (~12% - the rest is
-overwhelmingly animal feed, 718M of 1183M tonnes global supply in 2022,
-confirmed directly), but no comparably large hidden-edible-derivative sibling
-item exists for it (Maize Germ Oil is a minor byproduct, not a dominant use)
-- so its low share is a genuine, correctly-discounted reflection of feed use,
-not calories hiding elsewhere, and it's kept as-is at its Production-based
-factor rather than excluded. The same reasoning keeps Oats (~26% food share,
-rest mostly feed) and Wheat (~67%) included.
-
-Our 176 QCL crop items are more granular than FBS's ~90 groups, so most items
-match an FBS group directly (ITEM_TO_FBS); items with no direct group (most
+Our 176 QCL crop items are more granular than FBS's ~90 groups. Most match
+an FBS group directly (ITEM_TO_FBS); items with no direct match (most
 individual vegetables, fresh fruits, minor oilseeds) fall back to their CPC
-3-digit group's own FBS equivalent (CPC_GROUP_TO_FBS) - e.g. "Cucumbers and
-gherkins" has no FBS line of its own, so it takes the broad "Vegetables"
-factor. "Fruits & Nuts" is split by keyword ("nut" in the item name) since
-tree nuts and fresh fruit have very different energy density - a single
-fallback would misrepresent both. "Oilseeds & Oil Crops" and "Sugar Crops"
-have no CPC-group fallback at all, for the same hidden-derivative reason as
-their named crops above. Fibre & Other Crops (cotton lint, jute, sisal,
-rubber, tobacco) aren't food and are excluded from the kcal total entirely,
-same as they're excluded from AreaHarvested-based metrics elsewhere in this
-pipeline.
+3-digit group's FBS equivalent (CPC_GROUP_TO_FBS) - e.g. "Cucumbers and
+gherkins" takes the broad "Vegetables" factor. "Fruits & Nuts" is split by
+keyword ("nut" in the item name) since tree nuts and fresh fruit differ too
+much in energy density to share one factor. "Oilseeds & Oil Crops" and
+"Sugar Crops" have no CPC-group fallback, for the same hidden-derivative
+reason as their named crops above. Fibre & Other Crops (cotton lint, jute,
+sisal, rubber, tobacco) aren't food and are excluded from the kcal total,
+same as elsewhere in this pipeline.
 
-Both totals only include items that also appear in FAO_Crop_Yield_TableauReady.csv
-with a reported AreaHarvested_ha (i.e. primary/harvested crops) - processed
-derivatives (palm oil, raw sugar, wine...) are excluded from the sum for the
-same double-counting reason established in pipeline.py.
+Both totals only include items that also appear in
+FAO_Crop_Yield_TableauReady.csv with a reported AreaHarvested_ha (primary/
+harvested crops) - processed derivatives (palm oil, raw sugar, wine...) are
+excluded, same double-counting reason as pipeline.py.
 """
 from pathlib import Path
 
@@ -125,8 +109,8 @@ ITEM_TO_FBS = {
     "Cocoa beans": "Cocoa Beans and products", "Coffee; green": "Coffee and products",
     "Tea leaves": "Tea (including mate)",
     # Sugar cane, Sugar beet, Barley, Soya beans, Sunflower seed, Rape or
-    # colza seed, Cotton seed/Seed cotton deliberately have NO entry here -
-    # see KCAL_EXCLUDE_ITEMS below for why.
+    # colza seed, Cotton seed/Seed cotton have no entry here - see
+    # KCAL_EXCLUDE_ITEMS below for why.
 }
 
 # CPC 3-digit group -> FBS fallback, for items with no direct match above.
@@ -142,15 +126,14 @@ CPC_GROUP_TO_FBS = {
     "Cereals": "Cereals - Excluding Beer", "Vegetables": "Vegetables",
     "Roots & Tubers": "Starchy Roots",
     "Beverage & Spice Crops": "Spices", "Pulses": "Pulses",
-    # "Fibre & Other Crops" deliberately excluded - not food (cotton lint,
-    # jute, sisal, rubber, tobacco don't have a food-energy value).
-    # "Oilseeds & Oil Crops" and "Sugar Crops" deliberately have no fallback -
-    # both groups are structurally dominated by items that convert into a
-    # separately-tracked edible derivative (oil, sugar) this script can't
-    # trace through - see KCAL_EXCLUDE_ITEMS below. The two items in each
-    # group with a large enough direct-food share to be trustworthy on their
-    # own (Groundnuts, Sesame seed) are mapped explicitly in ITEM_TO_FBS
-    # instead and are unaffected by removing this generic fallback.
+    # "Fibre & Other Crops" excluded - not food (cotton lint, jute, sisal,
+    # rubber, tobacco have no food-energy value).
+    # "Oilseeds & Oil Crops" and "Sugar Crops" have no fallback - both groups
+    # are dominated by items that convert into a separately-tracked edible
+    # derivative (oil, sugar) this script can't trace through - see
+    # KCAL_EXCLUDE_ITEMS below. The two items in each group with a large
+    # enough direct-food share to be trustworthy (Groundnuts, Sesame seed)
+    # are mapped explicitly in ITEM_TO_FBS instead.
 }
 
 # Items with no reliable kcal factor: FBS's own Food/Production share (World,
@@ -230,12 +213,12 @@ print("Loading QV (Value of Production, constant 2014-2016 US$) ...")
 qv_cols = ["Area", "Item", "Element Code", "Year", "Value"]
 qv_all = pd.read_csv(raw_dir / "Value_of_Production_E_All_Data_(Normalized).csv", usecols=qv_cols)
 qv_all = qv_all[qv_all["Element Code"] == 58].rename(columns={"Area": "Country", "Value": "Value_kUSD"})
-# QV names China's sub-entities with commas ("China, mainland") where QCL uses
-# semicolons ("China; mainland") - confirmed directly by diffing the two
-# domains' full country lists (every other QV/QCL mismatch is either a
-# genuine coverage gap or a regional aggregate, not a naming difference).
-# Without this, China - one of the world's largest agricultural economies -
-# silently drops out of every value-based figure on the dashboard.
+# QV names China's sub-entities with commas ("China, mainland") where QCL
+# uses semicolons ("China; mainland") - the only naming mismatch between the
+# two domains' country lists; every other QV/QCL difference is a real
+# coverage gap or a regional aggregate. Without this, China - one of the
+# world's largest agricultural economies - drops out of every value-based
+# figure on the dashboard.
 qv_all["Country"] = qv_all["Country"].replace({
     "China, mainland": "China; mainland",
     "China, Hong Kong SAR": "China; Hong Kong SAR",
@@ -246,16 +229,15 @@ print(f"Value coverage: {qv_items['Item'].nunique()} of {len(primary_items)} pri
 value_item_level = qv_items.groupby(["Country", "Year"], as_index=False)["Value_kUSD"].sum()
 
 # Per-crop value (Country/Crop/Year/Value_per_ha), mirroring
-# FAO_Crop_Yield_TableauReady.csv's own shape - this is what the dashboard's
-# per-crop panels (the map, Top Yields, Yield & Area by Country) need instead
-# of the country-total figure above. This can ONLY use item-level rows - the
-# aggregate-basket fallback below gives a country TOTAL with no per-crop
-# breakdown, so it's structurally unusable here. FAOSTAT QV alone leaves the
-# EU's 27 member states entirely absent from 2018 onward (confirmed
-# directly, zero rows for all 27); derive_eu_value_gap.py recovers cereals,
-# oilseeds, sugar beet, and tobacco for those country/years from Eurostat
-# (merged in below), but fruit, vegetables, wine, and olives remain a real,
-# documented gap for the EU post-2017 - not silently patched over.
+# FAO_Crop_Yield_TableauReady.csv's shape - what the dashboard's per-crop
+# panels (the map, Top Yields, Yield & Area by Country) need instead of the
+# country-total figure above. This can only use item-level rows - the
+# aggregate-basket fallback below gives a country total with no per-crop
+# breakdown, so it's unusable here. FAOSTAT QV alone leaves the EU's 27
+# member states entirely absent from 2018 onward (zero rows for all 27);
+# derive_eu_value_gap.py recovers cereals, oilseeds, sugar beet, and tobacco
+# for those country/years from Eurostat (merged in below), but fruit,
+# vegetables, wine, and olives remain a documented gap for the EU post-2017.
 crop_value_qv = qv_items[["Country", "Item", "Year", "Value_kUSD"]].rename(columns={"Item": "Crop"})
 
 # Fill in what derive_eu_value_gap.py recovered from Eurostat for the EU's
@@ -286,19 +268,16 @@ covered_countries_2022 = crop_value[crop_value["Year"] == 2022]["Country"].nuniq
 print(f"Countries with per-crop value data in 2022: {covered_countries_2022}")
 
 # FAOSTAT drops item-level Value of Production for the EU's 27 member states
-# from 2018 onward (confirmed directly: all 27 report item-level detail
-# through 2017, precisely zero do from 2018 on - a clean cutoff pointing to
-# an EU-side reporting-format change, not gradual data-quality drift),
-# including the Netherlands - a country this dashboard leans on heavily
-# elsewhere. For country/years with no item-level rows at all, fall back to
-# summing FAOSTAT's own non-overlapping "Primary" rollups
-# (Cereals, primary / Vegetables and Fruit Primary / Roots and Tubers, Total /
-# Sugar Crops Primary) - these are still the real underlying item totals, not
-# an invented substitute, and there's no double-counting risk precisely
-# because no item-level rows exist for that country/year to double-count
-# against. This basket omits oilseeds/pulses/beverage crops (QV has no
-# aggregate for those), so it under-counts relative to item-level years -
-# documented as a caveat on the panel.
+# from 2018 onward (a clean cutoff across all 27 - a reporting-format change
+# on the EU's side, not gradual data-quality drift), including the
+# Netherlands. For country/years with no item-level rows at all, fall back
+# to summing FAOSTAT's own non-overlapping "Primary" rollups (Cereals,
+# primary / Vegetables and Fruit Primary / Roots and Tubers, Total / Sugar
+# Crops Primary) - real underlying item totals, not an invented substitute,
+# with no double-counting risk since no item-level rows exist for that
+# country/year to double-count against. This basket omits oilseeds/pulses/
+# beverage crops (QV has no aggregate for those), so it under-counts
+# relative to item-level years - documented as a caveat on the panel.
 AGGREGATE_BASKET = {"Cereals, primary", "Vegetables and Fruit Primary", "Roots and Tubers, Total", "Sugar Crops Primary"}
 qv_agg = qv_all[qv_all["Item"].isin(AGGREGATE_BASKET)]
 value_agg_level = qv_agg.groupby(["Country", "Year"], as_index=False)["Value_kUSD"].sum()
