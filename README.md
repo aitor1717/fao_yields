@@ -31,9 +31,9 @@ own docstring for exact sources and download URLs):
 
 - **`pipeline.py`** turns the raw FAOSTAT crop production/area export into
   `FAO_Crop_Yield_TableauReady.csv` and `FAO_Arable_Land_Productivity.csv`.
-  `apply_fixes_to_existing_output.py` reapplies the same corrections directly
-  to the checked-in CSVs when the (uncommitted, multi-GB) raw export isn't
-  available — this is the currently-runnable path.
+  When the (uncommitted, multi-GB) raw export isn't available, it falls back
+  to reapplying the same corrections directly to the checked-in CSVs — this
+  is the currently-runnable path.
 - **`derive_value_kcal.py`** builds the dollar-value and food-energy figures
   behind most of the dashboard's panels, filling an EU coverage gap with
   **`derive_eu_value_gap.py`** (run first) and a handful of FAOSTAT-absent

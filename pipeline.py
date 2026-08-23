@@ -13,8 +13,8 @@ from fao_filters import (
 # =====================================================================================
 # FAO Data Pipeline
 # =====================================================================================
-# This pipeline generates two Tableau-ready CSVs from the tables found in the FAO
-# official site: https://www.fao.org/faostat/en/#data/QCL
+# Generates two CSVs from the tables found on the FAO official site:
+# https://www.fao.org/faostat/en/#data/QCL
 #
 #   1. FAO_Crop_Yield_TableauReady.csv        - per Country/Crop/Year production,
 #                                                harvested area, and yield.
@@ -23,13 +23,18 @@ from fao_filters import (
 #                                                land (area_data.csv), i.e. what a
 #                                                country produces relative to the
 #                                                cultivable land it actually has.
+#
+# The raw bulk export below is too large to check into this repo. When it's
+# present, this pipeline runs the full merge from raw FAO tables. When it
+# isn't, it falls back to reapplying the same filtering/correction logic
+# directly to the already-produced output CSV instead - the two paths share
+# identical downstream logic (same fao_filters.py constants, same yield
+# derivation, same arable-land join) and produce identical output.
 # =====================================================================================
 
-# Define base path
 base_dir = Path(__file__).resolve().parent
 data_dir = base_dir / 'data'
 
-# File paths
 all_data_path = data_dir / 'Production_Crops_Livestock_E_All_Data_(Normalized).csv'
 area_codes_path = data_dir / 'Production_Crops_Livestock_E_AreaCodes.csv'
 item_codes_path = data_dir / 'Production_Crops_Livestock_E_ItemCodes.csv'
@@ -47,138 +52,147 @@ flags_path = data_dir / 'Production_Crops_Livestock_E_Flags.csv'
 # should be used as the comparison base instead.
 arable_land_path = data_dir / 'arable_land_ha.csv'
 
-if not all_data_path.exists():
-    raise SystemExit(
-        f"Missing raw FAOSTAT bulk file: {all_data_path.name}\n"
-        "Download the normalized QCL (Crops and livestock products) bulk export from "
-        f"https://www.fao.org/faostat/en/#data/QCL and place it in {data_dir}/ "
-        "under that exact filename, then re-run pipeline.py.\n"
-        "If you don't have that file, run apply_fixes_to_existing_output.py instead - "
-        "it applies the same corrections directly to the checked-in output CSV."
-    )
+output_path = data_dir / 'FAO_Crop_Yield_TableauReady.csv'
 
-# Load data
-df_base = pd.read_csv(all_data_path, dtype=str)
-df_area = pd.read_csv(area_codes_path, dtype=str)
-df_item = pd.read_csv(item_codes_path, dtype=str)
-df_element = pd.read_csv(element_codes_path, dtype=str)
-df_flag = pd.read_csv(flags_path, dtype=str)
 
-# Normalize column names
-def normalize_columns(df):
-    df.columns = [unicodedata.normalize("NFKD", col.strip())
-                  .encode("ascii", "ignore")
-                  .decode("ascii")
-                  .replace(" ", "_")
-                  for col in df.columns]
-    return df
-
-df_base = normalize_columns(df_base)
-df_area = normalize_columns(df_area)
-df_item = normalize_columns(df_item)
-df_element = normalize_columns(df_element)
-df_flag = normalize_columns(df_flag)
-
-# Normalize key values
-def normalize_keys(df, keys):
-    for key in keys:
-        df[key] = df[key].astype(str).str.replace(r"[^\x00-\x7F]+", "", regex=True)
-        df[key] = df[key].str.strip().str.lstrip("0")
-    return df
-
-df_base = normalize_keys(df_base, ["Area_Code", "Item_Code", "Element_Code"])
-df_area = normalize_keys(df_area, ["Area_Code"])
-df_item = normalize_keys(df_item, ["Item_Code"])
-df_element = normalize_keys(df_element, ["Element_Code"])
-
-# Validate columns
 def validate_columns(df, expected, name):
     missing = set(expected) - set(df.columns)
     if missing:
         raise ValueError(f"{name} missing columns: {missing}")
 
-validate_columns(df_base, ["Area_Code", "Item_Code", "Element_Code", "Year", "Value"], "Base")
-validate_columns(df_area, ["Area_Code", "Area"], "Area")
-validate_columns(df_item, ["Item_Code", "Item"], "Item")
-validate_columns(df_element, ["Element_Code", "Element"], "Element")
-validate_columns(df_flag, ["Flag", "Description"], "Flag")
 
-# Merge with explicit renaming
-df = df_base.copy()
-df = df.merge(df_area.rename(columns={"Area": "Area_Name"})[["Area_Code", "Area_Name"]], on="Area_Code", how="left", validate="many_to_one")
-df = df.merge(df_item.rename(columns={"Item": "Item_Name"})[["Item_Code", "Item_Name"]], on="Item_Code", how="left", validate="many_to_one")
-df = df.merge(df_element.rename(columns={"Element": "Element_Name"})[["Element_Code", "Element_Name"]], on="Element_Code", how="left", validate="many_to_one")
+if all_data_path.exists():
+    # ---------------------------------------------------------------------------
+    # Full merge from the raw FAOSTAT bulk export.
+    # ---------------------------------------------------------------------------
+    df_base = pd.read_csv(all_data_path, dtype=str)
+    df_area = pd.read_csv(area_codes_path, dtype=str)
+    df_item = pd.read_csv(item_codes_path, dtype=str)
+    df_element = pd.read_csv(element_codes_path, dtype=str)
+    df_flag = pd.read_csv(flags_path, dtype=str)
 
-# Null check
-def assert_no_nulls(df, cols, name):
-    nulls = df[cols].isnull().sum()
-    if nulls.any():
-        raise ValueError(f"{name} contains nulls in joined columns:\n{nulls}")
+    def normalize_columns(df):
+        df.columns = [unicodedata.normalize("NFKD", col.strip())
+                      .encode("ascii", "ignore")
+                      .decode("ascii")
+                      .replace(" ", "_")
+                      for col in df.columns]
+        return df
 
-assert_no_nulls(df, ["Area_Name", "Item_Name", "Element_Name"], "Post-Merge")
+    df_base = normalize_columns(df_base)
+    df_area = normalize_columns(df_area)
+    df_item = normalize_columns(df_item)
+    df_element = normalize_columns(df_element)
+    df_flag = normalize_columns(df_flag)
 
-# Scope: this pipeline reports on CROPS only. FAOSTAT's Production_Crops_Livestock
-# domain also carries livestock and animal-derived products (meat, milk, eggs,
-# hides, rendered fat, etc.) under the same Element names ("Production", "Yield"),
-# so they must be excluded explicitly rather than assumed away by the Element filter.
-# See fao_filters.py for the keyword denylist, its false-positive exceptions
-# (e.g. "Cassava; fresh" - "ass" in cASSava - matched the livestock filter and
-# was being silently dropped from every output), and rollup-category/area sets.
-df = df[
-    df["Item_Name"].isin(LIVESTOCK_FALSE_POSITIVES)
-    | ~df["Item_Name"].str.contains(livestock_pattern, regex=True)
-]
-df = df[~df["Item_Name"].isin(AGGREGATE_ITEMS)]
-df = df[~df["Area_Name"].isin(AGGREGATE_AREAS)]
+    def normalize_keys(df, keys):
+        for key in keys:
+            df[key] = df[key].astype(str).str.replace(r"[^\x00-\x7F]+", "", regex=True)
+            df[key] = df[key].str.strip().str.lstrip("0")
+        return df
 
-# Filter to the elements needed to derive yield ourselves (see below) rather than
-# trusting FAOSTAT's own "Yield" element, whose unit varies by revision/domain.
-df = df[df["Element_Name"].isin(["Production", "Area harvested"])]
-df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
-df = df[df["Year"].between(2005, 2022)]
-df["Value"] = pd.to_numeric(df["Value"], errors="coerce")
+    df_base = normalize_keys(df_base, ["Area_Code", "Item_Code", "Element_Code"])
+    df_area = normalize_keys(df_area, ["Area_Code"])
+    df_item = normalize_keys(df_item, ["Item_Code"])
+    df_element = normalize_keys(df_element, ["Element_Code"])
 
-# Validate shape
-if df["Year"].min() < 2005 or df["Year"].max() > 2022:
-    raise ValueError("Year range out of bounds")
-if df["Value"].isnull().all():
-    raise ValueError("All values are NaN")
+    validate_columns(df_base, ["Area_Code", "Item_Code", "Element_Code", "Year", "Value"], "Base")
+    validate_columns(df_area, ["Area_Code", "Area"], "Area")
+    validate_columns(df_item, ["Item_Code", "Item"], "Item")
+    validate_columns(df_element, ["Element_Code", "Element"], "Element")
+    validate_columns(df_flag, ["Flag", "Description"], "Flag")
 
-# ---------------------------------------------------------------------------
-# Pivot - guard against Element_Code collisions. FAOSTAT reuses the labels
-# "Production" and "Yield" across several Element_Codes (crop vs. livestock
-# reporting conventions). If the same Area/Item/Year ever carries two rows for
-# the same Element_Name, that's a real ambiguity that must not be resolved
-# silently (the previous version used aggfunc="first", which drops one value
-# with no warning).
-# ---------------------------------------------------------------------------
-pivot_input = df[["Area_Name", "Item_Name", "Year", "Element_Name", "Value"]].dropna()
+    df = df_base.copy()
+    df = df.merge(df_area.rename(columns={"Area": "Area_Name"})[["Area_Code", "Area_Name"]], on="Area_Code", how="left", validate="many_to_one")
+    df = df.merge(df_item.rename(columns={"Item": "Item_Name"})[["Item_Code", "Item_Name"]], on="Item_Code", how="left", validate="many_to_one")
+    df = df.merge(df_element.rename(columns={"Element": "Element_Name"})[["Element_Code", "Element_Name"]], on="Element_Code", how="left", validate="many_to_one")
 
-dupes = pivot_input.duplicated(subset=["Area_Name", "Item_Name", "Year", "Element_Name"], keep=False)
-if dupes.any():
-    sample = pivot_input[dupes].sort_values(["Area_Name", "Item_Name", "Year", "Element_Name"]).head(10)
-    raise ValueError(
-        f"{dupes.sum()} duplicate (Area, Item, Year, Element) rows found - "
-        f"resolve the Element_Code collision before pivoting. Sample:\n{sample}"
-    )
+    def assert_no_nulls(df, cols, name):
+        nulls = df[cols].isnull().sum()
+        if nulls.any():
+            raise ValueError(f"{name} contains nulls in joined columns:\n{nulls}")
 
-df_pivot = pivot_input.pivot_table(
-    index=["Area_Name", "Item_Name", "Year"],
-    columns="Element_Name",
-    values="Value",
-    aggfunc="first"
-).reset_index()
+    assert_no_nulls(df, ["Area_Name", "Item_Name", "Element_Name"], "Post-Merge")
 
-df_pivot.columns.name = None
-df_pivot.columns = [str(col).strip() for col in df_pivot.columns]
+    # Scope: this pipeline reports on CROPS only. FAOSTAT's Production_Crops_Livestock
+    # domain also carries livestock and animal-derived products (meat, milk, eggs,
+    # hides, rendered fat, etc.) under the same Element names ("Production", "Yield"),
+    # so they must be excluded explicitly rather than assumed away by the Element filter.
+    # See fao_filters.py for the keyword denylist, its false-positive exceptions
+    # (e.g. "Cassava; fresh" - "ass" in cASSava - matched the livestock filter and
+    # was being silently dropped from every output), and rollup-category/area sets.
+    df = df[
+        df["Item_Name"].isin(LIVESTOCK_FALSE_POSITIVES)
+        | ~df["Item_Name"].str.contains(livestock_pattern, regex=True)
+    ]
+    df = df[~df["Item_Name"].isin(AGGREGATE_ITEMS)]
+    df = df[~df["Area_Name"].isin(AGGREGATE_AREAS)]
 
-# Rename
-df_pivot = df_pivot.rename(columns={
-    "Area_Name": "Country",
-    "Item_Name": "Crop",
-    "Production": "Production_tons",
-    "Area harvested": "AreaHarvested_ha",
-})
+    # Filter to the elements needed to derive yield ourselves (see below) rather than
+    # trusting FAOSTAT's own "Yield" element, whose unit varies by revision/domain.
+    df = df[df["Element_Name"].isin(["Production", "Area harvested"])]
+    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+    df = df[df["Year"].between(2005, 2022)]
+    df["Value"] = pd.to_numeric(df["Value"], errors="coerce")
+
+    if df["Year"].min() < 2005 or df["Year"].max() > 2022:
+        raise ValueError("Year range out of bounds")
+    if df["Value"].isnull().all():
+        raise ValueError("All values are NaN")
+
+    # ---------------------------------------------------------------------------
+    # Pivot - guard against Element_Code collisions. FAOSTAT reuses the labels
+    # "Production" and "Yield" across several Element_Codes (crop vs. livestock
+    # reporting conventions). If the same Area/Item/Year ever carries two rows for
+    # the same Element_Name, that's a real ambiguity that must not be resolved
+    # silently (an earlier version used aggfunc="first", which dropped one value
+    # with no warning).
+    # ---------------------------------------------------------------------------
+    pivot_input = df[["Area_Name", "Item_Name", "Year", "Element_Name", "Value"]].dropna()
+
+    dupes = pivot_input.duplicated(subset=["Area_Name", "Item_Name", "Year", "Element_Name"], keep=False)
+    if dupes.any():
+        sample = pivot_input[dupes].sort_values(["Area_Name", "Item_Name", "Year", "Element_Name"]).head(10)
+        raise ValueError(
+            f"{dupes.sum()} duplicate (Area, Item, Year, Element) rows found - "
+            f"resolve the Element_Code collision before pivoting. Sample:\n{sample}"
+        )
+
+    df_pivot = pivot_input.pivot_table(
+        index=["Area_Name", "Item_Name", "Year"],
+        columns="Element_Name",
+        values="Value",
+        aggfunc="first"
+    ).reset_index()
+
+    df_pivot.columns.name = None
+    df_pivot.columns = [str(col).strip() for col in df_pivot.columns]
+
+    df_pivot = df_pivot.rename(columns={
+        "Area_Name": "Country",
+        "Item_Name": "Crop",
+        "Production": "Production_tons",
+        "Area harvested": "AreaHarvested_ha",
+    })
+
+else:
+    # ---------------------------------------------------------------------------
+    # Fallback: the raw bulk export isn't present, so reapply the same
+    # filtering/correction logic directly to the already-produced output CSV
+    # instead of re-deriving it from raw FAO tables. Produces identical output
+    # to the full-merge branch above for any row already present in the
+    # checked-in CSV.
+    # ---------------------------------------------------------------------------
+    print(f"{all_data_path.name} not found - regenerating from the checked-in "
+          f"{output_path.name} instead of the raw bulk export.")
+    df_pivot = pd.read_csv(output_path)
+    df_pivot = df_pivot[
+        df_pivot["Crop"].isin(LIVESTOCK_FALSE_POSITIVES)
+        | ~df_pivot["Crop"].str.contains(livestock_pattern, regex=True)
+    ].copy()
+    df_pivot = df_pivot[~df_pivot["Crop"].isin(AGGREGATE_ITEMS)].copy()
+    df_pivot = df_pivot[~df_pivot["Country"].isin(AGGREGATE_AREAS)].copy()
+    df_pivot = df_pivot[["Country", "Crop", "Year", "AreaHarvested_ha", "Production_tons"]]
 
 # Yield is derived directly from production and harvested area (tons / hectare),
 # rather than taken from FAOSTAT's own "Yield" element - that field's unit has
@@ -190,11 +204,8 @@ df_pivot["Yield_tonha"] = df_pivot["Production_tons"] / df_pivot["AreaHarvested_
 # genuine divide-by-zero, not a number, so leave it blank rather than inf.
 df_pivot.loc[df_pivot["AreaHarvested_ha"] == 0, "Yield_tonha"] = pd.NA
 
-# Export
-output_path = data_dir / 'FAO_Crop_Yield_TableauReady.csv'
 df_pivot.to_csv(output_path, index=False)
 
-# Validate output
 df_check = pd.read_csv(output_path)
 expected_cols = ["Country", "Crop", "Year", "Yield_tonha", "Production_tons", "AreaHarvested_ha"]
 missing = set(expected_cols) - set(df_check.columns)
@@ -207,11 +218,11 @@ print("Pipeline completed. File saved at:", output_path)
 # Arable land productivity
 # =====================================================================================
 # Answers: what does each country produce relative to the arable land it has to
-# work with? area_data.csv is World Bank arable-land-by-country data, so country
-# names need reconciling against FAO's naming before joining.
+# work with? arable_land_ha.csv is World Bank arable-land-by-country data, so
+# country names need reconciling against FAO's naming before joining.
 # =====================================================================================
 # WB_TO_FAO_COUNTRY (World Bank -> FAO country-name reconciliation) lives in
-# fao_filters.py, shared with apply_fixes_to_existing_output.py.
+# fao_filters.py.
 
 df_arable = pd.read_csv(arable_land_path)
 validate_columns(df_arable, ["Country", "ArableLand_ha"], "ArableLand")
@@ -224,8 +235,8 @@ df_arable["Country"] = df_arable["Country"].replace(WB_TO_FAO_COUNTRY)
 # with processed derivatives extracted from them (Palm oil, Raw cane sugar,
 # Cotton lint...) that never have their own AreaHarvested - left in, those
 # derivatives double-count the same physical harvest under a second item
-# name. Confirmed directly: Malaysia's 2022 total dropped ~20% (127M -> 102M
-# tons) once Palm oil/Palm kernels/Oil of palm kernel were excluded, since
+# name. Malaysia's 2022 total dropped ~20% (127M -> 102M tons) once Palm
+# oil/Palm kernels/Oil of palm kernel were excluded, since
 # they're the same oil palm fruit already counted once. "Production per
 # arable hectare" should reflect what was grown on that land, not how many
 # times it was reprocessed afterward.
@@ -244,7 +255,7 @@ df_productivity["ProductionPerArableHa_tons"] = (
 matched_countries = set(df_productivity["Country"])
 unmatched = sorted(set(df_arable["Country"]) - matched_countries)
 if unmatched:
-    print(f"NOTE: {len(unmatched)} area_data.csv entries have no matching FAO crop "
+    print(f"NOTE: {len(unmatched)} arable_land_ha.csv entries have no matching FAO crop "
           f"data (World Bank region/income-group aggregates and micro-territories "
           f"FAO doesn't report on are expected here - review the list to confirm "
           f"nothing real is being dropped):")

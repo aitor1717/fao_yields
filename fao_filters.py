@@ -1,10 +1,9 @@
 """
 Shared filtering/correction constants for the FAO pipeline.
 
-Used by both pipeline.py (the source-of-truth pipeline, run against the raw
-FAOSTAT bulk export) and apply_fixes_to_existing_output.py (the stopgap that
-reapplies the same corrections directly to an already-produced CSV). Keeping
-these here means the two scripts can't drift out of sync with each other.
+Used by pipeline.py, which runs the full merge against the raw FAOSTAT bulk
+export when it's available and falls back to reapplying these same
+corrections directly to the already-produced output CSV otherwise.
 """
 import re
 
@@ -28,11 +27,11 @@ livestock_pattern = re.compile("|".join(LIVESTOCK_KEYWORDS), re.IGNORECASE)
 # Keyword substring matching is deliberately broad (it needs to catch plurals
 # and compounds like "Buttermilk" or "Camels" that a strict \bword\b match
 # would miss), but that same looseness produces real false positives on
-# genuine crop names that happen to contain a keyword mid-word - confirmed
-# directly, a full pass over every item the pattern matches turned up 9
-# actual crops wrongly caught, most severely "Cassava; fresh" and "Cassava
-# leaves" (cASSava, via "ass") - one of the world's top staple root crops
-# was silently missing from every output this whole project has produced.
+# genuine crop names that happen to contain a keyword mid-word - a full pass
+# over every item the pattern matches turned up 9 actual crops wrongly
+# caught, most severely "Cassava; fresh" and "Cassava leaves" (cASSava, via
+# "ass") - one of the world's top staple root crops was silently missing
+# from every output this whole project has produced.
 # Tightening the regex with word boundaries was tried first and rejected:
 # it fixes these cases but also breaks "Camels" -> "camel", "Goats" ->
 # "goat", "Eggs Primary" -> "egg" and every other plural, which are supposed
@@ -114,9 +113,9 @@ AGGREGATE_AREAS = {
 # Arable Hectare" panel's Value axis has no equivalent exclusion (FAOSTAT's
 # Value of Production covers these crops just fine), so any country whose
 # top crop is one of these is mechanically pushed toward the value/ROI end
-# of that panel regardless of its real food-vs-cash-crop balance - confirmed
-# directly for Malaysia (Oil palm fruit, ~70% of its harvested area),
-# Mauritius/Barbados/Cabo Verde (Sugar cane). Disclosed on that panel's own
+# of that panel regardless of its real food-vs-cash-crop balance - true for
+# Malaysia (Oil palm fruit, ~70% of its harvested area) and Mauritius/
+# Barbados/Cabo Verde (Sugar cane). Disclosed on that panel's own
 # caption rather than silently fixed - excluding these from the Value side
 # too would just trade this bias for the EU per-crop coverage gap (see
 # derive_eu_value_gap.py), since a scoped-down Value figure can't use the
@@ -132,12 +131,11 @@ WB_TO_FAO_COUNTRY = {
     "Bahamas, The": "Bahamas",
     "Bolivia": "Bolivia (Plurinational State of)",
     "China": "China; mainland",
-    # Confirmed directly while chasing why these two showed gray on the
-    # dashboard's value-per-arable-hectare maps despite having FAOSTAT crop
-    # data: the World Bank arable-land table does carry them, just under a
-    # name this mapping didn't have an entry for yet. Taiwan, Cook Islands,
-    # and Niue were checked too and are genuinely absent from that table
-    # (no entry under any name) - not a mapping bug, nothing to fix there.
+    # These two showed gray on the dashboard's value-per-arable-hectare maps
+    # despite having FAOSTAT crop data: the World Bank arable-land table does
+    # carry them, just under a name this mapping didn't have an entry for
+    # yet. Taiwan, Cook Islands, and Niue were checked too and are genuinely
+    # absent from that table (no entry under any name) - not a mapping bug.
     "Hong Kong SAR, China": "China; Hong Kong SAR",
     "Puerto Rico (US)": "Puerto Rico",
     "Congo, Dem. Rep.": "Democratic Republic of the Congo",
