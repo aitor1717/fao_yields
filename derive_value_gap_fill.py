@@ -76,6 +76,12 @@ mirroring, not importing; re-check both if either changes.
 Needs the same raw FoodBalanceSheets_E_All_Data_(Normalized).csv as
 derive_value_kcal.py (not checked into this repo, fetched directly here):
   https://bulks-faostat.fao.org/production/FoodBalanceSheets_E_All_Data_(Normalized).zip
+
+Module structure: the calculation steps below are plain functions of
+DataFrames/values, with no network or file I/O inside them, so they can be
+unit-tested against small synthetic inputs (see tests/). fetch() (World Bank
+API calls) and main() (file I/O, printing, save-to-disk) carry all the I/O
+and reproduce the original script's behavior exactly when run directly.
 """
 import io
 import time
@@ -128,52 +134,6 @@ CONFLICT_TIER = {
 
 WB_INDICATOR = "NV.AGR.TOTL.CD"
 
-
-def fetch(candidates, confidence):
-    rows = []
-    for country, iso3 in candidates.items():
-        url = (
-            f"https://api.worldbank.org/v2/country/{iso3}/indicator/{WB_INDICATOR}"
-            f"?format=json&date=2005:2022&per_page=100"
-        )
-        with urllib.request.urlopen(url, timeout=20) as r:
-            data = json.load(r)
-        entries = data[1] if len(data) > 1 and data[1] else []
-        n = 0
-        for e in entries:
-            if e["value"] is not None:
-                rows.append({
-                    "Country": country, "Year": int(e["date"]), "AgValueAdded_USD": e["value"],
-                    "Confidence": confidence,
-                })
-                n += 1
-        print(f"  {country:35s} {n} years")
-        time.sleep(0.2)
-    return rows
-
-
-print(f"Fetching World Bank {WB_INDICATOR} for {len(CANDIDATES)} stable-tier countries ...")
-rows = fetch(CANDIDATES, "stable")
-print(f"Fetching World Bank {WB_INDICATOR} for {len(CONFLICT_TIER)} conflict-tier countries ...")
-rows += fetch(CONFLICT_TIER, "conflict-affected, lower confidence")
-
-ag = pd.DataFrame(rows)
-
-arable = pd.read_csv(data_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
-arable["Country"] = arable["Country"].replace(WB_TO_FAO_COUNTRY)
-merged = ag.merge(arable, on="Country", how="inner")
-dropped = set(ag["Country"]) - set(merged["Country"])
-if dropped:
-    print(f"WARNING: no arable_land_ha.csv row for {dropped} - dropped, cannot compute a per-hectare figure.")
-
-merged["ValuePerArableHa_USD_Est"] = merged["AgValueAdded_USD"] / merged["ArableLand_ha"]
-merged["Source"] = f"World Bank {WB_INDICATOR} (value-added proxy, not FAOSTAT QV)"
-
-# ---------------------------------------------------------------------------
-# Kcal side - real FAOSTAT data (QCL production tonnage x FBS world kcal
-# factors), not a proxy. See module docstring for why this is possible at
-# all. Mirrors derive_value_kcal.py's mapping exactly.
-# ---------------------------------------------------------------------------
 ITEM_TO_FBS = {
     "Maize (corn)": "Maize and products", "Wheat": "Wheat and products",
     "Rice": "Rice and products",
@@ -205,6 +165,43 @@ CPC_GROUP_TO_FBS = {
 }
 
 
+def fetch(candidates, confidence):
+    rows = []
+    for country, iso3 in candidates.items():
+        url = (
+            f"https://api.worldbank.org/v2/country/{iso3}/indicator/{WB_INDICATOR}"
+            f"?format=json&date=2005:2022&per_page=100"
+        )
+        with urllib.request.urlopen(url, timeout=20) as r:
+            data = json.load(r)
+        entries = data[1] if len(data) > 1 and data[1] else []
+        n = 0
+        for e in entries:
+            if e["value"] is not None:
+                rows.append({
+                    "Country": country, "Year": int(e["date"]), "AgValueAdded_USD": e["value"],
+                    "Confidence": confidence,
+                })
+                n += 1
+        print(f"  {country:35s} {n} years")
+        time.sleep(0.2)
+    return rows
+
+
+def compute_value_per_arable_ha(ag: pd.DataFrame, arable: pd.DataFrame) -> pd.DataFrame:
+    merged = ag.merge(arable, on="Country", how="inner")
+    merged["ValuePerArableHa_USD_Est"] = merged["AgValueAdded_USD"] / merged["ArableLand_ha"]
+    merged["Source"] = f"World Bank {WB_INDICATOR} (value-added proxy, not FAOSTAT QV)"
+    return merged
+
+
+def build_item_to_group(items: pd.DataFrame) -> dict:
+    items = items.copy()
+    items["CPC_clean"] = items["CPC Code"].str.strip("'")
+    items["CPCGroup"] = items["CPC_clean"].str[:3].map(CPC_GROUPS)
+    return dict(zip(items["Item"], items["CPCGroup"]))
+
+
 def resolve_fbs_item(crop_name, item_to_group):
     if crop_name in KCAL_EXCLUDE_ITEMS:
         return None
@@ -216,54 +213,95 @@ def resolve_fbs_item(crop_name, item_to_group):
     return CPC_GROUP_TO_FBS.get(group)
 
 
-all_gap_countries = list(CANDIDATES) + list(CONFLICT_TIER)
+def compute_kcal_per_tonne(fbs: pd.DataFrame, year: int = 2022) -> pd.Series:
+    world = fbs[(fbs["Area"] == "World") & (fbs["Year"] == year)]
+    piv = world.pivot_table(index="Item", columns="Element", values="Value", aggfunc="first")
+    return (piv["Food supply (kcal)"] * 1e6 / (piv["Production"] * 1e3)).dropna()
 
-print(f"\nFetching FAOSTAT Food Balance Sheets (for the kcal-per-tonne factor table) ...")
-fbs_url = "https://bulks-faostat.fao.org/production/FoodBalanceSheets_E_All_Data_(Normalized).zip"
-with urllib.request.urlopen(fbs_url, timeout=120) as r:
-    zip_bytes = r.read()
-with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
-    with zf.open("FoodBalanceSheets_E_All_Data_(Normalized).csv") as f:
-        fbs = pd.read_csv(f, usecols=["Area", "Item", "Element", "Year", "Value"])
-world = fbs[(fbs["Area"] == "World") & (fbs["Year"] == 2022)]
-piv = world.pivot_table(index="Item", columns="Element", values="Value", aggfunc="first")
-kcal_per_tonne = (piv["Food supply (kcal)"] * 1e6 / (piv["Production"] * 1e3)).dropna()
-print(f"  {len(kcal_per_tonne)} FBS food-group factors computed")
 
-print("Loading crop production tonnage for the 16 gap countries ...")
-crops = pd.read_csv(data_dir / "FAO_Crop_Yield_TableauReady.csv")
-crops = crops[crops["Country"].isin(all_gap_countries)]
-items = pd.read_csv(data_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
-items["CPC_clean"] = items["CPC Code"].str.strip("'")
-items["CPCGroup"] = items["CPC_clean"].str[:3].map(CPC_GROUPS)
-item_to_group = dict(zip(items["Item"], items["CPCGroup"]))
+def primary_crop_items(crops: pd.DataFrame) -> set:
+    return set(crops.dropna(subset=["AreaHarvested_ha"])["Crop"].unique())
 
-primary_items = set(crops.dropna(subset=["AreaHarvested_ha"])["Crop"].unique())
-crops_primary = crops[crops["Crop"].isin(primary_items)].copy()
-crops_primary["FBSItem"] = crops_primary["Crop"].apply(lambda c: resolve_fbs_item(c, item_to_group))
-crops_primary["KcalPerTonne"] = crops_primary["FBSItem"].map(kcal_per_tonne)
-crops_primary["Kcal"] = crops_primary["Production_tons"] * crops_primary["KcalPerTonne"]
 
-kcal_by_country_year = (
-    crops_primary.dropna(subset=["Kcal"])
-    .groupby(["Country", "Year"], as_index=False)["Kcal"].sum()
-)
-kcal_by_country_year = kcal_by_country_year.merge(arable, on="Country", how="inner")
-kcal_by_country_year["KcalPerArableHa_Est"] = kcal_by_country_year["Kcal"] / kcal_by_country_year["ArableLand_ha"]
+def add_kcal_columns(crops_primary: pd.DataFrame, kcal_per_tonne: pd.Series, item_to_group: dict) -> pd.DataFrame:
+    crops_primary = crops_primary.copy()
+    crops_primary["FBSItem"] = crops_primary["Crop"].apply(lambda c: resolve_fbs_item(c, item_to_group))
+    crops_primary["KcalPerTonne"] = crops_primary["FBSItem"].map(kcal_per_tonne)
+    crops_primary["Kcal"] = crops_primary["Production_tons"] * crops_primary["KcalPerTonne"]
+    return crops_primary
 
-merged = merged.merge(
-    kcal_by_country_year[["Country", "Year", "KcalPerArableHa_Est"]],
-    on=["Country", "Year"], how="left",
-)
-print(f"Kcal estimate coverage: {merged['KcalPerArableHa_Est'].notna().sum()} / {len(merged)} country-years")
 
-out = merged[[
-    "Country", "Year", "ValuePerArableHa_USD_Est", "KcalPerArableHa_Est", "Source", "Confidence",
-]].sort_values(["Country", "Year"])
-out_path = data_dir / "FAO_ValueGapFill_WB.csv"
-out.to_csv(out_path, index=False)
-print(f"\nSaved {len(out)} rows to {out_path}")
-print(f"Countries covered: {out['Country'].nunique()} / {len(CANDIDATES) + len(CONFLICT_TIER)}")
+def aggregate_kcal_per_arable_ha(crops_primary_with_kcal: pd.DataFrame, arable: pd.DataFrame) -> pd.DataFrame:
+    kcal_by_country_year = (
+        crops_primary_with_kcal.dropna(subset=["Kcal"])
+        .groupby(["Country", "Year"], as_index=False)["Kcal"].sum()
+    )
+    kcal_by_country_year = kcal_by_country_year.merge(arable, on="Country", how="inner")
+    kcal_by_country_year["KcalPerArableHa_Est"] = kcal_by_country_year["Kcal"] / kcal_by_country_year["ArableLand_ha"]
+    return kcal_by_country_year
 
-print("\n2022 spot check:")
-print(out[out["Year"] == 2022].sort_values("ValuePerArableHa_USD_Est", ascending=False).to_string(index=False))
+
+def main():
+    print(f"Fetching World Bank {WB_INDICATOR} for {len(CANDIDATES)} stable-tier countries ...")
+    rows = fetch(CANDIDATES, "stable")
+    print(f"Fetching World Bank {WB_INDICATOR} for {len(CONFLICT_TIER)} conflict-tier countries ...")
+    rows += fetch(CONFLICT_TIER, "conflict-affected, lower confidence")
+
+    ag = pd.DataFrame(rows)
+
+    arable = pd.read_csv(data_dir / "arable_land_ha.csv")[["Country", "ArableLand_ha"]]
+    arable["Country"] = arable["Country"].replace(WB_TO_FAO_COUNTRY)
+    merged = compute_value_per_arable_ha(ag, arable)
+    dropped = set(ag["Country"]) - set(merged["Country"])
+    if dropped:
+        print(f"WARNING: no arable_land_ha.csv row for {dropped} - dropped, cannot compute a per-hectare figure.")
+
+    # -----------------------------------------------------------------------
+    # Kcal side - real FAOSTAT data (QCL production tonnage x FBS world kcal
+    # factors), not a proxy. See module docstring for why this is possible at
+    # all. Mirrors derive_value_kcal.py's mapping exactly.
+    # -----------------------------------------------------------------------
+    all_gap_countries = list(CANDIDATES) + list(CONFLICT_TIER)
+
+    print("\nFetching FAOSTAT Food Balance Sheets (for the kcal-per-tonne factor table) ...")
+    fbs_url = "https://bulks-faostat.fao.org/production/FoodBalanceSheets_E_All_Data_(Normalized).zip"
+    with urllib.request.urlopen(fbs_url, timeout=120) as r:
+        zip_bytes = r.read()
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+        with zf.open("FoodBalanceSheets_E_All_Data_(Normalized).csv") as f:
+            fbs = pd.read_csv(f, usecols=["Area", "Item", "Element", "Year", "Value"])
+    kcal_per_tonne = compute_kcal_per_tonne(fbs)
+    print(f"  {len(kcal_per_tonne)} FBS food-group factors computed")
+
+    print("Loading crop production tonnage for the 16 gap countries ...")
+    crops = pd.read_csv(data_dir / "FAO_Crop_Yield_TableauReady.csv")
+    crops = crops[crops["Country"].isin(all_gap_countries)]
+    items = pd.read_csv(data_dir / "Production_Crops_Livestock_E_ItemCodes.csv")
+    item_to_group = build_item_to_group(items)
+
+    primary_items = primary_crop_items(crops)
+    crops_primary = crops[crops["Crop"].isin(primary_items)].copy()
+    crops_primary = add_kcal_columns(crops_primary, kcal_per_tonne, item_to_group)
+
+    kcal_by_country_year = aggregate_kcal_per_arable_ha(crops_primary, arable)
+
+    merged = merged.merge(
+        kcal_by_country_year[["Country", "Year", "KcalPerArableHa_Est"]],
+        on=["Country", "Year"], how="left",
+    )
+    print(f"Kcal estimate coverage: {merged['KcalPerArableHa_Est'].notna().sum()} / {len(merged)} country-years")
+
+    out = merged[[
+        "Country", "Year", "ValuePerArableHa_USD_Est", "KcalPerArableHa_Est", "Source", "Confidence",
+    ]].sort_values(["Country", "Year"])
+    out_path = data_dir / "FAO_ValueGapFill_WB.csv"
+    out.to_csv(out_path, index=False)
+    print(f"\nSaved {len(out)} rows to {out_path}")
+    print(f"Countries covered: {out['Country'].nunique()} / {len(CANDIDATES) + len(CONFLICT_TIER)}")
+
+    print("\n2022 spot check:")
+    print(out[out["Year"] == 2022].sort_values("ValuePerArableHa_USD_Est", ascending=False).to_string(index=False))
+
+
+if __name__ == "__main__":
+    main()

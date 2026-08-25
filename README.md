@@ -1,5 +1,7 @@
 # FAO Crop Yields
 
+[![Tests](https://github.com/aitor1717/fao_yields/actions/workflows/test.yml/badge.svg)](https://github.com/aitor1717/fao_yields/actions/workflows/test.yml)
+
 A small data pipeline + dashboard comparing how countries' farmland performs
 by dollar value and food energy per hectare, not raw tonnage. Turns FAOSTAT
 crop production/area data and World Bank arable-land data into clean CSVs,
@@ -21,6 +23,13 @@ streamlit run dashboard_app.py
 ```
 
 Reads directly from the checked-in CSVs in `data/`, no other setup needed.
+
+### Run the tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
 
 ## How the data is built
 

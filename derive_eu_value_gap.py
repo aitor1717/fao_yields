@@ -46,6 +46,12 @@ substantial part of the EU gap (cereals and oilseeds are the largest
 field-crop categories by value for most EU producers), but fruit,
 vegetables, wine, and olives remain unrecovered for the EU after 2017 -
 documented as a residual gap on the affected panels.
+
+Module structure: the parsing/filtering/conversion steps below are plain
+functions of DataFrames, with no network or file I/O inside them, so they
+can be unit-tested against small synthetic inputs (see tests/). The network
+fetch and the save-to-disk sequence live in main(), which reproduces the
+original script's behavior exactly when run directly.
 """
 import io
 import urllib.request
@@ -95,77 +101,110 @@ ITEM_MAP = {
     "AM024000": "Sugar beet",
 }
 
-print("Fetching Eurostat aact_eaa01 (current-price Value of Production) ...")
-with urllib.request.urlopen(EUROSTAT_URL, timeout=60) as r:
-    eu = pd.read_csv(io.BytesIO(r.read()), sep="\t")
-key_col = eu.columns[0]
-keys = eu[key_col].str.split(",", expand=True)
-keys.columns = ["freq", "am_item", "indic_agr", "unit", "geo"]
-eu = pd.concat([keys, eu.drop(columns=key_col)], axis=1)
-eu.columns = [c.strip() for c in eu.columns]
 
-eu = eu[(eu["indic_agr"] == "PRD_BP") & (eu["unit"] == "MIO_EUR") & (eu["geo"].isin(EU_GEO_TO_COUNTRY))]
-eu = eu[eu["am_item"].isin(ITEM_MAP)]
-eu["Country"] = eu["geo"].map(EU_GEO_TO_COUNTRY)
-eu["Crop"] = eu["am_item"].map(ITEM_MAP)
+def parse_eurostat_response(eu: pd.DataFrame) -> pd.DataFrame:
+    """Splits the compound "freq,am_item,indic_agr,unit,geo" key column
+    Eurostat's SDMX TSV puts everything in and rejoins it with the rest of
+    the (year-column) data."""
+    key_col = eu.columns[0]
+    keys = eu[key_col].str.split(",", expand=True)
+    keys.columns = ["freq", "am_item", "indic_agr", "unit", "geo"]
+    eu = pd.concat([keys, eu.drop(columns=key_col)], axis=1)
+    eu.columns = [c.strip() for c in eu.columns]
+    return eu
 
-year_cols = [c for c in eu.columns if c.strip().isdigit()]
-eu_long = eu.melt(id_vars=["Country", "Crop"], value_vars=year_cols, var_name="Year", value_name="Value_MEUR_raw")
-eu_long["Year"] = eu_long["Year"].str.strip().astype(int)
-# Eurostat marks provisional/estimated figures with a trailing letter flag
-# (e.g. "417.62 e") and missing values as ":" - strip both, coercing
-# unparseable entries to NaN rather than guessing.
-eu_long["Value_MEUR"] = pd.to_numeric(
-    eu_long["Value_MEUR_raw"].astype(str).str.strip().str.replace(r"[a-zA-Z]", "", regex=True).str.strip().replace(":", None),
-    errors="coerce",
-)
-eu_long = eu_long.dropna(subset=["Value_MEUR"])
-# Only the years FAOSTAT QV actually lacks for the EU (see derive_value_kcal.py)
-# and that the rest of this dashboard's data can even use - AreaHarvested_ha
-# in FAO_Crop_Yield_TableauReady.csv doesn't extend past 2022, so newer
-# Eurostat years would just be dropped at the join in derive_value_kcal.py.
-eu_long = eu_long[(eu_long["Year"] >= 2018) & (eu_long["Year"] <= 2022)]
 
-print("Loading FAOSTAT's own exchange rates (Local currency units per USD) ...")
-# Eurostat's MIO_EUR figures are already converted to EUR for every EU member
-# state, Eurozone or not - so this needs one EUR/USD rate per year applied to
-# all 27 countries, not each country's own domestic-currency rate. Getting
-# this wrong is a real bug this script had: joining on (Country, Year) against
-# FAOSTAT's per-country rate silently used Hungary's Forint rate, Poland's
-# Zloty rate, etc. against an already-EUR-denominated value, undervaluing
-# Hungary's wheat by ~370x (Forint/USD is ~370, EUR/USD is ~0.9). FAOSTAT
-# carries this under two Element codes - "LCU"
-# (Local currency units per USD) and "SLC" (Standard local currency units per
-# USD) - identical in value for every country checked, but both present, so
-# this also filters to one to avoid a doubled join.
-with urllib.request.urlopen(FX_ZIP_URL, timeout=120) as r:
-    fx_zip_bytes = r.read()
-with zipfile.ZipFile(io.BytesIO(fx_zip_bytes)) as zf:
-    with zf.open(FX_CSV_NAME) as f:
-        fx = pd.read_csv(f)
-fx_eur = fx[(fx["Element Code"] == "LCU") & (fx["Months"] == "Annual value") & (fx["Currency"] == "Euro")]
-fx_eur = fx_eur[fx_eur["Year"].isin(eu_long["Year"].unique())]
-fx_eur = fx_eur[["Year", "Value"]].drop_duplicates().rename(columns={"Value": "EUR_per_USD"})
-# Only checked for the years actually used below - a handful of older/newer
-# years disagree (pre-adoption Eurozone entrants still tagged "Euro" with a
-# stale pre-Euro rate, e.g. Lithuania pre-2015), irrelevant here but a real
-# reason not to trust this blindly across the dataset's full 1970-2025 span.
-assert (fx_eur.groupby("Year")["EUR_per_USD"].nunique() == 1).all(), "Eurozone members disagree on their own currency's rate in a year this script actually uses - investigate before trusting this."
+def filter_field_crops(eu: pd.DataFrame) -> pd.DataFrame:
+    """Restricts to Production value at basic price, million EUR, an EU
+    member state, and one of the 12 field crops ITEM_MAP actually covers."""
+    eu = eu[(eu["indic_agr"] == "PRD_BP") & (eu["unit"] == "MIO_EUR") & (eu["geo"].isin(EU_GEO_TO_COUNTRY))]
+    eu = eu[eu["am_item"].isin(ITEM_MAP)].copy()
+    eu["Country"] = eu["geo"].map(EU_GEO_TO_COUNTRY)
+    eu["Crop"] = eu["am_item"].map(ITEM_MAP)
+    return eu
 
-merged = eu_long.merge(fx_eur, on="Year", how="inner")
-print(f"EU rows with a matching exchange rate: {len(merged)} / {len(eu_long)}")
 
-# Value_MEUR is in million EUR; EUR_per_USD is "local currency units per USD"
-# (i.e. EUR per USD for eurozone members) - so USD = EUR / (EUR per USD).
-merged["Value_kUSD"] = merged["Value_MEUR"] * 1_000_000 / merged["EUR_per_USD"] / 1_000
+def melt_to_long(eu: pd.DataFrame) -> pd.DataFrame:
+    """Wide year-columns -> long Country/Crop/Year/Value_MEUR, restricted to
+    2018-2022 (the years FAOSTAT QV actually lacks for the EU, and the only
+    years the rest of this dashboard's data can use). Eurostat marks
+    provisional/estimated figures with a trailing letter flag (e.g.
+    "417.62 e") and missing values as ":" - strip both, coercing unparseable
+    entries to NaN rather than guessing."""
+    year_cols = [c for c in eu.columns if c.strip().isdigit()]
+    eu_long = eu.melt(id_vars=["Country", "Crop"], value_vars=year_cols, var_name="Year", value_name="Value_MEUR_raw")
+    eu_long["Year"] = eu_long["Year"].str.strip().astype(int)
+    eu_long["Value_MEUR"] = pd.to_numeric(
+        eu_long["Value_MEUR_raw"].astype(str).str.strip().str.replace(r"[a-zA-Z]", "", regex=True).str.strip().replace(":", None),
+        errors="coerce",
+    )
+    eu_long = eu_long.dropna(subset=["Value_MEUR"])
+    eu_long = eu_long[(eu_long["Year"] >= 2018) & (eu_long["Year"] <= 2022)]
+    return eu_long
 
-out = merged[["Country", "Crop", "Year", "Value_kUSD"]]
-out_path = data_dir / "FAO_EU_Crop_Value_Gap.csv"
-out.to_csv(out_path, index=False)
-print(f"Saved {len(out)} rows to {out_path}")
-print(f"Countries covered: {out['Country'].nunique()} / {len(EU_GEO_TO_COUNTRY)}")
-print(f"Crops covered: {out['Crop'].nunique()} / {len(ITEM_MAP)}")
-print(f"Years: {sorted(out['Year'].unique())}")
 
-print("\nSpot check - Germany, 2022:")
-print(out[(out["Country"] == "Germany") & (out["Year"] == 2022)].sort_values("Value_kUSD", ascending=False).to_string(index=False))
+def select_eur_fx_rate(fx: pd.DataFrame, years) -> pd.DataFrame:
+    """One EUR/USD rate per year, from FAOSTAT's own Exchange Rates domain.
+    FAOSTAT carries this under two Element codes - "LCU" (Local currency
+    units per USD) and "SLC" (Standard local currency units per USD) -
+    identical in value for every country checked, but both present, so this
+    filters to one to avoid a doubled join. Eurostat's MIO_EUR figures are
+    already converted to EUR for every EU member state, Eurozone or not - so
+    this needs one EUR/USD rate per year applied to all 27 countries, not
+    each country's own domestic-currency rate (see module docstring's note
+    on the Hungary/Forint bug this guards against)."""
+    fx_eur = fx[(fx["Element Code"] == "LCU") & (fx["Months"] == "Annual value") & (fx["Currency"] == "Euro")]
+    fx_eur = fx_eur[fx_eur["Year"].isin(years)]
+    fx_eur = fx_eur[["Year", "Value"]].drop_duplicates().rename(columns={"Value": "EUR_per_USD"})
+    # Only checked for the years actually used here - a handful of older/newer
+    # years disagree (pre-adoption Eurozone entrants still tagged "Euro" with
+    # a stale pre-Euro rate, e.g. Lithuania pre-2015), irrelevant here but a
+    # real reason not to trust this blindly across the dataset's full
+    # 1970-2025 span.
+    assert (fx_eur.groupby("Year")["EUR_per_USD"].nunique() == 1).all(), \
+        "Eurozone members disagree on their own currency's rate in a year this script actually uses - investigate before trusting this."
+    return fx_eur
+
+
+def convert_to_usd(eu_long: pd.DataFrame, fx_eur: pd.DataFrame) -> pd.DataFrame:
+    """Value_MEUR is in million EUR; EUR_per_USD is "local currency units
+    per USD" (i.e. EUR per USD for eurozone members) - so USD = EUR /
+    (EUR per USD)."""
+    merged = eu_long.merge(fx_eur, on="Year", how="inner")
+    merged["Value_kUSD"] = merged["Value_MEUR"] * 1_000_000 / merged["EUR_per_USD"] / 1_000
+    return merged
+
+
+def main():
+    print("Fetching Eurostat aact_eaa01 (current-price Value of Production) ...")
+    with urllib.request.urlopen(EUROSTAT_URL, timeout=60) as r:
+        eu_raw = pd.read_csv(io.BytesIO(r.read()), sep="\t")
+    eu = parse_eurostat_response(eu_raw)
+    eu = filter_field_crops(eu)
+    eu_long = melt_to_long(eu)
+
+    print("Loading FAOSTAT's own exchange rates (Local currency units per USD) ...")
+    with urllib.request.urlopen(FX_ZIP_URL, timeout=120) as r:
+        fx_zip_bytes = r.read()
+    with zipfile.ZipFile(io.BytesIO(fx_zip_bytes)) as zf:
+        with zf.open(FX_CSV_NAME) as f:
+            fx = pd.read_csv(f)
+    fx_eur = select_eur_fx_rate(fx, eu_long["Year"].unique())
+
+    merged = convert_to_usd(eu_long, fx_eur)
+    print(f"EU rows with a matching exchange rate: {len(merged)} / {len(eu_long)}")
+
+    out = merged[["Country", "Crop", "Year", "Value_kUSD"]]
+    out_path = data_dir / "FAO_EU_Crop_Value_Gap.csv"
+    out.to_csv(out_path, index=False)
+    print(f"Saved {len(out)} rows to {out_path}")
+    print(f"Countries covered: {out['Country'].nunique()} / {len(EU_GEO_TO_COUNTRY)}")
+    print(f"Crops covered: {out['Crop'].nunique()} / {len(ITEM_MAP)}")
+    print(f"Years: {sorted(out['Year'].unique())}")
+
+    print("\nSpot check - Germany, 2022:")
+    print(out[(out["Country"] == "Germany") & (out["Year"] == 2022)].sort_values("Value_kUSD", ascending=False).to_string(index=False))
+
+
+if __name__ == "__main__":
+    main()
