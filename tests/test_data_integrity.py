@@ -1,9 +1,10 @@
 """Basic data-integrity checks on the checked-in output CSVs in data/:
 schema/column presence, no fully-null columns, no negative
 production/area/value figures. These exist to catch silent corruption if
-the CSVs are ever regenerated (see the project docs's account of the 831-cell
-aggfunc="first" corruption this project has already hit once) - they don't
-verify the numbers are *correct*, only that they're structurally sane.
+the CSVs are ever regenerated (this project has already hit a real case of
+it: an aggfunc="first" bug silently resolved duplicate rows and corrupted
+831 cells) - they don't verify the numbers are *correct*, only that
+they're structurally sane.
 """
 from pathlib import Path
 
@@ -86,8 +87,8 @@ def test_no_negative_values(loaded_csv):
 def test_crop_yield_matches_production_over_area():
     """Yield_tonha must equal Production_tons / AreaHarvested_ha wherever
     both are present - it's derived, never trusted from FAOSTAT's own
-    "Yield" element (see the project docs / README on the hg/ha vs kg/ha bug this
-    guards against)."""
+    "Yield" element (see README on the hg/ha vs kg/ha bug this guards
+    against)."""
     df = pd.read_csv(DATA_DIR / "FAO_Crop_Yield_TableauReady.csv")
     complete = df.dropna(subset=["AreaHarvested_ha", "Production_tons", "Yield_tonha"])
     complete = complete[complete["AreaHarvested_ha"] > 0]
@@ -101,8 +102,8 @@ def test_crop_yield_matches_production_over_area():
 
 def test_no_duplicate_country_crop_year_rows():
     """pipeline.py treats duplicate (Area, Item, Year, Element) rows as a
-    hard error rather than silently resolving them (see the project docs) - the
-    checked-in output should never contain any."""
+    hard error rather than silently resolving them - the checked-in output
+    should never contain any."""
     df = pd.read_csv(DATA_DIR / "FAO_Crop_Yield_TableauReady.csv")
     dupes = df.duplicated(subset=["Country", "Crop", "Year"], keep=False)
     assert not dupes.any(), f"{dupes.sum()} duplicate (Country, Crop, Year) rows found"
